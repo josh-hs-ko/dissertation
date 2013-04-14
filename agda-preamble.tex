@@ -1,0 +1,24 @@
+%include agda.fmt
+
+\let\keyword=\mathbf
+\let\constructor=\mathsf
+\let\identifier=\mathit
+
+%subst keyword a = "\keyword{" a "}"
+%subst conid a = "\identifier{" a "}"
+%subst varid a = "\identifier{" a "}"
+%format { = "\{"
+%format } = "\}"
+%format λ = "\lambda\kern-.2em"
+
+%format constructor = "\keyword{constructor}"
+%format indexfirst = "\keyword{indexfirst}"
+%format takes = "\ni"
+
+%format Set = "\constructor{Set}"
+%format Set₁ = "\constructor{Set_1}"
+
+%format Nat = "\constructor{Nat}"
+%format zero = "\constructor{zero}"
+%format suc = "\constructor{suc}"
+
