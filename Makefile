@@ -3,6 +3,9 @@ contents = processed-chapter1.tex processed-chapter2.tex processed-chapter3.tex 
 
 all: dissertation
 
+clean:
+	cat .gitignore | xargs echo rm -f | sh
+
 dissertation: processed-agda-preamble.tex $(contents)
 	pdflatex dissertation
 
