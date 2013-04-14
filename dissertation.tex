@@ -1,6 +1,18 @@
 \documentclass{book}
 
 \usepackage{subfiles}
+\def\biblio{\bibliographystyle{plainnat}\bibliography{../bib}}
+\def\subfilebiblio{\biblio}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage[colorlinks,citecolor=black,urlcolor=black,linkcolor=black]{hyperref}
+\renewcommand{\chapterautorefname}{Chapter}
+\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\subsectionautorefname}{Section}
+\renewcommand{\figureautorefname}{Figure}
+
+\usepackage{natbib}
 
 \usepackage[UKenglish]{isodate}
 
@@ -8,10 +20,26 @@
 
 \begin{document}
 
+\def\subfilebiblio{}
+
+\frontmatter
+
 \title{Analysis and synthesis of inductive families}
 \author{Hsiang-Shang Ko}
 \maketitle
 
+\tableofcontents
+
+\mainmatter
+
 \subfile{processed-chapter1}
+\subfile{processed-chapter2}
+\subfile{processed-chapter3}
+\subfile{processed-chapter4}
+\subfile{processed-chapter5}
+\subfile{processed-chapter6}
+\subfile{processed-chapter7}
+
+\biblio
 
 \end{document}
