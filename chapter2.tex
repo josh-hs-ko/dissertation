@@ -1,2 +1,13 @@
 \chapter{From intuitionistic type theory to dependently typed programming}
 \label{chapter:background}
+
+We start with an introduction to intuitionistic type theory \citep{ML-ITT} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the Agda language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
+Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
+While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program construction movement.
+It has thus departed from the mathematical traditions considerably, and deviations can be found from syntactic presentations to the underlying philosophy.
+
+\begin{code}
+data Nat : Set where
+  zero  :  Nat
+  suc   :  Nat -> Nat
+\end{code}
