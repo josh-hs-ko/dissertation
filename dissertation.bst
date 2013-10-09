@@ -4,7 +4,7 @@
 %%
 %% The original source files were:
 %%
-%% merlin.mbs  (with options: `ay,nat,nm-revf,ed-rev,jnrlst,nmft,nmft-sc,fnm-rm,nmand-rm,keyxyr,dt-beg,yr-par,note-yr,num-xser,isbn,issn,doi,xedn,etal-xc,nfss,')
+%% merlin.mbs  (with options: `ay,nat,ed-au,nmft,nmft-def,fnm-def,nmand-rm,keyxyr,dt-beg,yr-brk,note-yr,num-xser,isbn,issn,doi,xedn,nfss,')
 %% ----------------------------------------
 %% ***  ***
 %% 
@@ -188,16 +188,18 @@ FUNCTION {emphasize}
     { "\emph{" swap$ * "}" * }
   if$
 }
-FUNCTION {scaps}
+FUNCTION {bib.name.font}
 { duplicate$ empty$
-    { pop$ "" }
-    { "\textsc{" swap$ * "}" * }
+  { pop$ "" }
+  { "\bibnamefont{" swap$ * "}" * }
   if$
 }
-FUNCTION {bib.name.font}
-{ scaps }
 FUNCTION {bib.fname.font}
-{ skip$ }
+{ duplicate$ empty$
+  { pop$ "" }
+  { "\bibfnamefont{" swap$ * "}" * }
+  if$
+}
 FUNCTION {tie.or.space.prefix}
 { duplicate$ text.length$ #3 <
     { "~" }
@@ -380,10 +382,13 @@ FUNCTION {format.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { s nameptr
-      "{vv~}{ll}" format.name$ bib.name.font
+      "{ff}" format.name$ duplicate$ empty$ 'skip$
+        { tie.or.space.prefix bib.fname.font swap$ * }
+      if$
       s nameptr
-      "{ff}{, jj}"
-      format.name$ duplicate$ empty$ 'skip$
+      "{vv~}{ll}" format.name$ bib.name.font *
+      s nameptr
+      "{jj}" format.name$ duplicate$ empty$ 'skip$
         { bib.fname.font ", " swap$ * }
       if$
       *
@@ -399,7 +404,6 @@ FUNCTION {format.names}
                 { pop$ }
               if$
               numnames #2 >
-              t "others" = not and
                 { "," * }
                 'skip$
               if$
@@ -654,7 +658,7 @@ FUNCTION {format.date}
   if$
   extra.label *
   before.all 'output.state :=
-  " (" swap$ * ")" *
+  " [" swap$ * "]" *
 }
 FUNCTION {format.btitle}
 { title "title" bibinfo.check
@@ -1502,6 +1506,10 @@ FUNCTION {begin.bib}
   "\begin{thebibliography}{" number.label int.to.str$ * "}" *
   write$ newline$
   "\providecommand{\natexlab}[1]{#1}"
+  write$ newline$
+  "\providecommand{\bibnamefont}[1]{#1}"
+  write$ newline$
+  "\providecommand{\bibfnamefont}[1]{#1}"
   write$ newline$
   "\expandafter\ifx\csname urlstyle\endcsname\relax"
   write$ newline$

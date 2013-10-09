@@ -1,2 +1,60 @@
 \chapter{Relational algebraic ornaments}
 \label{chapter:algebraic}
+
+The three datatypes |Nat|, |List A|, and |Vec A| are evidently related: a list is a natural number whose cons nodes are decorated with elements of~|A|, and a vector is a list enriched with length information.
+Such relationship can be seen by ``overlaying'' one datatype declaration on the other: for example, the declaration of |List A| differs from that of |Nat| only in an extra field |(a : A)| in the cons constructor, and the declaration of |Vec A| differs from that of |List A| in that (i)~the index set is changed from~|⊤| to |Nat|, (ii)~the cons constructor has two extra fields, and (iii)~the index of the recursive position is specified to be~|m|.
+Such differences between datatype declarations are encoded as \emph{ornaments}.
+Whenever there is an ornament between two datatypes, there is a forgetful function from the more informative datatype to the other, erasing information according to the ornament's specification of datatype differences.
+For example, we have a forgetful function from lists to natural numbers that discards elements associated with cons nodes --- i.e., it computes the length of a list --- and another one from vectors to lists which removes all length information from a vector and returns the underlying list.
+
+Ornaments constitute the second underlying universe:
+\[ |Orn : {I J : Set} (e : J → I) (D : Desc I) (E : Desc J) → Set₁| \]
+An ornament |O : Orn e D E| specifies the difference between the more informative description~|E| and the basic description~|D|, and is parametrised by an ``index erasure'' function~|e| from the index set of~|E| to that of~|D|.
+The ornament gives rise to a forgetful function
+\[ |forget O : μ E ⇉ (μ D ∘ e)| \]
+For example, there are families of ornaments
+\savecolumns
+\begin{code}
+NatD-ListD  :  (A : Set) → Orn ! NatD (ListD A)
+\end{code}
+and
+\restorecolumns
+\begin{code}
+ListD-VecD  :  (A : Set) → Orn ! (ListD A) (VecD A)
+\end{code}
+(where |! = const tt|) that encode the differences between the list-like datatypes.
+The function
+\[ |forget (NatD-ListD A) {tt} : List A → Nat| \]
+computes the length of a list, and the function
+\[ |forget (ListD-VecD A) : ∀ {n} → Vec A n → List A| \]
+computes the underlying list of a vector.
+
+\paragraph{Ornamental descriptions.}
+Ornaments arise between existing datatype descriptions.
+The typical scenario of using ornaments, however, is first modifying a base description into a more informative one and then specifying an ornament between the two descriptions.
+\emph{Ornamental descriptions} are introduced to combine the two steps into one:
+\[ |OrnDesc : {I : Set} (J : Set) (e : J → I) (D : Desc I) → Set₁| \]
+An ornamental description
+\[ |OD : OrnDesc J e D| \]
+is like a new description of type |Desc J|, but is written relative to a base description~|D| such that not only can we extract the new description
+\[ |⌊ OD ⌋ : Desc J| \]
+but we can also extract an ornament from the base description~|D| to the new description
+\[ |⌈ OD ⌉ : Orn e D ⌊ OD ⌋| \]
+An ornamental description is a convenient way to specify a new datatype that has an ornamental relationship with an existing one; it might be thought of as simultaneously denoting the new description and the ornament --- the floor and ceiling brackets |⌊_⌋| and |⌈_⌉| are added to resolve ambiguity.
+
+{\leftmargin2em
+\noindent\underline{\smash{\textit{Example.}}}\quad Let |_≤A_ : A → A → Set| be an ordering on~|A| and declare a datatype of ordered lists (parametrised by |A| and |_≤A_|) indexed by a lower bound under this ordering:
+\begin{code}
+indexfirst data OrdList A _≤A_ : A → Set where
+  OrdList A _≤A_ b
+    accepts  nil
+    or       cons  (a : A) (leq : b ≤A a) (as : OrdList A _≤A_ a)
+\end{code}
+This datatype can be thought of as being decoded from an ornamental description
+\[ |OrdListOD A _≤A_ : OrnDesc A ! (ListD A)| \]
+which inserts the field~|leq| and refines the index of the recursive position to~|a|.
+That is, the underlying description for |OrdList| is
+\[ |⌊ OrdListOD A _≤A_ ⌋ : Desc A| \]
+(so |OrdList A _≤A_ b| desugars to |μ ⌊ OrdListOD A _≤A_ ⌋ b|), and
+\[ |⌈ OrdListOD A _≤A_ ⌉ : Orn ! (ListD A) ⌊ OrdListOD A _≤A_ ⌋| \]
+is the ornament from lists to ordered lists.}

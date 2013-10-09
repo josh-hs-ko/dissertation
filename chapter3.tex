@@ -1,10 +1,120 @@
-\chapter{Ornaments, refinements, and upgrades}
+\chapter{Refinements and ornaments}
 \label{chapter:ornaments}
 
-\autoref{chapter:background}
+\todo[inline]{``datatypes'' for inductive families}
 
-\citet{McBride-ornaments}
-\citep{McBride-ornaments}
-\citeauthor{McBride-ornaments}'s work~\citeyearpar{McBride-ornaments}
-\citep{Dagand-functional-ornaments}
-\citep{Mu-AoPA}
+\section{Datatype descriptions}
+
+\begin{code}
+Desc : (I : Set) → Set₁
+\end{code}
+
+\begin{code}
+μ : {I : Set} → Desc I → (I → Set)
+\end{code}
+
+\begin{code}
+data RDesc (I : Set) : Set₁ where
+  ṿ  :  (is : List I) → RDesc I
+  σ  :  (S : Set) (D : S → RDesc I) → RDesc I
+  
+⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
+⟦  ṿ is   ⟧  X  =  Ṁ is X
+⟦  σ S D  ⟧  X  =  (Σ'(s ∶ S)) ⟦ D s ⟧ X
+\end{code}
+
+\begin{code}
+Ṁ : {I : Set} → List I → (I → Set) → Set
+Ṁ  []        X  =  ⊤
+Ṁ  (i ∷ is)  X  =  X i × Ṁ is X
+\end{code}
+
+%\todo[inline]{first-order vs higher-order representation: change the type of~|ṿ| to |(S : Set) → (S → I) → RDesc I| and define
+%\begin{code}
+%Ṁ : {I S : Set} → (S → I) → (I → Set) → Set
+%Ṁ f X = (s : S) → X (f s)
+%\end{code}
+%|List I| is extensionally isomorphic to |(Σ'(n ∶ Nat)) Fin n → I|}
+
+\section{Ornaments}
+
+\block{Evolutionary remark}{ornaments as relations}{We define ornaments as relations between descriptions (indexed by an erasure function), whereas \citeauthor{McBride-ornaments}'s original ornaments~\citeyearpar{McBride-ornaments} are rebranded as ornamental descriptions.
+One obvious advantage of relational ornaments is that they can arise between \emph{existing} descriptions, whereas ornamental descriptions always produce (definitionally) new descriptions at the more informative end.
+This also means that there can be multiple ornaments between a pair of descriptions.
+For example, consider the datatype
+\begin{code}
+indexfirst data Square (A : Set) : Set where
+  Square A takes pair (x : A) (y : A)
+\end{code}
+Between the description of |Square A| and itself, we have the identity ornament
+\begin{code}
+(σ'(x ∶ A)) (σ'(y : A)) ṿ tt
+\end{code}
+and the ornament
+\begin{code}
+(Δ'(x ∶ A)) (Δ'(y ∶ A)) (∇'(y)) (∇'(x)) ṿ tt
+\end{code}
+whose forgetful function swaps the fields |x|~and~|y|.
+The other advantage of relational ornaments is that they allow new datatypes to arise at the less informative end.
+For example, \emph{coproduct of signatures} as used in, e.g., data types à~la carte~\citep{Swierstra-data-type-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
+In more detail: Consider (a simplistic variation of) \emph{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
+A tagged description with index set |I : Set| thus consists of a family of types |C : I → Set|, where each |C i| is the set of constructor tags for the index request |i : I|, and a family of subsequent response descriptions for each constructor tag.
+\begin{code}
+TDesc : Set → Set₁
+TDesc I = (Σ'(C ∶ I → Set)) ((i : I) → C i → RDesc I)
+\end{code}
+Tagged descriptions are decoded to ordinary descriptions by
+\begin{code}
+⌊_⌋T : {I : Set} → TDesc I → Desc I
+⌊ C , D ⌋T i = σ (C i) (D i)
+\end{code}
+We can then define binary coproduct of tagged descriptions, which sums up the corresponding constructor fields, as follows:
+\begin{code}
+_⊕_ : {I : Set} → TDesc I → TDesc I → TDesc I
+(C , D) ⊕ (C' , D') = ((lambda(i)) C i + C' i) , ((lambda(i)) D i ▿ D' i)
+\end{code}
+Now given two tagged descriptions |tD = (C , D)| and |tD' = (C' , D')| of type |TDesc I|, there are two ornaments from |⌊ tD ⊕ tD' ⌋T| to |⌊ tD ⌋T| and |⌊ tD' ⌋T|
+\begin{code}
+inlOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD ⌋T
+inlOrn  i  =  (Δ'(c   ∶ C i))   (∇'(inl  c   ))  idOrn (D i c)
+
+inrOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD' ⌋T
+inrOrn  i  =  (Δ'(c'  ∶ C' i))  (∇'(inr  c'  ))  idOrn (D' i c')
+\end{code}
+whose forgetful functions perform suitable injection of constructor tags.
+Note that the synthesised new description |⌊ tD ⊕ tD' ⌋T| is at the less informative end of |inlOrn| and |inrOrn|.\todo{Example?}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,8 +3,10 @@
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{dissertation}\bibliography{../bib}}
 \def\subfilebiblio{\biblio}
+\newcommand{\bibnamefont}[1]{\textsc{#1}}
 
 \usepackage[a4paper]{geometry}
+\setlength{\marginparwidth}{3cm}
 
 \usepackage[colorlinks,citecolor=black,urlcolor=black,linkcolor=black]{hyperref}
 \renewcommand{\chapterautorefname}{Chapter}
@@ -14,9 +16,48 @@
 
 \usepackage[square]{natbib}
 
+\usepackage{doi}
+
 \usepackage[UKenglish]{isodate}
 \cleanlookdateon
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}{}}
+\fancyhf{}
+\fancyhead[LE, RO]{\thepage}
+\fancyhead[RE]{\textbf{\thechapter}~~~\leftmark}
+\fancyhead[LO]{\textbf{\thesection}~~~\rightmark}
+
+\usepackage[color=yellow,textsize=footnotesize]{todonotes}
+
+\makeatletter
+\def\block{\@ifstar\@block\@@block}
+\newcommand{\@block}[2]{\noindent\textit{#1}.\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@@block}[3]{\noindent\textit{#1}~(\hskip.05em\textit{#2}\hskip.05em).\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
+\makeatother
+
+\usepackage[sc]{mathpazo}
+\linespread{1.2}
+\newcommand{\keyword}{\mathbf}
+\newcommand{\constructor}{\mathsf}
+\newcommand{\identifier}{\mathit}
+\newlength{\underscorespace}
+\setlength{\underscorespace}{.065em}
+\newlength{\binderspace}
+\setlength{\binderspace}{.075em}
+\newlength{\binderskip}
+\setlength{\binderskip}{.2em}
+\setlength{\mathindent}{.5\parindent}
+\makeatletter
+\g@addto@macro\normalsize{%
+  \setlength\abovedisplayskip{\medskipamount}
+  \setlength\belowdisplayskip{\abovedisplayskip}
+}
+\makeatother
+\DeclareSymbolFont{euler}{U}{eur}{m}{n}
+\DeclareMathSymbol \upsigma \mathalpha {euler} {"1B}
 \input{processed-agda-preamble}
 
 \begin{document}

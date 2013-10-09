@@ -1,15 +1,16 @@
 %include agda.fmt
 
-\let\keyword=\mathbf
-\let\constructor=\mathsf
-\let\identifier=\mathit
+
+%%%%%%%%
+% basic elements
 
 %subst keyword a = "\keyword{" a "}"
 %subst conid a = "\identifier{" a "}"
 %subst varid a = "\identifier{" a "}"
 %format { = "\{"
 %format } = "\}"
-%format λ = "\lambda\kern-.2em"
+%format (lambda(x)) = "\lambda\," x "\,\mapsto\!"
+%format sep = "\kern.12em;"
 
 %format constructor = "\keyword{constructor}"
 %format indexfirst = "\keyword{indexfirst}"
@@ -18,7 +19,68 @@
 %format Set = "\constructor{Set}"
 %format Set₁ = "\constructor{Set_1}"
 
+
+%%%%%%%%
+% arrows
+
+%format ⇉ = "\rightrightarrows"
+
+
+%%%%%%%%
+% basic types
+
+%format ⊤ = "\top"
+%format tt = "\constructor{tt}"
+%format Σ = "\Sigma"
+%format (Σ'(t)) = Σ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format pair = _ "\kern.1em,\kern-.1em" _
+%format inl = "\constructor{inl}"
+%format inr = "\constructor{inr}"
+%format ▿ =  "\triangledown"
+
+
+%%%%%%%%
+% descriptions and ornaments
+
+%format Desc = "\constructor{Desc}"
+%format μ = "\mu"
+%format RDesc = "\constructor{RDesc}"
+%format ṿ = "\constructor{v}"
+%format σ = "\upsigma"
+%format (σ'(t)) = σ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format Ṁ = "\mathbb M"
+%format ⟦ = "[\kern-.18em["
+%format ⟧ = "]\kern-.18em]"
+%format ⟦_⟧ = ⟦ _ "\kern.08em" ⟧
+
+%format ROrn = "\constructor{ROrn}"
+%format Orn = "\constructor{Orn}"
+%format Δ = "\Delta"
+%format (Δ'(t)) = Δ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format (∇'(t)) = ∇ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format ⌊ = "\lfloor\kern-.2em"
+%format ⌋ = "\kern-.2em\rfloor"
+%format ⌋T = ⌋ "_T"
+%format ⌊_⌋ = "\lfloor" _ "\kern\underscorespace" "\rfloor"
+%format ⌊_⌋T = ⌊_⌋ "_T"
+
+%%%%%%%%
+% natural numbers
+
 %format Nat = "\constructor{Nat}"
 %format zero = "\constructor{zero}"
 %format suc = "\constructor{suc}"
 
+
+%%%%%%%%
+% lists
+
+%format List = "\constructor{List}"
+
+
+%%%%%%%%
+% other types
+
+%format TDesc = "\constructor{TDesc}"
+%format Square = "\constructor{Square}"
+%format _⊕_ = _ ⊕ "\kern-\underscorespace" _
