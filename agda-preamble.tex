@@ -9,78 +9,164 @@
 %subst varid a = "\identifier{" a "}"
 %format { = "\{"
 %format } = "\}"
-%format (lambda(x)) = "\lambda\," x "\,\mapsto\!"
-%format sep = "\kern.12em;"
+%format λ = "~\lambda"
+%format case = "\{"
+%format endcase = "\}"
+%format mapsto = "\mapsto"
+%format (lambda(x)) = "\lambda\," x "\," mapsto "\!"
+%format sep = "\kern.14em;"
+%format inferred = ".\kern.25pt" _
 
 %format constructor = "\keyword{constructor}"
 %format indexfirst = "\keyword{indexfirst}"
-%format takes = "\ni"
+%format offers = "\ni"
+%format noffers = "\mathrel{\rlap{\kern-.06em$\not$}{\ni}}"
+%format or = "\kern.475em|"
 
 %format Set = "\constructor{Set}"
 %format Set₁ = "\constructor{Set_1}"
+
+%format 0 = "\mathrm 0"
+%format 1 = "\mathrm 1"
+%format 2 = "\mathrm 2"
 
 
 %%%%%%%%
 % arrows
 
+%format ≡ = "\kern-.1em\equiv\kern-.1em"
+%format ≅ = "\cong"
+%format ≐ = "\doteq"
 %format ⇉ = "\rightrightarrows"
 
 
 %%%%%%%%
 % basic types
 
+%format refl = "\constructor{refl}"
 %format ⊤ = "\top"
 %format tt = "\constructor{tt}"
 %format Σ = "\Sigma"
-%format (Σ'(t)) = Σ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format (Σ'(t)) = Σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
 %format pair = _ "\kern.1em,\kern-.1em" _
-%format inl = "\constructor{inl}"
-%format inr = "\constructor{inr}"
+%format proj₁ = "\constructor{outl}"
+%format proj₂ = "\constructor{outr}"
+%format inj₁ = "\constructor{inl}"
+%format inj₂ = "\constructor{inr}"
 %format ▿ =  "\triangledown"
+%format Iso = "\constructor{Iso}"
+%format Iso.to = Iso "\recordmember" to
+%format Iso.from = Iso "\recordmember" from
 
+
+%%%%%%%%
+% refinements
+
+%format Refinement = "\constructor{Refinement}"
+%format Refinement.P = Refinement "\recordmember" P
+%format Refinement.i = Refinement "\recordmember" i
+%format Refinement.forget = Refinement "\recordmember" forget
+%format Nat-List = "\identifier{Nat\text-List}"
+
+%format Upgrade = "\constructor{Upgrade}"
+%format Upgrade.P = Upgrade "\recordmember" P
+%format Upgrade.C = Upgrade "\recordmember" C
+%format Upgrade.u = Upgrade "\recordmember" u
+%format Upgrade.c = Upgrade "\recordmember" c
+%format _⇀_ = _ "{\rightharpoonup}\kern-\underscorespace" _
+%format (new(t)) ="\forall^+\kern-.5\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format (new'(t)) ="\forall^+\kern-.5\binderspace\binderbracketl\kern-2.5pt\binderbracketl\," t "\,\binderbracketr\kern-2.5pt\binderbracketr\kern\binderskip"
+
+%format InvImage = "\constructor{InvImage}"
+%format ok = "\constructor{ok}"
 
 %%%%%%%%
 % descriptions and ornaments
 
-%format Desc = "\constructor{Desc}"
-%format μ = "\mu"
 %format RDesc = "\constructor{RDesc}"
 %format ṿ = "\constructor{v}"
 %format σ = "\upsigma"
-%format (σ'(t)) = σ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format (σ'(t)) = σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
 %format Ṁ = "\mathbb M"
 %format ⟦ = "[\kern-.18em["
 %format ⟧ = "]\kern-.18em]"
 %format ⟦_⟧ = ⟦ _ "\kern.08em" ⟧
+%format Desc = "\constructor{Desc}"
+%format Ḟ = "\mathbb F"
+%format μ = "\mu"
+%format con = "\constructor{con}"
 
 %format ROrn = "\constructor{ROrn}"
 %format Orn = "\constructor{Orn}"
 %format Δ = "\Delta"
-%format (Δ'(t)) = Δ "\kern\binderspace[\," t "\,]\kern\binderskip"
-%format (∇'(t)) = ∇ "\kern\binderspace[\," t "\,]\kern\binderskip"
+%format (Δ'(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format (∇'(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format ROrnDesc = "\constructor{ROrnDesc}"
+%format OrnDesc = "\constructor{OrnDesc}"
 %format ⌊ = "\lfloor\kern-.2em"
 %format ⌋ = "\kern-.2em\rfloor"
-%format ⌋T = ⌋ "_T"
+%format ⌈ = "\lceil\kern-.2em"
+%format ⌉ = "\kern-.2em\rceil"
+%format ⌋T = ⌋ "_{\kern-.5ptT}"
 %format ⌊_⌋ = "\lfloor" _ "\kern\underscorespace" "\rfloor"
-%format ⌊_⌋T = ⌊_⌋ "_T"
+%format TDesc = "\constructor{TDesc}"
+%format _⊕_ = _ ⊕ "\kern-\underscorespace" _
+%format ⌊_⌋T = ⌊_⌋ "_{\kern-.5ptT}"
+%format diffOrn-l = "\identifier{diffOrn\text-l}"
+%format diffOrn-r = "\identifier{diffOrn\text-r}"
+
+%format OptP = "\constructor{OptP}"
+
 
 %%%%%%%%
-% natural numbers
+% datatypes
 
 %format Nat = "\constructor{Nat}"
 %format zero = "\constructor{zero}"
 %format suc = "\constructor{suc}"
-
-
-%%%%%%%%
-% lists
-
+%format ≤-trans = "\identifier{{" ≤ "}\text-trans}"
+%format Fin = "\constructor{Fin}"
 %format List = "\constructor{List}"
-
-
-%%%%%%%%
-% other types
-
-%format TDesc = "\constructor{TDesc}"
+%format nil = "\constructor{nil}"
+%format cons = "\constructor{cons}"
+%format ListTag = "\constructor{ListTag}"
+%format nil-t = "`" nil
+%format cons-t = "`" cons
+%format Vec = "\constructor{Vec}"
 %format Square = "\constructor{Square}"
-%format _⊕_ = _ ⊕ "\kern-\underscorespace" _
+%format OrdList = "\constructor{OrdList}"
+%format _≤A_ = _ ≤ "_A\kern-\underscorespace" _
+%format Ordered = "\constructor{Ordered}"
+%format Dec = "\constructor{Dec}"
+%format yes = "\constructor{yes}"
+%format no = "\constructor{no}"
+%format _≤_ = _ "{\leq}\kern-\underscorespace" _
+%format ≤? = "{\leq}_?"
+%format _≤?_ = _ ≤? _
+%format BTree = "\constructor{BTree}"
+%format Bin = "\constructor{Bin}"
+%format one = "\constructor{one}"
+%format Boolean = "\constructor{Boolean}"
+%format BHeap = "\constructor{BHeap}"
+%format BHeap' = "\constructor{BHeap}^\prime"
+%format coherence-property = "\identifier{coherence\text-property}"
+%format BinTag = "\constructor{BinTag}"
+%format zero-t = "`" zero
+%format one-t = "`" one
+%format Tree = "\constructor{Tree}"
+%format tip = "\constructor{tip}"
+%format fork = "\constructor{fork}"
+%format TreeTag = "\constructor{TreeTag}"
+%format tip-t = "`" tip
+%format fork-t = "`" fork
+%format LTree = "\constructor{LTree}"
+%format r≤l = "\identifier{r{" ≤ "}l}"
+%format Heap = "\constructor{Heap}"
+%format b≤x = "\identifier{b{" ≤ "}x}"
+%format b'≤b = "\identifier{" b' "\kern-\underscorespace{" ≤ "}b}"
+%format ITree = "\constructor{ITree}"
+%format ITreeD-HeapD = "\identifier{ITreeD\text-HeapD}"
+%format LHeap = "\constructor{LHeap}"
+%format WLTree = "\constructor{WLTree}"
+%format n≡l+r = "\identifier{n{\equiv}l{+}r}"
+%format WLHeap = "\constructor{WLHeap}"

@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{13}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -13,6 +13,14 @@
   \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
 \newblock Why dependent types matter.
 \newblock Available at \url{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
+
+\bibitem[{Bernardy and Guilhem(2013)}]{Bernardy-color}
+\bibfnamefont{Jean-Philippe} \bibnamefont{Bernardy} and \bibfnamefont{Moulin}
+  \bibnamefont{Guilhem} [2013].
+\newblock Type theory in color.
+\newblock In \emph{International Conference on Functional Programming},
+  ICFP'13, pages 61--72. ACM.
+\newblock \doi{10.1145/2500365.2500577}.
 
 \bibitem[{Bishop and Bridges(1985)}]{Bishop-analysis}
 \bibfnamefont{Errett} \bibnamefont{Bishop} and \bibfnamefont{Douglas}
@@ -36,6 +44,15 @@
 \newblock The gentle art of levitation.
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'10, pages 3--14. ACM.
+\newblock \doi{10.1145/1863543.1863547}.
+
+\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
+\newblock Transporting functions across ornaments.
+\newblock In \emph{International Conference on Functional Programming},
+  ICFP'12, pages 103--114. ACM.
+\newblock \doi{10.1145/2364527.2364544}.
 
 \bibitem[{Martin-L{\"o}f(1984)}]{ML-ITT}
 \bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984].
@@ -65,7 +82,12 @@
 \newblock In \emph{Advanced Functional Programming}, volume 5832 of
   \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
 
-\bibitem[{Swierstra(2008)}]{Swierstra-data-type-a-la-carte}
+\bibitem[{Okasaki(1999)}]{Okasaki-data-structures}
+\bibfnamefont{Chris} \bibnamefont{Okasaki} [1999].
+\newblock \emph{Purely functional data structures}.
+\newblock Cambridge University Press.
+
+\bibitem[{Swierstra(2008)}]{Swierstra-data-types-a-la-carte}
 \bibfnamefont{Wouter} \bibnamefont{Swierstra} [2008].
 \newblock Data types {\`a} la carte.
 \newblock \emph{Journal of Functional Programming}, 18(4):423--436.

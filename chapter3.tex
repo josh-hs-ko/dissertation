@@ -1,19 +1,166 @@
 \chapter{Refinements and ornaments}
 \label{chapter:ornaments}
 
-\todo[inline]{``datatypes'' for inductive families}
+%In this chapter we first develop our principal technique for analysing datatypes via refinements.
+%The motivation for the analysis is \emph{modular structure for internalist libraries}:
+
+\todo[inline]{the second half of the insertion example, i.e., solution (the first half is in Chapter~2)}
+
+\section{Refinements}
+
+\subsection{Refinements between individual types}
+
+A \emph{refinement} from a type~|X| to a type~|Y| is a \emph{promotion predicate} |P : X → Set| and a \emph{promotion isomorphism} |i : Y ≅ Σ X P|.\todo{universe polymorphism}
+\begin{code}
+record Refinement (X Y : Set) : Set₁ where
+  field
+    P  :  X → Set
+    i  :  Y ≅ Σ X P
+  forget : Y → X
+  forget = proj₁ ∘ Iso.to i
+\end{code}
+In such a refinement, |Y|~is usually a more informative variant of the basic type~|X|: the elements of~|Y| exactly correspond to the elements of~|X| paired with proofs that the promotion predicate~|P| is satisfied.
+Computationally, any element of~|Y| can be analysed (by |Iso.to i|\kern1pt) into an underlying element |x : X| and a proof that |x|~satisfies the promotion predicate~|P| (which we will call a \emph{promotion proof} for~|x|), and conversely, if a basic element |x : X| satisfies~|P|, then it can be promoted (by |Iso.from i|\kern1pt) to an element of~|Y|.
+We denote the forgetful computation of the underlying element, i.e., |proj₁ ∘ Iso.to i|, as |Refinement.forget|.
+
+\block{Example}{refinement from lists to ordered lists}{Suppose |A : Set| is equipped with an ordering~|_≤A_|\,.
+Fixing |a : A|, there is a refinement from |List A| to |OrdList A _≤A_ a| whose promotion predicate is |Ordered A _≤A_ a|, since we have an isomorphism of type
+\begin{code}
+OrdList A _≤A_ a ≅ Σ (List A) (Ordered A _≤A_ a)
+\end{code}
+An ordered list of type |OrdList A _≤A_ a| can be analysed into a list |xs : List A| and a proof of type |Ordered A _≤A_ a xs| that the list |xs|~is ordered and bounded below by~|a|; conversely, a list satisfying |Ordered A _≤A_ a| can be promoted to an ordered list of type |OrdList A _≤A_ a|.}
+
+\block{Example}{refinement from natural numbers to lists}{Let |A : Set|.
+We have a refinement from |Nat| to |List A|
+\begin{code}
+Nat-List A : Refinement Nat (List A)
+\end{code}
+for which |Vec A| serves as the promotion predicate --- there is a promotion isomorphism of type
+\begin{code}
+List A ≅ Σ Nat (Vec A)
+\end{code}
+We might say that a natural number |n : Nat| is an incomplete list --- the list elements are missing from the successor nodes of~|n|.
+To promote~|n| to a |List A|, we need to supply a vector of type |Vec A n|, i.e., |n|~elements of type~|A|.
+This example helps to emphasise that the notion of refinements is \emph{proof-relevant}: a basic element can have more than one promotion proofs, and consequently the more informative type in a refinement can have more elements than the basic type does.}
+
+\todo[inline]{canonical refinements and the residual/difference view}
+
+\subsection{Upgrades}
+
+When we move on to function types, however, refinements are less useful.
+Even when we have extensional equality for functions so isomorphisms between function types make sense, the requirement that a promotion isomorphism exists is still too strong.
+For example, it is not --- and should not be --- possible to have a refinement from |Nat → Nat| to |List Nat → List Nat|, despite that the component types |Nat| and |List Nat| are related by a refinement:
+If such a refinement existed, we would be able to extract from any function |f : List Nat → List Nat| an ``underlying'' function of type |Nat → Nat| which has roughly the same behaviour as~|f|.
+However, the behaviour of a function taking a list may depend essentially on the list elements, which is not available to a function taking only a natural number.
+For example, a function of type |List Nat → List Nat| might compute the sum~|s| of the input list and emit a list of length~|s| whose elements are all |zero|.
+We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.
+
+\block{Comparison}{Type Theory in Colour}{\todo[inline]{\citet{Bernardy-color}}}
+
+It is only the analytic direction of refinements that causes problem in the case of function types, however; the promoting direction is perfectly valid for function types.
+For example, to promote a function of type |Nat → Nat| to a function of type |List Nat → List Nat|, we can use
+\begin{code}
+Q = (lambda(f)) {n : Nat} → Vec Nat n → Vec Nat (f n)
+\end{code}
+as the promotion predicate:
+Consider the refinement from |Nat| to |List Nat|.\todo{Explain the meaning of this (scoping).}\ 
+Given a function |f : Nat → Nat| and a promotion proof |q : Q f|, we can synthesise a function |f' : List Nat → List Nat| by\todo{definition of~$*$}
+\begin{code}
+f' = Iso.from i ∘ (f * q) ∘ Iso.to i
+\end{code}
+which satisfies the \emph{coherence property}~\citep{Dagand-functional-ornaments}\todo{diagram}
+\begin{code}
+f ∘ forget ≐ forget ∘ f'
+\end{code}
+i.e., |f'|~processes the recursive structure\todo{What is ``recursive structure''?}\ of its input in the same way as |f|~does.
+
+We thus define \emph{upgrades} to capture the promoting direction and coherence property abstractly.
+An upgrade from |X : Set| to |Y : Set| is a promotion predicate |X : P → Set|, a coherence property |C : X → Y → Set| relating basic elements of type~|X| and promoted elements of type~|Y|, an upgrading (promoting) operation |u : (x : X) → P x → Y|, and a coherence proof |c : (x : X) (p : P x) → C x (u x p)| saying that the result of promoting a basic element |x : X| must be in coherence with~|x|.
+\begin{code}
+record Upgrade (X Y : Set) : Set₁ where
+  field
+    P  :  X → Set
+    C  :  X → Y → Set
+    u  :  (x : X) → P x → Y
+    c  :  (x : X) (p : P x) → C x (u x p)
+\end{code}
+We will not write upgrades by hand; rather, we will define several combinators for synthesising upgrades.\todo{to be made more precise}
+
+\subsubsection{Upgrades from refinements}
+
+Intuitively, upgrades amount to the promoting direction of refinements.
+We should thus be able to extract upgrades from refinements.
+Comparing the definitions of refinements and upgrades, we see that, to turn a refinement into an upgrade, only the coherence property and the coherence proof are missing --- the promotion predicate and the upgrading operation are readily obtainable.
+The most important question we should ask is thus: with respect to a refinement from~|X| to~|Y|, what is a sensible coherence property on |X|~and~|Y|?
+In other words, when should we say that a basic element |x : X| and a promoted element |y : Y| are in coherence?
+The fundamental idea of a refinement is that within any promoted element |y : Y| there is an underlying basic element |forget y : X|, so it should be sensible to define that |x : X| is in coherence with~|y| when |forget y ≡ x|.
+In fact, we can prove that the promotion predicate of any refinement from~|X| to~|Y| is pointwise isomorphic to the \emph{canonical} promotion predicate |(lambda(x)) (Σ'(y ∶ Y)) forget y ≡ x|:
+\begin{code}
+coherence :  {X Y : Set} (r : Refinement X Y) →
+             (x : X) → Refinement.P r x ≅ (Σ'(y ∶ Y)) Refinement.forget r y ≡ x
+\end{code}
+That is, a promotion proof for |x : X| always amounts to saying that there exists a promoted element whose underlying element is~|x|.\todo{redundant?}\
+We can now extract an upgrade from a refinement by setting the coherence property as |(lambda(x y)) forget y ≡ x| and producing the coherence proof by |coherence|.
+\begin{code}
+toUpgrade : {X Y : Set} → Refinement X Y → Upgrade X Y
+toUpgrade r = record  case  P  =  Refinement.P r
+                      sep   C  =  (lambda(x y)) Refinement.forget r y ≡ x
+                      sep   u  =  (lambda(x)) proj₁  ∘ Iso.to (coherence r x)
+                      sep   c  =  (lambda(x)) proj₂  ∘ Iso.to (coherence r x) endcase
+\end{code}
+
+\todo[inline]{Proof of |coherence| (canonical refinements, etc), which should perhaps be moved to the section on refinements.}
+
+\block{Remark}{Upgrade-style refinements}{}
+
+\subsubsection{Composition of upgrades}
+The most important combinator for upgrades is probably the following one for synthesising upgrades between function types:
+\begin{code}
+_⇀_ :  {X Y Z W : Set} →
+       Refinement X Y → Upgrade Z W → Upgrade (X → Z) (Y → W)
+\end{code}
+Note that there should be a \emph{refinement} between the source types |X|~and~|Y|, rather than just an upgrade.
+Consequently, we can produce upgrades between curried multi-argument function types but not between higher-order function types.
+As for the reason, we need to look at the detail of the combinator:
+Let |r : Refinement X Y| and |s : Upgrade Z W|.
+
+
+\begin{code}
+_⇀_ :  {X Y Z W : Set} →
+       Refinement X Y → Upgrade Z W → Upgrade (X → Z) (Y → W)
+r ⇀ s = record
+  case   P  =  (lambda(f)) ∀ x → Refinement.P r x → Upgrade.P s (f x)
+  sep    C  =  (lambda(f g)) ∀ x y  →  Upgrade.C (toUpgrade r)  x      y      →
+                                       Upgrade.C s              (f x)  (g y)  {-""-}
+  sep    u  =  (lambda(f h)) Upgrade.u s _ ∘ uncurry h ∘ Iso.to (Refinement.i r)
+  sep    c  =  λ case f h inferred y refl mapsto  let  xp = (Iso.to (Refinement.i r) y)
+                                                  in   Upgrade.c s (f (proj₁ xp)) (uncurry h xp) endcase endcase
+\end{code}
+
+\block{Example}{upgrade from |Nat → Nat| to |List Nat → List Nat|}{Using the |_⇀_| combinator on the refinement
+\begin{code}
+r = Nat-List Nat : Refinement Nat (List Nat)
+\end{code}
+and the upgrade extracted from~|r|, we get an upgrade
+\begin{code}
+r ⇀ toUpgrade r : Upgrade (Nat → Nat) (List Nat → List Nat)
+\end{code}}
+
+\todo[inline]{More combinators.}
+
+\block{Comparison}{functional ornaments}{\todo[inline]{\citet{Dagand-functional-ornaments}, origin of coherence property, no need to construct a universe}}
+
+\subsection{Refinement families}
+
+
 
 \section{Datatype descriptions}
 
 \begin{code}
-Desc : (I : Set) → Set₁
-\end{code}
+Desc : Set → Set₁
 
-\begin{code}
 μ : {I : Set} → Desc I → (I → Set)
-\end{code}
 
-\begin{code}
 data RDesc (I : Set) : Set₁ where
   ṿ  :  (is : List I) → RDesc I
   σ  :  (S : Set) (D : S → RDesc I) → RDesc I
@@ -21,6 +168,15 @@ data RDesc (I : Set) : Set₁ where
 ⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
 ⟦  ṿ is   ⟧  X  =  Ṁ is X
 ⟦  σ S D  ⟧  X  =  (Σ'(s ∶ S)) ⟦ D s ⟧ X
+
+Desc : Set → Set₁
+Desc I = I → RDesc I
+
+Ḟ : {I : Set} → Desc I → (I → Set) → (I → Set)
+Ḟ D X i = ⟦ D i ⟧ X
+
+data μ {I : Set} (D : Desc I) : I → Set where
+  con : Ḟ D (μ D) ⇉ μ D
 \end{code}
 
 \begin{code}
@@ -29,35 +185,32 @@ data RDesc (I : Set) : Set₁ where
 Ṁ  (i ∷ is)  X  =  X i × Ṁ is X
 \end{code}
 
-%\todo[inline]{first-order vs higher-order representation: change the type of~|ṿ| to |(S : Set) → (S → I) → RDesc I| and define
-%\begin{code}
-%Ṁ : {I S : Set} → (S → I) → (I → Set) → Set
-%Ṁ f X = (s : S) → X (f s)
-%\end{code}
-%|List I| is extensionally isomorphic to |(Σ'(n ∶ Nat)) Fin n → I|}
+\todo[inline]{first-order vs higher-order representation: change the type of~|ṿ| to |(S : Set) → (S → I) → RDesc I| and define |Ṁ f X = (s : S) → X (f s) : {I S : Set} → (S → I) → (I → Set) → Set|; |List I| is extensionally isomorphic to |(Σ'(n ∶ Nat)) Fin n → I|}
 
 \section{Ornaments}
 
-\block{Evolutionary remark}{ornaments as relations}{We define ornaments as relations between descriptions (indexed by an erasure function), whereas \citeauthor{McBride-ornaments}'s original ornaments~\citeyearpar{McBride-ornaments} are rebranded as ornamental descriptions.
+\todo[inline]{Think of the appearance of index-first datatype declarations as an informal hint that syntactic sugar will be used.}
+
+\block{Evolutionary remark}{ornaments as relations}{We define ornaments as relations between descriptions (indexed by an erasure function), whereas the original ornaments \citep{McBride-ornaments, Dagand-functional-ornaments} are rebranded as ornamental descriptions.
 One obvious advantage of relational ornaments is that they can arise between \emph{existing} descriptions, whereas ornamental descriptions always produce (definitionally) new descriptions at the more informative end.
 This also means that there can be multiple ornaments between a pair of descriptions.
 For example, consider the datatype
 \begin{code}
 indexfirst data Square (A : Set) : Set where
-  Square A takes pair (x : A) (y : A)
+  Square A offers pair (x : A) (y : A)
 \end{code}
 Between the description of |Square A| and itself, we have the identity ornament
 \begin{code}
-(σ'(x ∶ A)) (σ'(y : A)) ṿ tt
+(σ'(x ∶ A)) (σ'(y : A)) ṿ []
 \end{code}
 and the ornament
 \begin{code}
-(Δ'(x ∶ A)) (Δ'(y ∶ A)) (∇'(y)) (∇'(x)) ṿ tt
+(Δ'(x ∶ A)) (Δ'(y ∶ A)) (∇'(y)) (∇'(x)) ṿ []
 \end{code}
 whose forgetful function swaps the fields |x|~and~|y|.
 The other advantage of relational ornaments is that they allow new datatypes to arise at the less informative end.
-For example, \emph{coproduct of signatures} as used in, e.g., data types à~la carte~\citep{Swierstra-data-type-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
-In more detail: Consider (a simplistic variation of) \emph{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
+For example, \emph{coproduct of signatures} as used in, e.g., data types à~la carte~\citep{Swierstra-data-types-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
+In more detail: Consider (a simplistic version of) \emph{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
 A tagged description with index set |I : Set| thus consists of a family of types |C : I → Set|, where each |C i| is the set of constructor tags for the index request |i : I|, and a family of subsequent response descriptions for each constructor tag.
 \begin{code}
 TDesc : Set → Set₁
@@ -68,7 +221,7 @@ Tagged descriptions are decoded to ordinary descriptions by
 ⌊_⌋T : {I : Set} → TDesc I → Desc I
 ⌊ C , D ⌋T i = σ (C i) (D i)
 \end{code}
-We can then define binary coproduct of tagged descriptions, which sums up the corresponding constructor fields, as follows:
+We can then define binary coproduct of tagged descriptions, which sums the corresponding constructor fields, as follows:\todo{coproduct-related definitions}
 \begin{code}
 _⊕_ : {I : Set} → TDesc I → TDesc I → TDesc I
 (C , D) ⊕ (C' , D') = ((lambda(i)) C i + C' i) , ((lambda(i)) D i ▿ D' i)
@@ -76,45 +229,413 @@ _⊕_ : {I : Set} → TDesc I → TDesc I → TDesc I
 Now given two tagged descriptions |tD = (C , D)| and |tD' = (C' , D')| of type |TDesc I|, there are two ornaments from |⌊ tD ⊕ tD' ⌋T| to |⌊ tD ⌋T| and |⌊ tD' ⌋T|
 \begin{code}
 inlOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD ⌋T
-inlOrn  i  =  (Δ'(c   ∶ C i))   (∇'(inl  c   ))  idOrn (D i c)
+inlOrn  i  =  (Δ'(c   ∶ C i))   (∇'(inj₁  c   ))  idOrn (D i c)
 
 inrOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD' ⌋T
-inrOrn  i  =  (Δ'(c'  ∶ C' i))  (∇'(inr  c'  ))  idOrn (D' i c')
+inrOrn  i  =  (Δ'(c'  ∶ C' i))  (∇'(inj₂  c'  ))  idOrn (D' i c')
 \end{code}
 whose forgetful functions perform suitable injection of constructor tags.
 Note that the synthesised new description |⌊ tD ⊕ tD' ⌋T| is at the less informative end of |inlOrn| and |inrOrn|.\todo{Example?}}
 
+\section{Two examples about heaps}
 
+Both examples are adapted from \varcitet{Okasaki-data-structures}{'s work}.
+The first example about \emph{binomial heaps} shows that \citeauthor{Okasaki-data-structures}'s idea of \emph{numerical representations} can be elegantly captured by ornaments and the coherence property of upgrades, and the second example about \emph{leftist heaps} demonstrates the power of parallel composition of ornaments by treating heap ordering and leftist balancing properties modularly.
 
+\subsection{Binomial heaps}
 
+We are familiar with the idea of \emph{positional number systems}, in which we represent numbers as a list of digits.
+Each position in a list of digits is associated with a weight, and the value of the list is the weighted sum of the digits (for example, the weights used for binary numbers are powers of~$2$).
+Some container data structures and associated operations strongly resemble positional representations of natural numbers and associated operations.
+For example\todo{point to a figure}, a \emph{binomial heap} is a binary number in which every $1$-digit stores a \emph{binomial tree} --- the actual place for storing elements --- whose size is exactly the weight of the digit.
+The number of elements stored in a binomial heap is therefore exactly the value of the underlying binary number.
+Merging two binomial heaps is analogous to addition of two binary numbers, with carrying corresponding to combining two binomial trees of the same size.
+\citeauthor{Okasaki-data-structures} thus proposed to design container data structures by analogy with positional representations of natural numbers, and called such data structures \emph{numerical representations}.
+Using an ornament, it is easy to express the relationship between a numerically represented container datatype (e.g., binomial heaps) and its underlying numeric datatype (e.g., binary numbers).
+But the ability to express the relationship alone is not too surprising.
+What is more interesting is that the ornament can give rise to upgrades such that
+\begin{itemize}
+\item the coherence properties of the upgrades semantically characterise the resemblance between container operations and corresponding numeric operations, and
+\item the promotion predicates give the precise types of the container operations that guarantee such resemblance.
+\end{itemize}
+We use insertion into binomial heaps as an example, which is presented in detail below.
 
+\subsubsection{Binomial trees}
+The basic building blocks of binomial heaps are \emph{binomial trees}, in which elements are stored.
+We assume the type of elements to be |Val|, which is equipped with a decidable total ordering.
+Binomial trees are defined inductively on their \emph{rank}, which is a natural number:
+\begin{itemize}
+\item a binomial tree of rank~$0$ is a single node storing an element, and
+\item a binomial tree of rank $1+r$ consists of two binomial trees of rank~$r$, with one attached under the other's root node.
+\end{itemize}
+From this definition we can immediately deduce that a binomial tree of rank~$r$ has exactly $2^r$ elements.
+To actually define binomial trees as a datatype, however, an alternative definition is more useful: a binomial tree of rank~$r$ is constructed by attaching binomial trees of ranks $0$~to $r-1$ under a root node.\todo{picture}\
+We thus define the datatype |BTree : Nat → Set| --- which is indexed with the rank of binomial trees --- as follows: for any rank |r : Nat|, the type |BTree r| has a field of type |Val| --- which is the root node --- and |r|~recursive positions indexed from $r-1$ down to~$0$.
+This is directly encoded as a description:
+\begin{code}
+BTreeD : Desc Nat
+BTreeD r = (σ'(_ ∶ Val)) ṿ (descend r)
 
+BTree : Nat → Set
+BTree = μ BTreeD
+\end{code}
+where |descend r| is a list from $r-1$ down to~$0$:
+\begin{code}
+descend : Nat → List Nat
+descend zero     =  []
+descend (suc n)  =  n ∷ descend n
+\end{code}
 
+\block{Remark}{raw, sugar-free binomial trees}{In |BTreeD|, we are exploiting the full computational power of |Desc|, computing the list of recursive indices from the requested index.
+Due to this, it is tricky to wrap up |BTreeD| as an index-first datatype declaration, so we will skip this step and work directly with the raw representation, which looks reasonably intuitive anyway.}
 
+Here we define several operations on binomial trees.
+Any binomial tree starts with a root element, which can be extracted by
+\begin{code}
+root : {r : Nat} → BTree r → Val
+root (con (x , ts)) = x
+\end{code}
+Given two binomial trees of the same rank~$r$, one can be attached under the root of the other, forming a single binomial tree of rank $1+r$.
+\begin{code}
+attach : {r : Nat} → BTree r → BTree r → BTree (suc r)
+attach t (con (y , us)) = con (y , t , us)
+\end{code}
+For use in binomial heaps, we should ensure that elements in binomial trees are in \emph{heap order}, i.e., the root of any binomial tree (including sub-trees) is always the minimum element in the tree.
+This is achieved by comparing the roots of two binomial trees before deciding which one is to be attached to the other.
+\begin{code}
+link : {r : Nat} → BTree r → BTree r → BTree (suc r)
+link t u with root t ≤? root u
+link t u | yes  _ = attach u t
+link t u | no   _ = attach t u
+\end{code}
+If we always build binomial trees of positive rank by |link|, then the elements in any binomial tree we build would be in heap order.
+This is a crucial assumption in binomial heaps (which is not essential to our development, however).
 
+\subsubsection{From binary numbers to binomial heaps}
+The datatype |Bin : Set| of binary numbers is just a specialised datatype of lists of binary digits:
+\begin{code}
+data BinTag : Set where
+  nil-t   : BinTag
+  zero-t  : BinTag
+  one-t   : BinTag
 
+BinD : Desc ⊤
+BinD _ = σ BinTag λ  case  nil-t   mapsto  ṿ []
+                     sep   zero-t  mapsto  ṿ (tt ∷ [])
+                     sep   one-t   mapsto  ṿ (tt ∷ []) endcase
 
+indexfirst data Bin : Set where
+  Bin  offers  nil
+       or      zero   (b : Bin)
+       or      one    (b : Bin)
+\end{code}
+The intended interpretation of binary numbers is given by
+\begin{code}
+toNat : Bin → Nat
+toNat nil        = 0
+toNat (zero  b)  = 0 + 2 * b
+toNat (one   b)  = 1 + 2 * b
+\end{code}
+That is, the digits in a binary number of type |Bin| are ordered from the least significant digit to the most significant one, and the $i$-th digit (counting from~$0$) has weight~$2^i$.
+We refer to the position of a digit as its rank, i.e., the $i$-th digit is said to have rank~$i$.
 
+As stated in the beginning, binomial heaps are binary numbers whose $1$-digits are decorated with binomial trees of matching rank, and can be expressed straightforwardly as an ornamentation of binary numbers.
+To ensure that the binomial trees in binomial heaps have the right rank, the datatype |BHeap : Nat → Set| is indexed with a ``starting rank'': if a binomial heap of type |BHeap r| is nonempty (i.e., not |nil|), then its first digit has rank~|r| (and stores a binomial tree of rank~|r| if the digit is~|one|), and the rest of the heap is indexed with rank |1 + r|.
+\begin{code}
+BHeapOD : OrnDesc Nat
+BHeapOD (ok r) = σ BinTag λ  case  nil-t   mapsto  ṿ tt
+                             sep   zero-t  mapsto  ṿ (ok (suc r) , tt)
+                             sep   one-t   mapsto  (Δ'(t ∶ BTree r)) ṿ (ok (suc r) , tt) endcase
 
+indexfirst data BHeap : Nat → Set where
+  BHeap r  offers  nil
+           or      zero  (h : BHeap (suc r))
+           or      one   (t : BTree r) (h : BHeap (suc r))
+\end{code}
+In applications, we would use binomial heaps of type |BHeap 0|, which encompasses binomial heaps of all sizes.
 
+\subsubsection{Increment and insertion, in coherence}
+Increment of binary numbers is defined by
+\begin{code}
+incr : Bin → Bin
+incr nil        =  one nil
+incr (zero  b)  =  one b
+incr (one   b)  =  zero (incr b)
+\end{code}
+The corresponding operation on binomial heaps is insertion of a binomial tree into a binomial heap (of matching rank):
+\begin{code}
+insT : {r : Nat} → BTree r → BHeap r → BHeap r
+insT t nil         = one t nil
+insT t (zero   h)  = one t h
+insT t (one u  h)  = zero (insT (link t u) h)
+\end{code}
+Conceptually, |incr| puts a $1$-digit into the least significant position of a binary number, triggering a series of carrying, i.e., summing $1$-digits of smaller ranks into $1$-digits of larger ranks; |insT| follows the pattern of |incr|, but since $1$-digits now have to store a binomial tree of matching rank, |insT| takes an additional binomial tree as input and |link|s binomial trees of smaller ranks into binomial trees of larger ranks whenever carrying happens.
+Having defined |insT|, inserting a single element into a binomial heap of type |BHeap 0| is then inserting, by |insT|, a rank-$0$ binomial tree (i.e., a single node) storing the element into the heap.
+\begin{code}
+insert : Val → BHeap zero → BHeap zero
+insert x = insT (con (x , tt))
+\end{code}
 
+It is apparent that the program structure of |insT| strongly resembles that of |incr| --- they manipulate the list-of-binary-digits structure in the same way.
+But can we characterise the resemblance semantically?
+It turns out that the coherence property of the following upgrade from the type of |incr| to that of |insT| is an appropriate answer:
+\begin{code}
+upg : Upgrade (Bin → Bin) ({r : Nat} → BTree r → BHeap r → BHeap r)
+upg =  (new'(r ∶ Nat)) (new(_ ∶ BTree r))
+         let  ref : Refinement Bin (BHeap r)
+              ref = RSem' ⌈ BHeapOD ⌉ (ok r)
+         in   ref ⇀ toUpgrade ref
+\end{code}
+The upgrade |upg| says that, relative to the type of |incr|, the type of |insT| has two new arguments --- the implicit argument |r : Nat| and the explicit argument of type |BTree r| --- and that the two occurrences of |BHeap r| in the type of |insT| refine the corresponding occurrences of |Bin| in the type of |incr| using the refinement semantics of the ornament from |Bin| to |BHeap r|.
+The coherence property |Upgrade.C upg incr insT| (i.e., |incr| and |insT| are in coherence with respect to |upg|) expands to
+\begin{code}
+{r : Nat} (t : BTree r) (b : Bin) (h : BHeap r) →
+forget ⌈ BHeapOD ⌉ h ≡ b → forget ⌈ BHeapOD ⌉ (insT t h) ≡ incr b
+\end{code}
+i.e., given an input binomial heap |h : BHeap r| whose underlying binary number is |b : Bin|, after inserting a binomial tree into~|h| by |insT|, the underlying binary number of the result is |incr b|.
+This says exactly that |insT| manipulates the underlying binary number in the same way as |incr| does.
 
+We have seen that the coherence property of |upg| is appropriate for characterising the resemblance of |incr| and |insT|; proving that it holds for |incr| and |insT| is a separate matter, though.
+We can, however, avoid doing a separate proof by writing insertion with a more precise type \emph{in the first place} such that, from this more precisely typed version, we can derive insertion with the original type which satisfies the coherence property automatically.
+The above process is fully supported by the mechanism of upgrades.
+In particular, the more precise type for insertion is given by the promotion predicate of |upg| (applied to |incr|), and the more precisely typed version of insertion acts as a promotion proof of |incr| with respect to |upg|.
 
+Let |BHeap'| be the optimised predicate for the ornament from |Bin| to |BHeap r|:
+\begin{code}
+BHeap' : Nat → Bin → Set
+BHeap' r b = OptP ⌈ BHeapOD ⌉ (ok r) b
 
+indexfirst data BHeap' : Nat → Bin → Set where
+  BHeap' r nil        offers  nil
+  BHeap' r (zero  b)  offers  zero  (h : BHeap' (suc r) b)
+  BHeap' r (one   b)  offers  one   (t : BTree r) (h : BHeap' (suc r) b)
+\end{code}
+Here a more helpful interpretation is that |BHeap'| is a datatype of binomial heaps additionally indexed with the underlying binary number.
+The type |Upgrade.P upg incr| then expands to
+\begin{code}
+{r : Nat} → BTree r → (b : Bin) → BHeap' r b → BHeap' r (incr b)
+\end{code}
+A function of this type is explicitly required to transform the underlying binary number structure of its input in the same way as |incr| does.
+Insertion can now be implemented as
+\begin{code}
+insT' : {r : Nat} → BTree r → (b : Bin) → BHeap' r b → BHeap' r (incr b)
+insT' t nil        nil         = one t nil
+insT' t (zero  b)  (zero   h)  = one t h
+insT' t (one   b)  (one u  h)  = zero (insT' (link t u) h)
+\end{code}
+which is very much the same as the original |insT|.
+It is interesting to note that all the constructor choices for binomial heaps in |insT'| are actually completely determined by the types.
+This fact is easier to observe if we desugar |insT'| to use the raw representation:
+\begin{code}
+insT' : {r : Nat} → BTree r → (b : Bin) → BHeap' r b → BHeap' r (incr b)
+insT' t (con (`nil   ,      _))  h                   = con (t , con tt , tt)
+insT' t (con (`zero  , b ,  _))  (con (     h , _))  = con (t , h , tt)
+insT' t (con (`one   , b ,  _))  (con (u ,  h , _))  = con (insT' (link t u) b h , tt)
+\end{code}
+in which no constructor tags for binomial heaps are present.
+This means that the types would instruct which constructors to use when programming |insT'|, establishing the coherence property by construction.
+Finally, since |insT'| is a promotion proof for |incr| with respect to |upg|, we can invoke the upgrading operation of |upg| and get |insT|:
+\begin{code}
+insT : {r : Nat} → BTree r → BHeap r → BHeap r
+insT = Upgrade.u upg incr insT'
+\end{code}
+which is automatically in coherence with |incr|:
+\begin{code}
+coherence-property :
+  {r : Nat} (t : BTree r) (b : Bin) (h : BHeap r) →
+  forget ⌈ BHeapOD ⌉ h ≡ b → forget ⌈ BHeapOD ⌉ (insT t h) ≡ incr b
+coherence-property = Upgrade.c upg incr insT'
+\end{code}
 
+\subsection{Leftist heaps}
 
+\todo[inline]{Clean up in progress.}
 
+In \citeauthor{Okasaki-data-structures}'s words:
+\begin{quoting}\relax
+Leftist heaps [\ldots$\!$] are heap-ordered binary trees that satisfy the \emph{leftist property}: the rank of any left child is at least as large as the rank of its right sibling. The rank of a node is defined to be the length of its \emph{right spine} (i.e., the rightmost path from the node in question to an empty node).
+\end{quoting}
+From this passage we can immediately decompose the concept of leftist heaps into three: leftist heaps \,(i)~are binary trees that \,(ii)~are heap-ordered and \,(iii)~satisfy the leftist property.
+This suggests that there is a basic datatype of binary trees together with two ornamentations, one expressing heap ordering and the other the leftist property.
+After defining a datatype of constructor tags,
+\begin{code}
+data TreeTag : Set where
+  tip-t   :  TreeTag
+  fork-t  :  TreeTag
+\end{code}
+the datatype of binary trees is
+\begin{code}
+indexfirst data Tree : Set where
+  Tree  offers  tip
+        or      fork (t : Tree) (u : Tree)
 
+TreeD : Desc ⊤
+TreeD  _ = σ TreeTag λ  case  tip-t   mapsto  ṿ []
+                        sep   fork-t  mapsto  ṿ (tt ∷ tt ∷ []) endcase
+\end{code}
+Leftist trees ---~binary trees satisfying the leftist property~--- are then an ornamented version of |Tree|.
+\begin{code}
+indexfirst data LTree : Nat → Set where
+  Tree zero     offers  tip
+  Tree (suc r)  offers  fork (l : Nat) (r≤l : r ≤ l) (t : Tree l) (u : Tree r)
 
+LTreeOD : OrnDesc Nat ! TreeD
+LTreeOD (ok zero     )   =  (∇'(tip-t)) ṿ tt
+LTreeOD (ok (suc r)  )   =  (∇'(fork-t)) (Δ'(l ∶ Nat)) (Δ'(r≤l ∶ r ≤ l)) ṿ (ok l , ok r , tt)
+\end{code}
+Independently, heap-ordered trees are also an ornamented version of |Tree|.
+\begin{code}
+indexfirst data Heap : Val → Set where
+  Heap b  offers  tip
+          or      fork (x : Val) (b≤x : b ≤ x) (t : Heap x) (u : Heap x)
 
+HeapOD : OrnDesc Val ! TreeD
+HeapOD (ok b) =
+  σ TreeTag  λ  case  tip-t   mapsto  ṿ []
+                sep   fork-t  mapsto  (Δ'(x ∶ Val)) (Δ'(b≤x ∶ b ≤ x)) ṿ (ok x , ok x , tt) endcase
+\end{code}
+(One can see from the indexing pattern that heap-ordered trees can be regarded as a generalisation of ordered lists: in a heap-ordered tree, every path from the root to a tip is an ordered list.)
+Composing the two ornaments in parallel gives us exactly leftist heaps.
+\begin{code}
+indexfirst data LHeap : Val → Nat → Set where
+  LHeap b zero     offers  tip
+  LHeap b (suc r)  offers  fork  (x : Val) (b≤x : b ≤ x)
+                                 (l : Nat) (r≤l : r ≤ l) (t : Heap x l) (u : Heap x r)
+                 
+LHeapD : Desc (! ⋈ !)
+LHeapD = ⌊ ⌈ HeapOD ⌉ ⊗ ⌈ LTreeOD ⌉ ⌋
+\end{code}
+The decomposition allows us to talk about heap-ordering and the leftist property of leftist heaps independently.
+For example, a useful operation on heap-ordered trees is to relax the lower bound.
+If we implement the operation in predicate form, essentially stating explicitly in the type that the underlying binary tree structure is unchanged,\todo{Display the predicate(?)}
+\begin{code}
+relax :  {b b' : Val} → b' ≤ b →
+         {t : Tree} → OptP ⌈ HeapO ⌉ (ok b) t → OptP ⌈ HeapO ⌉ (ok b') t
+relax b'≤b {tip}       _                        =  con tt
+relax b'≤b {fork _ _}  (con (x , b≤x , t , u))  =  con (x , ≤-trans b'≤b b≤x , t , u)
+\end{code}
+(where |≤-trans| is transitivity of |_≤_|) then we can lift it so as to modify only the heap-ordering portion of a leftist heap:\todo{Revise to use upgrades.}
+\begin{code}
+lhrelax : ∀ {b b'} → b' ≤ b → ∀ {r} → LHeap b r → LHeap b' r
+lhrelax {b} {b'} b'≤b {r} =
+  Iso.from (Refinement.ℜ re (ok (ok b' , ok r))) ∘
+    (id ** (relax b'≤b ** id)) ∘ Iso.to (Refinement.ℜ re (ok (ok b , ok r)))
+  where
+    re : Refinement (μ TreeD) (μ LHeapD)
+    re = toRefinement (Swap-⊗ ⌈ HeapO ⌉ ⌈ LTreeO ⌉ idSwap idSwap)
+\end{code}
+In general, non-modifying heap operations do not depend on the leftist property and can be implemented for heap-ordered trees and later lifted to work with leftist heaps, relieving us of the unnecessary work of dealing with the leftist property when it is simply to be ignored.
+For another example, converting a leftist heap to a list of its elements has nothing to do with the leftist property.
+In fact, it even has nothing to do with heap-ordering, but only with the internal labelling.
+Hence we define the \emph{internally labelled trees}
+\begin{code}
+indexfirst data ITree (A : Set) : Set where
+  ITree A  offers  tip
+           or      fork (x : A) (t : ITree A) (u : ITree A)
 
+ITreeOD : Set → OrnDesc ⊤ ! TreeD
+ITreeOD A _ = σ TreeTag  λ  case  tip-t   mapsto  ṿ []
+                            sep   fork-t  mapsto  (Δ'(_ ∶ A)) ṿ (ok tt, ok tt, tt) endcase
+\end{code}
+on which we can do pre-order traversal:
+\begin{code}
+preorder : {A : Set} → ITree A → List A
+preorder tip           =  []
+preorder (fork x t u)  =  x ∷ preorder t ++ preorder u
+\end{code}
+We have an ornament from internally labelled trees to heap-ordered trees:
+\begin{code}
+ITreeD-HeapD : Orn ! ⌊ ITreeOD Val ⌋ ⌊ HeapOD ⌋
+ITreeD-HeapD b =
+  σ TreeTag λ  case  tip-t   mapsto  ṿ []
+               sep   fork-t  mapsto  (σ'(x ∶ Val)) (Δ'(_ ∶ b ≤ x)) ṿ (refl ∷ refl ∷ []) endcase
+\end{code}
+So, to get a list of the elements of a leftist heap (with the first element of the list, if any, being the minimum one in the heap), we convert the leftist heap to an internally labelled tree and then invoke |preorder|.
+\begin{code}
+toList : {b : Val} {r : Nat} → LHeap b r → List Val
+toList = preorder ∘ forget (ITreeD-HeapD ⊙ diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉)
+\end{code}
 
+For modifying operations, however, we need to consider both heap-ordering and the leftist property at the same time, so we should program directly with the composite datatype of leftist heaps.
+For example, the key modifying operation is merging two heaps,
+\begin{code}
+merge :  {b   : Val} {r   : Nat} → LHeap b   r   →
+         {b'  : Val} {r'  : Nat} → LHeap b'  r'  → (Σ'(r'' ∶ Nat)) LHeap (b ⊓ b') r''
+\end{code}
+with which we can easily implement insertion of a new element (by merging with a singleton heap) and deletion of the minimum element (by deleting the root and merging the two sub-heaps).
+The definition of |merge| is shown in \autoref{fig:merge}.
+It is a more precisely typed version of Okasaki's implementation, split into two mutually recursive functions to make the two-level induction clear to Agda's termination checker, and conversions are added to establish the correct bounds.
 
+\begin{figure*} 
+\setlength{\mathindent}{0em}
+\begin{code}
+-- We assume the existence of the function |≰-invert : ∀ {x y} → x ≰ y → y ≤ x|
+-- (which makes |_≤_| a total ordering).
 
+-- Various proof terms about equalities/inequalities are not essential and
+-- thus omitted; instead, the holes |{!{-"\kern-.1em"-}!}| are filled with the expected types only.
 
+makeT : (x : Nat) → ∀ {r} (t : LHeap x r) → ∀ {r'} (t' : LHeap x r') → Σ Nat (LHeap x)
+makeT x {r} t {r'} t' with r ≤? r'
+makeT x {r} t {r'} t' | yes  r≤r'  =  suc r   ,  fork x ≤-refl r' r≤r' t' t
+makeT x {r} t {r'} t' | no   r≰r'  =  suc r'  ,  fork x ≤-refl r (≰-invert r≰r') t t'
 
+mutual
 
+  merge : ∀ {b r} → LHeap b r → ∀ {b' r'} → LHeap b' r' → Σ Nat (LHeap (b ⊓ b'))
+  merge {b} {zero   } h {b'} h'  =  _ , lhrelax {! b ⊓ b' ≤ b' !} h'
+  merge {b} {suc r  } h {b'} h'  =  merge' h h'
 
+  merge' : ∀ {b r} → LHeap b (suc r) → ∀ {b' r'} → LHeap b' r' → Σ Nat (LHeap (b ⊓ b'))
+  merge' {b} {r} h                                  {b'}  {zero    }  h' =
+    _ , lhrelax {! b ⊓ b' ≤ b !} (subst (LHeap b) {! suc r ≡ suc r + zero !} h)
+  merge' {b} {r} (fork x b≤x l r≤l t u)  {b'}  {suc r'  }  (fork x' b'≤x' l' r'≤l' t' u')
+    with x ≤? x'
+  merge' {b} {r} (fork x b≤x l r≤l t u)  {b'}  {suc r'  }  (fork x' b'≤x' l' r'≤l' t' u')
+    | yes x≤x' = _ ,  lhrelax (≤-trans {! b ⊓ b' ≤ b !} b≤x)
+                        (proj₂ (makeT x t (lhrelax {! x ≤ x ⊓ x !}
+                          (proj₂ (merge u (fork x' x≤x' l' r'≤l' t' u'))))))
+  merge' {b} {r} (fork x b≤x l r≤l t u)  {b'} {suc r'  } (fork x' b'≤x' l' r'≤l' t' u')
+    | no  x≰x' = _ ,  lhrelax (≤-trans {! b ⊓ b' ≤ b' !} b'≤x')
+                        (proj₂ (makeT x' t' (lhrelax {! x' ≤ x' ⊓ x' !}
+                          (proj₂ (merge' (fork x (≰-invert x≰x') l r≤l t u) u')))))
+\end{code}
+\caption{Merging two leftist heaps.}
+\label{fig:merge}
+\end{figure*}
 
+Another advantage of separating the leftist property and heap-ordering is that we can swap the leftist property for another balancing property.
+The non-modifying operations, previously defined for heap-ordered trees, can be upgraded to work with the new balanced heap datatype in the same way, while the modifying operations are reimplemented with respect to the new balancing property.
+For example, the leftist property requires that the \emph{rank} of the left subtree is at least that of the right one; we can replace ``rank'' with ``size'' in its statement and get the \emph{weight-biased leftist property}.
+This is again codified as an ornamentation of binary trees
+\begin{code}
+indexfirst data WLTree : Nat → Set where
+  WLTree zero     offers   tip
+  WLTree (suc n)  offers   fork  (l : Nat) (r : Nat)
+                                 (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
+                                 (t : WLTree l) (u : WLTree r)
 
+WLTreeOD : OrnDesc Nat ! TreeD
+WLTreeOD (ok zero     )  =  (∇'(`tip)) ṿ tt
+WLTreeOD (ok (suc n)  )  =  (∇'(`fork)) (Δ'(l ∶ Nat)) (Δ'(r ∶ Nat))
+                              (Δ'(_ ∶ r ≤ l)) (Δ'(_ ∶ n ≡ l + r)) ṿ (ok l , ok r , tt)
+\end{code}
+which can be composed in parallel with the heap-ordering ornament and give us weight-biased leftist heaps.
+\begin{code}
+indexfirst data WLHeap : Val → Nat → Set where
+  WLHeap b zero     offers  tip
+  WLHeap b (suc n)  offers  fork  (x : Val) (b≤x : b ≤ x)
+                                  (l : Nat) (r : Nat)
+                                  (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
+                                  (t : WLHeap x l) (u : WLHeap x r)
 
+WLHeapD : Desc (! ⋈ !)
+WLHeapD = ⌊ ⌈ HeapOD ⌉ ⊗ ⌈ WLTreeOD ⌉ ⌋
+\end{code}
+Switching to the weight-biased leftist property makes it possible to reimplement |merge| in a single, top-down pass rather than two passes: with the original rank-biased leftist property, recursive calls to |merge| are determined top-down by comparing root elements, and the helper function |makeT| swaps the recursive result with the other subtree if the rank of the former is larger; the rank of the result, however, is not known before the recursive call returns, so during the whole merging process |makeT| does the swapping in a second bottom-up pass.
+On the other hand, with the weight-biased leftist property, the size of the recursive result is known before the merging is actually performed, so |makeT| can determine before the recursive call whether to do the swapping or not, and the whole merging process requires only one top-down pass.
+The new implementation is similar to the one for rank-biased leftist heaps and is thus omitted here.
+
+\section{Discussion}
+
+\todo[inline]{Why ornaments?}

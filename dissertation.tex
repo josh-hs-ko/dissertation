@@ -1,7 +1,7 @@
-\documentclass[fleqn]{book}
+\documentclass[fleqn,12pt]{book}
 
 \usepackage{subfiles}
-\def\biblio{\bibliographystyle{dissertation}\bibliography{../bib}}
+\def\biblio{\bibliographystyle{dissertation}\bibliography{../bib}\listoftodos}
 \def\subfilebiblio{\biblio}
 \newcommand{\bibnamefont}[1]{\textsc{#1}}
 
@@ -15,6 +15,7 @@
 \renewcommand{\figureautorefname}{Figure}
 
 \usepackage[square]{natbib}
+\newcommand{\varcitet}[2]{\citeauthor{#1}#2~\citeyearpar{#1}}
 
 \usepackage{doi}
 
@@ -30,21 +31,27 @@
 \fancyhead[RE]{\textbf{\thechapter}~~~\leftmark}
 \fancyhead[LO]{\textbf{\thesection}~~~\rightmark}
 
+\usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
 
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\noindent\textit{#1}.\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
-\newcommand{\@@block}[3]{\noindent\textit{#1}~(\hskip.05em\textit{#2}\hskip.05em).\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@block}[2]{\textit{#1}.\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@@block}[3]{\textit{#1}~(\hskip.05em\textit{#2}\hskip.05em).\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
 \makeatother
 
+\usepackage{enumitem}
+\setitemize{itemsep=.9\parskip,topsep=0pt,parsep=0pt,partopsep=0pt}
+
 \usepackage[sc]{mathpazo}
-\linespread{1.2}
+\linespread{1.25}
 \newcommand{\keyword}{\mathbf}
 \newcommand{\constructor}{\mathsf}
 \newcommand{\identifier}{\mathit}
 \newlength{\underscorespace}
 \setlength{\underscorespace}{.065em}
+\newcommand{\binderbracketl}{\langle}
+\newcommand{\binderbracketr}{\rangle}
 \newlength{\binderspace}
 \setlength{\binderspace}{.075em}
 \newlength{\binderskip}
@@ -52,12 +59,14 @@
 \setlength{\mathindent}{.5\parindent}
 \makeatletter
 \g@addto@macro\normalsize{%
-  \setlength\abovedisplayskip{\medskipamount}
-  \setlength\belowdisplayskip{\abovedisplayskip}
+  \setlength{\parskip}{.4\baselineskip}
+  \setlength{\abovedisplayskip}{\medskipamount}
+  \setlength{\belowdisplayskip}{\abovedisplayskip}
 }
 \makeatother
 \DeclareSymbolFont{euler}{U}{eur}{m}{n}
 \DeclareMathSymbol \upsigma \mathalpha {euler} {"1B}
+\newcommand{\recordmember}{\kern.08em.\kern.08em}
 \input{processed-agda-preamble}
 
 \begin{document}
