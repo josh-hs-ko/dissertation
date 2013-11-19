@@ -1,0 +1,30 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\bibnamefont}[1]{#1}
+\providecommand{\bibfnamefont}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Barthe et~al.(2003)Barthe, Capretta, and Pons}]{Barthe-setoids}
+\bibfnamefont{Gilles} \bibnamefont{Barthe}, \bibfnamefont{Venanzio}
+  \bibnamefont{Capretta}, and \bibfnamefont{Olivier} \bibnamefont{Pons} [2003].
+\newblock Setoids in type theory.
+\newblock \emph{Journal of Functional Programming}, 13(2):261--293.
+\newblock \doi{10.1017/S0956796802004501}.
+
+\bibitem[{McBride(1999)}]{McBride-thesis}
+\bibfnamefont{Conor} \bibnamefont{McBride} [1999].
+\newblock \emph{Dependently Typed Functional Programs and their Proofs}.
+\newblock Ph.D. thesis, University of Edinburgh.
+
+\bibitem[{Mu et~al.(2009)Mu, Ko, and Jansson}]{Mu-AoPA}
+\bibfnamefont{Shin-Cheng} \bibnamefont{Mu}, \bibfnamefont{Hsiang-Shang}
+  \bibnamefont{Ko}, and \bibfnamefont{Patrik} \bibnamefont{Jansson} [2009].
+\newblock {A}lgebra of {P}rogramming in {A}gda: Dependent types for relational
+  program derivation.
+\newblock \emph{Journal of Functional Programming}, 19(5):545--579.
+\newblock \doi{10.1017/S0956796809007345}.
+
+\end{thebibliography}

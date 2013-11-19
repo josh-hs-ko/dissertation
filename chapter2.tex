@@ -1,13 +1,262 @@
 \chapter{From intuitionistic type theory to dependently typed programming}
-\label{chapter:background}
+\label{chap:background}
 
 We start with an introduction to intuitionistic type theory \citep{ML-ITT} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the Agda language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
 Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
 While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program construction movement.
 It has thus departed from the mathematical traditions considerably, and deviations can be found from syntactic presentations to the underlying philosophy.
 
+\section{Datatypes and universe construction}
+
+Central to \emph{datatype-generic programming} is the idea that the definitional structure of datatypes can be coded as first-class entities and thus become ordinary parameters to programs.
+The same idea is also found in Martin-Löf's Type Theory~\citep{ML-ITT}, in which a set of codes for datatypes is called a \emph{universe} (à la Tarski), and there is a decoding function translating codes to actual types.
+Type theory being the foundation of dependently typed languages, universe construction can be done directly in such languages, so datatype-generic programming becomes just ordinary programming in the dependently typed world~\citep{Altenkirch-GP-within-DTP}.
+In this section we construct a universe of \emph{index-first datatypes}~\citep{Chapman-levitation, Dagand-functional-ornaments}, on which a second universe of \emph{ornaments}, to be constructed in \autoref{sec:ornaments}, will depend.
+
+\todo[inline]{present codes along with their interpretation; not induction-recursion~\citep{Dybjer-induction-recursion} though}
+
+\subsection{High-level introduction to index-first datatypes}
+\label{sec:index-first-datatypes}
+
+In Agda, an inductive family is declared by listing all possible constructors and their types, all ending with one of the types in that inductive family.
+This conveys the idea that the index in the type of an inhabitant is synthesised in a \emph{bottom-up} fashion following the construction of the inhabitant.
+Consider vectors, for example: the cons constructor takes a vector at some index~|n| and constructs a vector at |suc n| --- the final index is computed bottom-up from the index of the sub-vector.
+This approach can yield redundant representation, though --- the cons constructor for vectors has to store the index of the sub-vector, so the representation of a vector would be cluttered with all the intermediate lengths.
+If we switch to the opposite perspective, determining \emph{top-down} from the targeted index what constructors should be supplied, then the representation can usually be significantly cleaned up --- for a vector, if the index of its type is known to be |suc n| for some~|n|, then we know that its top-level constructor can only be cons and the index of the sub-vector must be~|n|.
+To reflect this important reversal of logical order, \citet{Dagand-functional-ornaments} proposed a new notation for index-first datatype declarations, in which we first list all possible patterns of (the indices of) the types in the inductive family, and then specify for each pattern which constructors it offers.
+Below we follow \varcitet{Ko-pcOrn}{'s slightly more Agda-like adaptation of the notation}.
+
+Index-first declarations of simple datatypes look almost like Haskell data declarations.
+For example, natural numbers are declared by
 \begin{code}
-data Nat : Set where
-  zero  :  Nat
-  suc   :  Nat -> Nat
+indexfirst data Nat : Set where
+  Nat  offers  zero
+       or      suc (n : Nat)
 \end{code}
+We use the keyword |indexfirst| to explicitly mark the declaration as an index-first one.
+The only possible pattern of the datatype is |Nat|, which offers two constructors |zero| and |suc|, the latter taking a recursive argument named~|n|.
+We declare lists similarly, this time with a uniform parameter |A : Set|:
+\begin{code}
+indexfirst data List (A : Set) : Set where
+  List A  offers  []
+          or      _∷_ (a : A) (as : List A)
+\end{code}
+The declaration of vectors is more interesting, fully exploiting the power of index-first datatypes:
+\begin{code}
+indexfirst data Vec (A : Set) : Nat → Set where
+  Vec A zero     offers  []
+  Vec A (suc n)  offers  _∷_ (a : A) (as : Vec A n)
+\end{code}
+|Vec A| is a family of types indexed by |Nat|, and we do pattern matching on the index, splitting the datatype into two cases |Vec A zero| and |Vec A (suc n)| for some |n : Nat|.
+The first case only offers the nil constructor~|[]|, and the second case only offers the cons constructor~|_∷_|\,.
+Because the form of the index restricts constructor choice, the recursive structure of a vector |as : Vec A n| must follow that of~|n|, i.e., the number of cons nodes in~|as| must match the number of successor nodes in~|n|.
+We can also declare the bottom-up vector datatype in index-first style:
+\begin{code}
+indexfirst data Vec (A : Set) : Nat → Set where
+  Vec A n  offers  nil (neq : n ≡ zero)
+           or      cons  (a : A) {m : Nat}
+                         (as : Vec A m) (meq : n ≡ suc m)
+\end{code}
+Besides the field~|m| storing the length of the tail, two more fields |neq| and |meq| are inserted, demanding explicit equality proofs about the indices.
+When a vector of type |Vec A n| is demanded, we are ``free'' to choose between nil or cons regardless of the index~|n|; however, because of the equality constraints, we are indirectly forced into a particular choice.
+
+\block{Remark}{detagging}{The transformation from bottom-up vectors to top-down vectors is exactly what \varcitet{Brady-inductive-families-indices}{'s \emph{detagging} optimisation} does.
+With index-first datatypes, however, detagged representations are available directly, rather than arising from a compiler optimisation.}
+
+\block{Remark}{bidirectional typechecking}{\todo[inline]{TBC}}
+
+\subsection{Universe construction}
+\label{sec:Desc}
+
+Now we proceed to construct a universe for index-first datatypes.
+An inductive family of type |I → Set| is constructed by taking the least fixed point of a base endofunctor on |I → Set|.
+For example, to get index-first vectors, we would define a base functor (parametrised by |A : Set|)
+\begin{code}
+VecF A : (Nat → Set) → (Nat → Set)
+VecF A X zero     =  ⊤
+VecF A X (suc n)  =  A × X n
+\end{code}
+and take its least fixed point.
+If we flip the order of arguments of |VecF A|:
+\begin{code}
+VecF' A : Nat → (Nat → Set) → Set
+VecF' A zero     =  λ X → ⊤
+VecF' A (suc n)  =  λ X → A × X n
+\end{code}
+we see that |VecF' A| consists of two different ``responses'' to the index request, each of type |(Nat → Set) → Set|.
+It suffices to construct for such responses a universe
+\begin{code}
+data RDesc (I : Set) : Set₁
+\end{code}
+with a decoding function specifying its semantics:
+\begin{code}
+⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
+\end{code}
+Inhabitants of |RDesc I| will be called \emph{response descriptions}.
+A function of type |I → RDesc I|, then, can be decoded to an endofunctor on |I → Set|, so the type |I → RDesc I| acts as a universe for index-first datatypes.
+We hence define
+\begin{code}
+Desc : Set → Set₁
+Desc I = I → RDesc I
+\end{code}
+with decoding function
+\begin{code}
+Ḟ : {I : Set} → Desc I → (I → Set) → (I → Set)
+Ḟ D X i = ⟦ D i ⟧ X
+\end{code}
+Inhabitants of type |Desc I| will be called \emph{datatype descriptions}, or \emph{descriptions} for short.
+Actual datatypes are manufactured from descriptions by the least fixed point operator:
+\begin{code}
+data μ {I : Set} (D : Desc I) : I → Set where
+  con : Ḟ D (μ D) ⇉ μ D
+\end{code}
+
+We now define the datatype of response descriptions --- which determines the syntax available for defining base functors --- and its decoding function:
+\begin{code}
+data RDesc (I : Set) : Set₁ where
+  ṿ  :  (is : List I) → RDesc I
+  σ  :  (S : Set) (D : S → RDesc I) → RDesc I
+  
+⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
+⟦  ṿ is   ⟧  X  =  Ṗ is X  -- see below
+⟦  σ S D  ⟧  X  =  (Σ'(s ∶ S)) ⟦ D s ⟧ X
+\end{code}
+The operator~|Ṗ| computes the product of a finite number of types in a type family, whose indices are given in a list:
+\begin{code}
+Ṗ : {I : Set} → List I → (I → Set) → Set
+Ṗ  []        X  =  ⊤
+Ṗ  (i ∷ is)  X  =  X i × Ṗ is X
+\end{code}
+Thus, in a response, given |X : I → Set|, we are allowed to form dependent sums (by~|σ|) and the product of a finite number of types in~|X| (via~|ṿ|, suggesting variable positions in the base functor).
+
+\block*{Convention}{We will informally refer to the index part of a~|σ| as a \emph{field}.
+Like~|Σ|, we regard~|σ| as a binder and write |(σ'(s ∶ S)) D s| for |σ S ((lambda(s)) D s)|.}
+
+\block{Example}{natural numbers}{The datatype of natural numbers is considered to be an inductive family trivially indexed by~|⊤|, so the declaration of |Nat| corresponds to an inhabitant of |Desc ⊤|.
+\begin{code}
+data ListTag : Set where `nil `cons : ListTag
+
+NatD : Desc ⊤
+NatD tt = σ ListTag λ  case  `nil   mapsto  ṿ []
+                       sep   `cons  mapsto  ṿ (tt ∷ []) endcase
+\end{code}
+The index request is necessarily~|tt|, and we respond with a field of type |ListTag| representing the constructor choices.
+If the field receives |`nil|, then we are constructing zero, which takes no recursive values, so we write |ṿ []| to end this branch; if the |ListTag| field receives |`cons|, then we are constructing a successor, which takes a recursive value at index~|tt|, so we write |ṿ (tt ∷ [])|.}
+
+\block{Example}{lists}{The datatype of lists is parametrised by the element type.
+We represent parametrised descriptions simply as functions producing descriptions, so the declaration of lists corresponds to a function taking element types to descriptions.
+\begin{code}
+ListD : Set → Desc ⊤
+ListD A tt = σ ListTag λ  case  `nil   mapsto  ṿ []
+                          sep   `cons  mapsto  (σ'(_ ∶ A)) ṿ (tt ∷ []) endcase
+\end{code}
+|ListD A| is the same as |NatD| except that, in the |`cons| case, we use~|σ| to insert a field of type~|A| for storing an element.}
+
+\block{Example}{vectors}{The datatype of vectors is parametrised by the element type and (non-trivially) indexed by |Nat|, so the declaration of vectors corresponds to
+\begin{code}
+VecD : Set → Desc Nat
+VecD A zero     = ṿ []
+VecD A (suc n)  = (σ'(_ ∶ A)) ṿ (n ∷ [])
+\end{code}
+which is directly comparable to the index-first base functor |VecF'| at the beginning of \autoref{sec:Desc}.}
+
+There is no problem defining functions on the encoded datatypes except that it has to be done with the raw representation.
+For example, list append is defined by
+\begin{code}
+_++_ : μ (ListD A) tt → μ (ListD A) tt → μ (ListD A) tt
+con (`nil   ,           tt) ++ bs = bs
+con (`cons  , a , as ,  tt) ++ bs = con (`cons , a , as ++ bs , tt)
+\end{code}
+To improve readability, we define the following higher-level terms:
+\begin{code}
+List : Set → Set
+List A = μ (ListD A) tt
+
+[] : {A : Set} → List A
+[] = con (`nil , tt)
+
+_∷_ : {A : Set} → A → List A → List A
+a ∷ as = con (`cons  , a , as ,  tt)
+\end{code}
+List append can then be rewritten in the usual form (assuming that the terms |[]|~and~|_∷_| can be used in pattern matching):
+\begin{code}
+_++_ : List A → List A → List A
+[]        ++ bs = bs
+(a ∷ as)  ++ bs = a ∷ (as ++ bs)
+\end{code}
+Later on, when an encoded datatype is defined, we almost always supply a corresponding index-first datatype declaration immediately afterwards, which is thought of as giving definitions of higher-level terms for type and data constructors --- the terms |List|, |[]|, and~|_∷_| above, for example, can be considered to be defined by the index-first declaration of lists given in \autoref{sec:index-first-datatypes}.
+Index-first declarations will only be regarded in this thesis as informal hints at how encoded datatypes are presented at a higher level; we do not give a formal treatment of the elaboration process from index-first declarations to corresponding descriptions and definitions of higher-level terms.
+(One such treatment was given by \citet{Dagand-elaboration}.)
+
+\begin{figure}
+\setlength{\mathindent}{0em}
+\begin{code}
+mutual
+
+  fold :  {I : Set} {D : Desc I} →
+          {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
+  fold {I} {D} f {i} (con ds) = f (mapFold D (D i) f ds)
+
+  mapFold :  {I : Set} (D : Desc I) (D' : RDesc I) →
+             {X : I → Set} → (Ḟ D X ⇉ X) → ⟦ D' ⟧ (μ D) → ⟦ D' ⟧ X
+  mapFold D (ṿ [])        f tt         = tt
+  mapFold D (ṿ (i ∷ is))  f (d  , ds)  = fold f d , mapFold D (ṿ is) f ds
+  mapFold D (σ S D')      f (s  , ds)  = s , mapFold D (D' s) f ds
+\end{code}
+\caption{Definition of the datatype-generic |fold| operator.}
+\label{fig:fold}
+\end{figure}
+
+Direct function definitions by pattern matching work fine for individual datatypes, but when we need to define operations and to state properties for all the datatypes encoded by the universe, it is necessary to have a generic |fold| operator parametrised by descriptions:
+\begin{code}
+fold :  {I : Set} {D : Desc I} →
+        {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
+\end{code}
+There is also a generic |induction| operator, which can be used to prove generic propositions about all encoded datatypes and subsumes |fold|, but |fold| is much easier to use when the full power of |induction| is not required.
+The implementations of both operators are adapted for our two-level universe from those in \varcitet{McBride-ornaments}{'s original work}.
+We look at the implementation of the |fold| operator only, which is shown in \autoref{fig:fold}.
+As \citeauthor{McBride-ornaments}, we would have wished to define |fold| by
+\begin{code}
+fold {I} {D} f {i} (con ds) = f (mapRD (D i) (fold f) ds)
+\end{code}
+where the functorial mapping |mapRD| on response structures is defined by
+\begin{code}
+mapRD :  {I : Set} (D : RDesc I) →
+         {X Y : I → Set} (g : X ⇉ Y) → ⟦ D ⟧ X → ⟦ D ⟧ Y
+mapRD (ṿ [])        g tt        = tt
+mapRD (ṿ (i ∷ is))  g (x , xs)  = g x , mapRD (ṿ is) g xs
+mapRD (σ S D)       g (s , xs)  = s , mapRD (D s) g xs
+\end{code}
+Agda does not see that this definition of |fold| is terminating, however, since the termination checker does not expand the definition of |mapRD| to see that |fold f| is applied to structurally smaller arguments.
+To make termination obvious, we instead define |fold| mutually recursively with |mapFold|, which is |mapRD| specialised by fixing its argument~|g| to |fold f|.
+
+It is helpful to form a two-dimensional image of our datatype manufacturing scheme:
+we manufacture a datatype by first defining a base functor, and then recursively duplicating the functorial structure by taking its least fixed point.
+The shape of the base functor can be imagined to stretch horizontally, whereas the recursive structure generated by the least fixed point grows vertically.
+This image works directly when the recursive structure is linear, like lists.
+(Otherwise one resorts to the abstraction of functor composition.)
+For example, we can typeset a list two-dimensionally like
+\begin{code}
+con (`cons  , a  ,
+con (`cons  , b  ,
+con (`nil   ,
+      tt) , tt) , tt)
+\end{code}
+Ignoring the last line of trailing |tt|'s, things following |con| on each line --- including constructor tags and list elements --- are shaped by the base functor of lists, whereas the |con| nodes, aligned vertically, are generated by the least fixed point.
+This two-dimensional metaphor will be referred to in later explanations.
+
+\block{Remark}{first-order vs higher-order representation}{The functorial structures generated by descriptions are strongly reminiscent of \emph{indexed containers}~\citep{Altenkirch-indexed-containers}; this will be explored and exploited in \autoref{chap:equivalence}.
+For now, it is enough to mention that we choose to stick to a first-order datatype manufacturing scheme, i.e., the datatypes we manufacture with descriptions use finite product types rather than dependent function types for branching, but it is easy to switch to a higher-order representation that is even closer to indexed containers (allowing infinite branching) by storing in~|ṿ| a collection of |I|-indices indexed by an arbitrary set~|S|:
+\begin{code}
+ṿ : (S : Set) (f : S → I) → RDesc I
+\end{code}
+whose semantics is defined in terms of dependent functions:
+\begin{code}
+⟦ ṿ S f ⟧ X = (s : S) → X (f s)
+\end{code}
+The reason for choosing to stick to first-order representation is simply to obtain a simpler equality for the manufactured datatypes (Agda's default equality would suffice); the examples of manufactured datatypes in this thesis are all finitely branching and do not require the power of higher-order representation anyway.
+This choice, however, does complicate some subsequent datatype-generic definitions (e.g., ornaments).
+It would probably be helpful to think of the parts involving |ṿ|~and~|Ṗ| in these definitions as specialisations of higher-order representations to first-order ones.}
+
+\section{Internalism vs externalism}
+\label{sec:internalism-vs-externalism}

@@ -1,14 +1,15 @@
-\documentclass[12pt]{book}
+\documentclass[12pt,oneside]{book}
+
+\usepackage[a4paper]{geometry}
+\setlength{\marginparwidth}{2.75cm}
 
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{dissertation}\bibliography{../bib}\listoftodos}
 \def\subfilebiblio{\biblio}
-\newcommand{\bibnamefont}[1]{\textsc{#1}}
+\def\headercorrection{\fancyhfoffset[L]{8pt}\fancyhfoffset[R]{-8pt}}
+\def\subfileheadercorrection{\headercorrection}
 
-\usepackage[a4paper]{geometry}
-\setlength{\marginparwidth}{3cm}
-
-\usepackage[colorlinks,citecolor=black,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage[colorlinks,citecolor=black,urlcolor=black,linkcolor=black,backref=page]{hyperref}
 \renewcommand{\chapterautorefname}{Chapter}
 \renewcommand{\sectionautorefname}{Section}
 \renewcommand{\subsectionautorefname}{Section}
@@ -16,6 +17,13 @@
 
 \usepackage[square]{natbib}
 \newcommand{\varcitet}[2]{\citeauthor{#1}#2~\citeyearpar{#1}}
+\newcommand{\bibnamefont}[1]{\textsc{#1}}
+\renewcommand*{\backref}[1]{}
+\renewcommand*{\backrefalt}[4]{%
+  \ifcase #1 \relax%
+  \or        {\small$\Lsh$~page~#2}%
+  \else      {\small$\Lsh$~pages~#2}%
+  \fi}
 
 \usepackage{doi}
 
@@ -24,35 +32,55 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{#1}{}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~#1}{}}
 \fancyhf{}
 \fancyhead[LE, RO]{\thepage}
-\fancyhead[RE]{\textbf{\thechapter}~~~\leftmark}
-\fancyhead[LO]{\textbf{\thesection}~~~\rightmark}
+\fancyhead[RE]{\leftmark}
+\fancyhead[LO]{\rightmark}
+\makeatletter
+\renewcommand{\tableofcontents}{%
+    \chapter*{\contentsname%
+        \@mkboth{\contentsname}{\contentsname}}%
+    \@starttoc{toc}%
+    }
+\makeatother
+
+\usepackage[labelfont=bf,labelsep=quad,font=small]{caption}
+\usepackage{subcaption}
+
+\usepackage{graphicx}
 
 \usepackage{tikz}
 \usetikzlibrary{matrix,arrows,calc}
 \tikzset{every path/.append style={semithick}}
-\newcommand{\labelonarrow}[1]{\colorbox{white}{\vphantom{\vrule height 1.1ex depth .1ex}\smash{#1}}}
+\newcommand{\labelonarrow}[1]{\colorbox{white}{\vphantom{\vrule height 1.4ex depth .4ex}\smash{#1}}}
 
 \usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
 
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\textit{#1}.\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
-\newcommand{\@@block}[3]{\textit{#1}~(\hskip.05em\textit{#2}\hskip.05em).\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
 \makeatother
 
 \usepackage{enumitem}
-\setitemize{itemsep=.9\parskip,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setitemize{leftmargin=\parindent,labelindent=*,itemsep=.9\parskip,topsep=0pt,parsep=0pt,partopsep=0pt}
 
+\hyphenation{pa-ra-me-trise}
+\hyphenation{pa-ra-me-trised}
+\hyphenation{pa-ra-me-tri-sa-tion}
+\hyphenation{da-ta-type}
+\hyphenation{da-ta-types}
+
+\usepackage{amsmath}
 \usepackage[sc]{mathpazo}
 \linespread{1.25}
 \newcommand{\keyword}{\mathbf}
 \newcommand{\constructor}{\mathsf}
 \newcommand{\identifier}{\mathit}
+\newcommand{\proofterm}[1]{{\color{gray}#1}}
 \newlength{\underscorespace}
 \setlength{\underscorespace}{.065em}
 \newcommand{\binderbracketl}{\langle}
@@ -69,15 +97,24 @@
   \setlength{\abovedisplayskip}{\medskipamount}
   \setlength{\belowdisplayskip}{\abovedisplayskip}
 }
+\newcommand{\shorteq}{%
+  \settowidth{\@tempdima}{--}%
+  \resizebox{\@tempdima}{\height}{=}%
+}
+\newcommand{\@highlight}[2]{\smash{\text{\colorbox[gray]{#2}{\kern-.1em\vphantom{\vrule height 1.4ex depth 0.3ex}\smash{\ensuremath{#1}}\kern-.1em}}}}
+\newcommand{\highlight}[1]{\@highlight{#1}{.85}}
+\newcommand{\Highlight}[1]{\@highlight{#1}{.70}}
 \makeatother
 \DeclareSymbolFont{euler}{U}{eur}{m}{n}
-\DeclareMathSymbol \upsigma \mathalpha {euler} {"1B}
+\DeclareMathSymbol{\upsigma}{\mathalpha}{euler}{"1B}
 \newcommand{\recordmember}{\kern.08em.\kern.08em}
+\newcommand{\reason}[1]{\quad\{\,\text{#1}\,\}}
 \input{processed-agda-preamble}
 
 \begin{document}
 
 \def\subfilebiblio{}
+\def\subfileheadercorrection{}
 
 \frontmatter
 

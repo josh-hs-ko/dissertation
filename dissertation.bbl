@@ -1,4 +1,4 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{28}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -7,12 +7,52 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+\bibitem[{Altenkirch et~al.(2010)Altenkirch, Chapman, and
+  Uustalu}]{Altenkirch-relative-monads}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{James}
+  \bibnamefont{Chapman}, and \bibfnamefont{Tarmo} \bibnamefont{Uustalu} [2010].
+\newblock Monads need not be endofunctors.
+\newblock In \emph{Foundations of Software Science and Computational
+  Structures}, volume 6014 of \emph{Lecture Notes in Computer Science}, pages
+  297--311. Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-12032-9\_21}.
+
+\bibitem[{Altenkirch and McBride(2003)}]{Altenkirch-GP-within-DTP}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch} and \bibfnamefont{Conor}
+  \bibnamefont{McBride} [2003].
+\newblock Generic programming within dependently typed programming.
+\newblock In \emph{IFIP TC2/WG2.1 Working Conference on Generic Programming},
+  pages 1--20. Kluwer, B.V.
+\newblock \doi{10.1007/978-0-387-35672-3\_1}.
+
 \bibitem[{Altenkirch et~al.(2005)Altenkirch, McBride, and
   McKinna}]{Altenkirch-why-dependent-types-matter}
 \bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
   \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
 \newblock Why dependent types matter.
 \newblock Available at \url{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
+
+\bibitem[{Altenkirch and Morris(2009)}]{Altenkirch-indexed-containers}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch} and \bibfnamefont{Peter}
+  \bibnamefont{Morris} [2009].
+\newblock Indexed containers.
+\newblock In \emph{Logic in Computer Science}, LICS'09, pages 277--285. IEEE.
+\newblock \doi{10.1109/LICS.2009.33}.
+
+\bibitem[{Atkey et~al.(2012)Atkey, Johann, and
+  Ghani}]{Atkey-refining-inductive-types}
+\bibfnamefont{Robert} \bibnamefont{Atkey}, \bibfnamefont{Patricia}
+  \bibnamefont{Johann}, and \bibfnamefont{Neil} \bibnamefont{Ghani} [2012].
+\newblock Refining inductive types.
+\newblock \emph{Logical Methods in Computer Science}, 8(2:09).
+\newblock \doi{10.2168/LMCS-8(2:9)2012}.
+
+\bibitem[{Barthe et~al.(2003)Barthe, Capretta, and Pons}]{Barthe-setoids}
+\bibfnamefont{Gilles} \bibnamefont{Barthe}, \bibfnamefont{Venanzio}
+  \bibnamefont{Capretta}, and \bibfnamefont{Olivier} \bibnamefont{Pons} [2003].
+\newblock Setoids in type theory.
+\newblock \emph{Journal of Functional Programming}, 13(2):261--293.
+\newblock \doi{10.1017/S0956796802004501}.
 
 \bibitem[{Bernardy and Guilhem(2013)}]{Bernardy-color}
 \bibfnamefont{Jean-Philippe} \bibnamefont{Bernardy} and \bibfnamefont{Moulin}
@@ -21,6 +61,12 @@
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'13, pages 61--72. ACM.
 \newblock \doi{10.1145/2500365.2500577}.
+
+\bibitem[{Bird and de~Moor(1997)}]{Bird-AoP}
+\bibfnamefont{Richard} \bibnamefont{Bird} and \bibfnamefont{Oege}
+  \bibnamefont{de~Moor} [1997].
+\newblock \emph{Algebra of Programming}.
+\newblock Prentice-Hall.
 
 \bibitem[{Bishop and Bridges(1985)}]{Bishop-analysis}
 \bibfnamefont{Errett} \bibnamefont{Bishop} and \bibfnamefont{Douglas}
@@ -35,6 +81,16 @@
 \newblock In \emph{Language Engineering and Rigorous Software Development},
   volume 5520 of \emph{Lecture Notes in Computer Science}, pages 57--99.
   Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-03153-3\_2}.
+
+\bibitem[{Brady et~al.(2004)Brady, McBride, and
+  McKinna}]{Brady-inductive-families-indices}
+\bibfnamefont{Edwin} \bibnamefont{Brady}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2004].
+\newblock Inductive families need not store their indices.
+\newblock In \emph{Types for Proofs and Programs}, volume 3085 of \emph{Lecture
+  Notes in Computer Science}, pages 115--129. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-24849-1\_8}.
 
 \bibitem[{Chapman et~al.(2010)Chapman, Dagand, McBride, and
   Morris}]{Chapman-levitation}
@@ -46,29 +102,89 @@
   ICFP'10, pages 3--14. ACM.
 \newblock \doi{10.1145/1863543.1863547}.
 
-\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
+\bibitem[{Dagand and McBride(2012{\natexlab{a}})}]{Dagand-elaboration}
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2012{\natexlab{a}}].
+\newblock Elaborating inductive definitions.
+\newblock arXiv:1210.6390.
+
+\bibitem[{Dagand and McBride(2012{\natexlab{b}})}]{Dagand-functional-ornaments}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2012{\natexlab{b}}].
 \newblock Transporting functions across ornaments.
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'12, pages 103--114. ACM.
 \newblock \doi{10.1145/2364527.2364544}.
+
+\bibitem[{Dybjer(1998)}]{Dybjer-induction-recursion}
+\bibfnamefont{Peter} \bibnamefont{Dybjer} [1998].
+\newblock A general formulation of simultaneous inductive-recursive definitions
+  in type theory.
+\newblock \emph{Journal of Symbolic Logic}, 65(2):525--549.
+\newblock \doi{10.2307/2586554}.
+
+\bibitem[{Gibbons et~al.(2001)Gibbons, Hutton, and
+  Altenkirch}]{Gibbons-kernels}
+\bibfnamefont{Jeremy} \bibnamefont{Gibbons}, \bibfnamefont{Graham}
+  \bibnamefont{Hutton}, and \bibfnamefont{Thorsten} \bibnamefont{Altenkirch}
+  [2001].
+\newblock When is a function a fold or an unfold?
+\newblock \emph{Electronic Notes in Theoretical Computer Science},
+  44(1):146--160.
+\newblock \doi{10.1016/S1571-0661(04)80906-X}.
+
+\bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
+\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2013].
+\newblock Modularising inductive families.
+\newblock \emph{Progress in Informatics}, 10:65--88.
+\newblock \doi{10.2201/NiiPi.2013.10.5}.
 
 \bibitem[{Martin-L{\"o}f(1984)}]{ML-ITT}
 \bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984].
 \newblock \emph{Intuitionistic Type Theory}.
 \newblock Bibliopolis, Napoli.
 
+\bibitem[{McBride(1999)}]{McBride-thesis}
+\bibfnamefont{Conor} \bibnamefont{McBride} [1999].
+\newblock \emph{Dependently Typed Functional Programs and their Proofs}.
+\newblock Ph.D. thesis, University of Edinburgh.
+
 \bibitem[{McBride(2004)}]{McBride-Epigram}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2004].
 \newblock Epigram: Practical programming with dependent types.
 \newblock In \emph{Advanced Functional Programming}, volume 3622 of
-  \emph{Lecture Notes in Computer Science}, pages 130--170.
+  \emph{Lecture Notes in Computer Science}, pages 130--170. Springer-Verlag.
+\newblock \doi{10.1007/11546382\_3}.
 
 \bibitem[{McBride(2011)}]{McBride-ornaments}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].
 \newblock Ornamental algebras, algebraic ornaments.
 \newblock To appear in \textit{Journal of Functional Programming}.
+
+\bibitem[{McBride and McKinna(2004)}]{McBride-view}
+\bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{James}
+  \bibnamefont{McKinna} [2004].
+\newblock The view from the left.
+\newblock \emph{Journal of Functional Programming}, 14(1):69--111.
+\newblock \doi{10.1017/S0956796803004829}.
+
+\bibitem[{Monnier and Haguenauer(2010)}]{Monnier-singleton-types}
+\bibfnamefont{Stefan} \bibnamefont{Monnier} and \bibfnamefont{David}
+  \bibnamefont{Haguenauer} [2010].
+\newblock Singleton types here, singleton types there, singleton types
+  everywhere.
+\newblock In \emph{Programming Languages meets Program Verification}, PLPV'10,
+  pages 1--8. ACM.
+\newblock \doi{10.1145/1707790.1707792}.
+
+\bibitem[{Mu et~al.(2009)Mu, Ko, and Jansson}]{Mu-AoPA}
+\bibfnamefont{Shin-Cheng} \bibnamefont{Mu}, \bibfnamefont{Hsiang-Shang}
+  \bibnamefont{Ko}, and \bibfnamefont{Patrik} \bibnamefont{Jansson} [2009].
+\newblock {A}lgebra of {P}rogramming in {A}gda: Dependent types for relational
+  program derivation.
+\newblock \emph{Journal of Functional Programming}, 19(5):545--579.
+\newblock \doi{10.1017/S0956796809007345}.
 
 \bibitem[{Norell(2007)}]{Norell-thesis}
 \bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
@@ -81,6 +197,7 @@
 \newblock Dependently typed programming in {A}gda.
 \newblock In \emph{Advanced Functional Programming}, volume 5832 of
   \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-04652-0\_5}.
 
 \bibitem[{Okasaki(1999)}]{Okasaki-data-structures}
 \bibfnamefont{Chris} \bibnamefont{Okasaki} [1999].

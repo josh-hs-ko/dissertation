@@ -1,48 +1,116 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
+\providecommand{\bibnamefont}[1]{#1}
+\providecommand{\bibfnamefont}[1]{#1}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+\bibitem[{Altenkirch and McBride(2003)}]{Altenkirch-GP-within-DTP}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch} and \bibfnamefont{Conor}
+  \bibnamefont{McBride} [2003].
+\newblock Generic programming within dependently typed programming.
+\newblock In \emph{IFIP TC2/WG2.1 Working Conference on Generic Programming},
+  pages 1--20. Kluwer, B.V.
+
 \bibitem[{Altenkirch et~al.(2005)Altenkirch, McBride, and
   McKinna}]{Altenkirch-why-dependent-types-matter}
-\textsc{Altenkirch}, Thorsten, \textsc{McBride}, Conor, and \textsc{McKinna},
-  James (2005).
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
 \newblock Why dependent types matter.
 \newblock Available at \url{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
 
+\bibitem[{Altenkirch and Morris(2009)}]{Altenkirch-indexed-containers}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch} and \bibfnamefont{Peter}
+  \bibnamefont{Morris} [2009].
+\newblock Indexed containers.
+\newblock In \emph{Logic in Computer Science}, LICS'09, pages 277--285. IEEE.
+
 \bibitem[{Bishop and Bridges(1985)}]{Bishop-analysis}
-\textsc{Bishop}, Errett and \textsc{Bridges}, Douglas (1985).
+\bibfnamefont{Errett} \bibnamefont{Bishop} and \bibfnamefont{Douglas}
+  \bibnamefont{Bridges} [1985].
 \newblock \emph{Constructive Analysis}.
 \newblock Springer-Verlag.
 
 \bibitem[{Bove and Dybjer(2009)}]{Bove-dependent-types-at-work}
-\textsc{Bove}, Ana and \textsc{Dybjer}, Peter (2009).
+\bibfnamefont{Ana} \bibnamefont{Bove} and \bibfnamefont{Peter}
+  \bibnamefont{Dybjer} [2009].
 \newblock Dependent types at work.
 \newblock In \emph{Language Engineering and Rigorous Software Development},
   volume 5520 of \emph{Lecture Notes in Computer Science}, pages 57--99.
   Springer-Verlag.
 
+\bibitem[{Brady et~al.(2004)Brady, McBride, and
+  McKinna}]{Brady-inductive-families-indices}
+\bibfnamefont{Edwin} \bibnamefont{Brady}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2004].
+\newblock Inductive families need not store their indices.
+\newblock In \emph{Types for Proofs and Programs}, volume 3085 of \emph{Lecture
+  Notes in Computer Science}, pages 115--129. Springer-Verlag.
+
+\bibitem[{Chapman et~al.(2010)Chapman, Dagand, McBride, and
+  Morris}]{Chapman-levitation}
+\bibfnamefont{James} \bibnamefont{Chapman}, \bibfnamefont{Pierre-{\'E}variste}
+  \bibnamefont{Dagand}, \bibfnamefont{Conor} \bibnamefont{McBride}, and
+  \bibfnamefont{Peter} \bibnamefont{Morris} [2010].
+\newblock The gentle art of levitation.
+\newblock In \emph{International Conference on Functional Programming},
+  ICFP'10, pages 3--14. ACM.
+\newblock \doi{10.1145/1863543.1863547}.
+
+\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
+\newblock Transporting functions across ornaments.
+\newblock In \emph{International Conference on Functional Programming},
+  ICFP'12, pages 103--114. ACM.
+\newblock \doi{10.1145/2364527.2364544}.
+
+\bibitem[{Dagand and McBride(2013)}]{Dagand-elaboration}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2013].
+\newblock Elaborating inductive definitions.
+\newblock In \emph{Journ{\'e}es Francophones des Langages Applicatifs},
+  JFLA'13. INRIA.
+
+\bibitem[{Dybjer(1998)}]{Dybjer-induction-recursion}
+\bibfnamefont{Peter} \bibnamefont{Dybjer} [1998].
+\newblock A general formulation of simultaneous inductive-recursive definitions
+  in type theory.
+\newblock \emph{Journal of Symbolic Logic}, 65(2):525--549.
+
+\bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
+\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2013].
+\newblock Modularising inductive families.
+\newblock \emph{Progress in Informatics}, 10:65--88.
+\newblock \doi{10.2201/NiiPi.2013.10.5}.
+
 \bibitem[{Martin-L{\"o}f(1984)}]{ML-ITT}
-\textsc{Martin-L{\"o}f}, Per (1984).
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984].
 \newblock \emph{Intuitionistic Type Theory}.
 \newblock Bibliopolis, Napoli.
 
 \bibitem[{McBride(2004)}]{McBride-Epigram}
-\textsc{McBride}, Conor (2004).
+\bibfnamefont{Conor} \bibnamefont{McBride} [2004].
 \newblock Epigram: Practical programming with dependent types.
 \newblock In \emph{Advanced Functional Programming}, volume 3622 of
   \emph{Lecture Notes in Computer Science}, pages 130--170.
 
+\bibitem[{McBride(2011)}]{McBride-ornaments}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2011].
+\newblock Ornamental algebras, algebraic ornaments.
+\newblock To appear in \textit{Journal of Functional Programming}.
+
 \bibitem[{Norell(2007)}]{Norell-thesis}
-\textsc{Norell}, Ulf (2007).
+\bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
 \newblock \emph{Towards a practical programming language based on dependent
   type theory}.
 \newblock Ph.D. thesis, Chalmers University of Technology.
 
 \bibitem[{Norell(2009)}]{Norell-Agda}
-\textsc{Norell}, Ulf (2009).
+\bibfnamefont{Ulf} \bibnamefont{Norell} [2009].
 \newblock Dependently typed programming in {A}gda.
 \newblock In \emph{Advanced Functional Programming}, volume 5832 of
   \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
