@@ -56,10 +56,9 @@ This chapter develops the abstractions and constructions that facilitate the abo
 \label{sec:refinements}
 
 \subsection{Refinements between individual types}
+\label{sec:individual-refinements}
 
-\todo[inline]{residual view, partitioning view (fine vs coarse)}
-
-A \emph{refinement} from a type~|X| to a type~|Y| is a \emph{promotion predicate} |P : X → Set| and a \emph{conversion isomorphism} |i : Y ≅ Σ X P|.\todo{universe polymorphism}
+A \emph{refinement} from a basic type~|X| to a more informative type~|Y| is a \emph{promotion predicate} |P : X → Set| and a \emph{conversion isomorphism} |i : Y ≅ Σ X P|.
 \begin{code}
 record Refinement (X Y : Set) : Set₁ where
   field
@@ -70,18 +69,17 @@ record Refinement (X Y : Set) : Set₁ where
 \end{code}
 Refinements are not guaranteed to be interesting in general.
 For example, |Y|~can be chosen to be |Σ X P| and the conversion isomorphism simply the identity.
-We will, however, only be interested in refinements from basic types to their more informative --- often internalist --- variants.
+Most of the time, however, we will only be interested in refinements from basic types to their more informative --- often internalist --- variants.
 The conversion isomorphism tells us that the inhabitants of~|Y| exactly correspond to the inhabitants of~|X| bundled with more information, i.e., proofs that the promotion predicate~|P| is satisfied.
 Computationally, any inhabitant of~|Y| can be decomposed (by |Iso.to i|\kern1pt) into an underlying value |x : X| and a proof that |x|~satisfies the promotion predicate~|P| (which we will call a \emph{promotion proof} for~|x|), and conversely, if |x : X| satisfies~|P|, then it can be promoted (by |Iso.from i|\kern1pt) to an inhabitant of~|Y|.
-We denote the forgetful computation of the underlying value, i.e., |proj₁ ∘ Iso.to i|, as |Refinement.forget|, which, as we will see in \autoref{chap:categorical}, is actually the core of a refinement.
 
 \block{Example}{refinement from lists to ordered lists}{Suppose |A : Set| is equipped with an ordering~|_≤A_|\,.
-Fixing |a : A|, there is a refinement from |List A| to |OrdList A _≤A_ a| whose promotion predicate is |Ordered A _≤A_ a|, since we have an isomorphism of type
+Fixing |b : A|, there is a refinement from |List A| to |OrdList A _≤A_ b| whose promotion predicate is |Ordered A _≤A_ b|, since we have an isomorphism of type
 \begin{code}
-OrdList A _≤A_ a ≅ Σ (List A) (Ordered A _≤A_ a)
+OrdList A _≤A_ b ≅ Σ (List A) (Ordered A _≤A_ b)
 \end{code}
 as shown in \autoref{sec:internalism-vs-externalism}.
-An ordered list of type |OrdList A _≤A_ a| can be decomposed into a list |xs : List A| and a proof of type |Ordered A _≤A_ a xs| that the list |xs|~is ordered and bounded below by~|a|; conversely, a list satisfying |Ordered A _≤A_ a| can be promoted to an ordered list of type |OrdList A _≤A_ a|.}
+An ordered list of type |OrdList A _≤A_ b| can be decomposed into a list |as : List A| and a proof of type |Ordered A _≤A_ b as| that the list |as|~is ordered and bounded below by~|b|; conversely, a list satisfying |Ordered A _≤A_ b| can be promoted to an ordered list of type |OrdList A _≤A_ b|.}
 
 \block{Example}{refinement from natural numbers to lists}{Let |A : Set|.
 We have a refinement from |Nat| to |List A|
@@ -95,9 +93,43 @@ List A ≅ Σ Nat (Vec A)
 whose decomposing direction computes from a list its length and a vector containing the same elements.
 We might say that a natural number |n : Nat| is an incomplete list --- the list elements are missing from the successor nodes of~|n|.
 To promote~|n| to a |List A|, we need to supply a vector of type |Vec A n|, i.e., |n|~elements of type~|A|.
-This example helps to emphasise that the notion of refinements is \emph{proof-relevant}: a basic element can have more than one promotion proofs, and consequently the more informative type in a refinement can have more elements than the basic type does.}
+This example helps to emphasise that the notion of refinements is \emph{proof-relevant}:
+An underlying value can have more than one promotion proofs, and consequently the more informative type in a refinement can have more elements than the basic type does.
+Thus it is more helpful to think that a type is more refined in the sense of being more informative rather than being a subset.}
 
-\todo[inline]{a type refines another in the sense of being more informative rather than merely being a subset}
+In a refinement~|r|, we denote the forgetful computation of underlying values --- i.e., |proj₁ ∘ Iso.to (Refinement.i r)| --- as |Refinement.forget r|.
+The forgetful function is actually the core of a refinement, which is justified by the following facts:
+\begin{itemize}
+\item The forgetful function determines a refinement extensionally --- if the forgetful functions of two refinements are extensionally equal, then their promotion predicates are pointwise isomorphic:
+\begin{code}
+forget-iso :  {X Y : Set} (r s : Refinement X Y) →
+              (Refinement.forget r ≐ Refinement.forget s) →
+              (x : X) → Refinement.P r x ≅ Refinement.P s x
+\end{code}
+\item From any function~|f|, we can construct a \emph{canonical refinement} which uses a simplistic promotion predicate and has~|f| as its forgetful function:
+\begin{code}
+canonRef : {X Y : Set} → (Y → X) → Refinement X Y
+canonRef {X} {Y} f = record
+  case  P  =  (lambda(x)) (Σ'(y ∶ Y)) f y ≡ x
+  sep   i  =  record  case  to    =  f ▵ (id ▵ ((lambda(y)) refl))
+                      sep   from  =  proj₁ ∘ proj₂
+                      sep   proofs-of-laws endcase endcase
+\end{code}
+We call |(lambda(x)) (Σ'(y ∶ Y)) f y ≡ x| the \emph{canonical promotion predicate}, which says that, to promote |x : X| to type~|Y|, we are required to supply a complete |y : Y| and prove that its underlying value is~|x|.
+\item For any refinement |r : Refinement X Y|, its forgetful function is exactly that of |canonRef (Refinement.forget r)|, so from |forget-iso| we can prove that a promotion predicate is always pointwise isomorphic to the canonical promotion predicate:
+\begin{code}
+coherence :  {X Y : Set} (r : Refinement X Y) →
+             (x : X) →  Refinement.P r x
+                          ≅ (Σ'(y ∶ Y)) Refinement.forget r y ≡ x
+coherence r x = forget-iso r (canonRef (Refinement.forget r)) ((lambda(y)) refl)
+\end{code}
+This is closely related to an alternative ``coherence-based'' definition of refinements, which will shortly be discussed.
+\end{itemize}
+The refinement mechanism's purpose of being is thus to express intensional (representational) optimisations of the canonical promotion predicate, such that it is possible work on just the residual information of the more refined type that is not present in the basic type.
+
+\block{Example}{promoting lists to ordered lists}{Consider the refinement from lists to ordered lists using |Ordered| as its promotion predicate.
+A promotion proof of type |Ordered A _≤A_ b as| for the list~|as| consists of only the inequality proofs necessary for ensuring that |as|~is ordered and bounded below by~|b|.
+Thus, to promote a list to an ordered list, we only need to supply the inequality proofs without providing the list elements again.}
 
 \subsubsection{Coherence-based definition of refinements}
 
@@ -109,9 +141,8 @@ record Refinement' (X Y : Set) : Set₁ where
     forget  :  Y → X
     p       :  (x : X) → P x ≅ (Σ'(y ∶ Y)) forget y ≡ x
 \end{code}
-We say that |x : X| and |y : Y| are \emph{in coherence} when |forget y ≡ x|, i.e., the underlying basic element in~|y| is~|x|.
-This definition then requires that the promotion proofs for any |x : X| exactly correspond to those more informative elements in coherence with~|x|.
-The two definitions of refinements are equivalent (and in fact isomorphic, which can be easily shown once we define a sensible equivalence on refinements in \autoref{chap:categorical}).
+We say that |x : X| and |y : Y| are \emph{in coherence} when |forget y ≡ x|, i.e., when |x|~underlies~|y|.
+The two definitions of refinements are equivalent.
 Of particular importance is the direction from |Refinement| to |Refinement'|:
 \begin{code}
 toRefinement' : {X Y : Set} → Refinement X Y → Refinement' X Y
@@ -119,16 +150,8 @@ toRefinement' r = record  case  P       =  Refinement.P r
                           sep   forget  =  Refinement.forget r
                           sep   p       =  coherence r endcase
 \end{code}
-where |coherence| is a proof (which is deferred until \autoref{chap:categorical}) that the promotion predicate of any refinement of type |Refinement X Y| is pointwise isomorphic to the \emph{canonical promotion predicate} |(lambda(x)) (Σ'(y ∶ Y)) forget y ≡ x|:
-\begin{code}
-coherence :
-  {X Y : Set} (r : Refinement X Y) →
-  (x : X) → Refinement.P r x ≅ (Σ'(y ∶ Y)) Refinement.forget r y ≡ x
-\end{code}
 We prefer the definition of refinements in terms of conversion isomorphisms because it is more concise and directly applicable to function upgrading.
 The coherence-based definition, however, is easier to generalise for function types, as we will see below.
-
-\todo[inline]{TBC}
 
 \subsection{Upgrades}
 \label{sec:upgrades}
@@ -309,7 +332,7 @@ u = r ⇀ toUpgrade r : Upgrade (Nat → Nat) (List A → List A)
 \end{code}
 The type |Upgrade.P u double| is exactly the type of |duplicate'|, and the type |Upgrade.C u double duplicate| is exactly the coherence property satisfied by |double| and |duplicate|.}
 
-\block{Comparison}{functional ornaments}{\todo[inline]{\citet{Dagand-functional-ornaments}, origin of coherence property, no need to construct a universe}
+\block{Comparison}{functional ornaments}{\todo[inline]{\citet{Dagand-functional-ornaments}, origin of coherence property, no need to construct a universe (open for easy extension)}
 We can define more combinators for upgrades, like the ones in \autoref{fig:upgrade-combinators}.}
 
 \subsection{Refinement families}
@@ -320,7 +343,7 @@ When we move on to consider refinements between indexed families of types, refin
 \item at the member type level, there is a refinement from~|X i| to~|Y j| whenever |i : I| underlies |j : J|, i.e., |Refinement.forget r j ≡ i|.
 \end{itemize}
 In short, each type~|X i| is refined by a collection of types in~|Y|, the underlying values of their indices all being~|i|.
-We will not exploit the complete refinement structure on indices, though, so in the actual definition of \emph{refinement families} below, the index-level refinement degenerates into the forgetful computation.
+We will not exploit the full refinement structure on indices, though, so in the actual definition of \emph{refinement families} below, the index-level refinement degenerates into just the forgetful function.
 \begin{code}
 FRefinement : {I J : Set} (e : J → I) (X : I → Set) (Y : J → Set) → Set₁
 FRefinement {I} e X Y = {i : I} (j : e ⁻¹ i) → Refinement (X i) (Y (und j))
@@ -333,6 +356,8 @@ This further classification is captured as a refinement family of type
 FRefinement proj₁ (OrdList A _≤A_) (uncurry (OrdVec A _≤A_))
 \end{code}
 which consists of refinements from |OrdList A _≤A_ b| to |OrdVec A _≤A_ b n| for all |b : A| and |n : Nat|.}
+
+\todo[inline]{relationship with ornaments}
 
 %\subsubsection{The need for a universe}
 %
@@ -682,12 +707,13 @@ Note that the synthesised new description |⌊ tD ⊕ tD' ⌋T| is at the less i
 (This, of course, is not a complete implementation of data types à la carte and requires more engineering for practical use.)}
 
 \subsection{Parallel composition of ornaments}
+\label{sec:parallel-composition}
 
 \todo[inline]{intro --- analysis for composability}
 %From ornaments, we can compute not only conversion functions but also new descriptions and ornaments.
 %A particularly powerful construction is \emph{parallel composition} of ornaments, which plays a central role in this thesis.
 The generic scenario is illustrated below:\todo{\autoref{chap:categorical}}\
-\[ \begin{tikzpicture}[x=5.5em, y=5.5em, baseline=(C), text height=1.5ex, text depth=.25ex]
+\[ \begin{tikzpicture}[scale=2.5, baseline=(C)]
 \node(C) at ( 0,  0) [coordinate] {};
 \node(I) at ( 0, -1) {|I|};
 \node(J) at (-1,  0) {|J|};
@@ -696,11 +722,11 @@ The generic scenario is illustrated below:\todo{\autoref{chap:categorical}}\
 \path
 (I) edge[<-] node[below left]{|e|} (J)
 (I) edge[<-] node[below right]{|f|} (K)
-(I) edge[<-] node {\labelonarrow{|pull|}} (P)
+(I) edge[<-] node[label on arrow]{|pull|} (P)
 (J) edge[<-] node[above left]{|π₁|} (P)
 (K) edge[<-] node[above right]{|π₂|} (P);
 \end{tikzpicture}\qquad
-\begin{tikzpicture}[x=5.5em, y=5.5em, baseline=(C), text height=1.5ex, text depth=.25ex]
+\begin{tikzpicture}[scale=2.5, baseline=(C)]
 \node(C) at ( 0,  0) [coordinate] {};
 \node(D) at ( 0, -1) {|D : Desc I|};
 \node(E) at (-1,  0) {|E : Desc J|};
@@ -709,9 +735,9 @@ The generic scenario is illustrated below:\todo{\autoref{chap:categorical}}\
 \path
 (D) edge[<-] node[below left]{|O|} (E)
 (D) edge[<-] node[below right]{|P|} (F)
-(D) edge[<-] node {\labelonarrow{|⌈ O ⊗ P ⌉|\kern1.6pt}} (P)
-(E) edge[<-] node[xshift=-1.5em]{\labelonarrow{|diffOrn-l O P|}} (P)
-(F) edge[<-] node[xshift=1.5em]{\labelonarrow{|diffOrn-r O P|}} (P);
+(D) edge[<-] node[label on arrow]{|⌈ O ⊗ P ⌉|\kern1.8pt} (P)
+(E) edge[<-] node[xshift=-1.5em, label on arrow]{|diffOrn-l O P|} (P)
+(F) edge[<-] node[xshift=1.5em, label on arrow]{|diffOrn-r O P|} (P);
 \end{tikzpicture} \]
 Given three descriptions |D : Desc I|, |E : Desc J|, and |F : Desc K| and two ornaments |O : Orn e D E| and |P : Orn e D F| independently specifying how |D|~is refined to |E|~and~|F|, we can compute an ornamental description
 \begin{code}
@@ -993,7 +1019,7 @@ indexfirst data Ordered A _≤A_ : A → List A → Set where
   Ordered A _≤A_ b []        offers  nil
   Ordered A _≤A_ b (a ∷ as)  offers  cons (leq : b ≤A a) (o : Ordered A _≤A_ a as)
 \end{code}
-A proof of |Ordered A _≤A_ b as| consists of exactly the inequality proofs necessary for ensuring that |as|~is ordered and bounded below by~|b| --- the representation of such a proof is optimised, justifying the name ``optimised predicate''.}
+Since a proof of |Ordered A _≤A_ b as| consists of exactly the inequality proofs necessary for ensuring that |as|~is ordered and bounded below by~|b|, its representation is optimised, justifying the name ``optimised predicate''.}
 
 \block{Example}{inductive length predicate on lists}{The optimised predicate for the ornament |ListD-VecD A| from lists to vectors is produced by the ornamental description |OptPOD (ListD-VecD A)| relative to |ListD A|:
 \begin{code}
@@ -1024,17 +1050,18 @@ We have thus determined the promotion predicate used by the refinement semantics
 RSem' :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
          Orn e D E → FRefinement e (μ D) (μ E)
 RSem' O j = record  case  P  = OptP O j
-                    sep   i  = ornPromIso O j endcase
+                    sep   i  = ornConvIso O j endcase
 \end{code}
-We call |ornPromIso| the \emph{ornamental conversion isomorphisms}, whose type is
+We call |ornConvIso| the \emph{ornamental conversion isomorphisms}, whose type is
 \begin{code}
-ornPromIso :
+ornConvIso :
   {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} (O : Orn e D E) →
   {i : I} (j : e ⁻¹ i) → μ E (und j) ≅ (Σ'(x : μ D i)) OptP O j x
 \end{code}
-The construction of |ornPromIso| will be deferred until \autoref{chap:categorical}.
+The construction of |ornConvIso| will be deferred until \autoref{chap:categorical}.
 
 \subsection{Predicate swapping for parallel composition}
+\label{sec:predicate-swapping}
 
 An ornament describes differences between two datatypes, and the optimised predicate for the ornament is the datatype of differences between inhabitants of the two datatypes.
 To promote an inhabitant from the less informative end to the more informative end of the ornament using its refinement semantics, we give a proof that the object satisfies the optimised predicate for the ornament.
@@ -1740,4 +1767,4 @@ The counterpart of |makeT| can thus determine before a recursive call whether to
 
 \section{Discussion}
 
-\todo[inline]{summary of the three-level architecture of ornaments, refinements, and upgrades; bundle; why ornaments?}
+\todo[inline]{summary of the three-level architecture of ornaments, refinements, and upgrades; bundle; why ornaments?; functor-level computation and recursion schemes}

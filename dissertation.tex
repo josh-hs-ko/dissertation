@@ -47,22 +47,27 @@
 \makeatother
 
 \usepackage[labelfont=bf,labelsep=quad,font=small]{caption}
-\usepackage{subcaption}
+\newcommand{\codefigure}{\setlength{\mathindent}{0em}}
 
 \usepackage{graphicx}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,arrows,calc}
+\usetikzlibrary{matrix,arrows,calc,fadings}
 \tikzset{every path/.append style={semithick}}
-\newcommand{\labelonarrow}[1]{\colorbox{white}{\vphantom{\vrule height 1.4ex depth .4ex}\smash{#1}}}
+\begin{tikzfadingfrompicture}[name=fade out, x=25bp, y=25bp]
+\fill[color=transparent!10] (-1, -.66) rectangle (1, .66);
+\shade[top color=transparent!10, bottom color=transparent!100] (-1, -1) rectangle (1, -.65);
+\shade[top color=transparent!100, bottom color=transparent!10] (-1, .65) rectangle (1, 1);
+\end{tikzfadingfrompicture}
+\tikzset{label on arrow/.style={fill=white, path fading=fade out}}
 
 \usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
 
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hskip1em(\textit{End of \lowercase{#1}}.)}
-\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hskip1em(\textit{End of \lowercase{#1}}.)}
+\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hskip1em$\Box$} % \hskip1em(\textit{End of \lowercase{#1}}.)
+\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hskip1em$\Box$}
 \makeatother
 
 \usepackage{enumitem}
@@ -83,8 +88,8 @@
 \newcommand{\proofterm}[1]{{\color{gray}#1}}
 \newlength{\underscorespace}
 \setlength{\underscorespace}{.065em}
-\newcommand{\binderbracketl}{\langle}
-\newcommand{\binderbracketr}{\rangle}
+\newcommand{\binderbracketl}{[}
+\newcommand{\binderbracketr}{]}
 \newlength{\binderspace}
 \setlength{\binderspace}{.075em}
 \newlength{\binderskip}
@@ -109,6 +114,7 @@
 \DeclareMathSymbol{\upsigma}{\mathalpha}{euler}{"1B}
 \newcommand{\recordmember}{\kern.08em.\kern.08em}
 \newcommand{\reason}[1]{\quad\{\,\text{#1}\,\}}
+\newcommand{\categorical}[2]{\mathbb{#1}\textsc{#2}}
 \input{processed-agda-preamble}
 
 \begin{document}

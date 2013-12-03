@@ -40,21 +40,37 @@
 %format (Highlight(x)) = "\Highlight{" x "}"
 
 %format (goal(t)(i)) = "\highlight{\{\," t "\,\}_{" i "}}"
+%format proofs-of-laws = "\highlight{\text{\color[gray]{.45}proofs of laws}}"
 
 
 %%%%%%%%
 % arrows
 
 %format ≡ = "\kern-.1em\equiv\kern-.1em"
+%format _≡_ = _ "{\equiv}" _
 %format ≅ = "\cong"
+%format _≅_ = _ "\kern\underscorespace{" ≅ "}" _
 %format ≐ = "\doteq"
+%format _≐_ = _ "\kern\underscorespace{" ≐ "}" _
+%format ≊ = "\kern-.1em\approxeq\kern-.1em"
+%format _≊_ = _ "\kern\underscorespace{\approxeq}" _
+%format ≊' = "\kern-.1em\mathrel{\dot\approxeq}\kern-.1em"
+%format _≊'_ = _ "\kern\underscorespace{\dot\approxeq}" _
 %format ⇉ = "{\rightrightarrows}"
+%format _⇉_ = _ "{" ⇉ "}" _
+%format ≈ = "\kern-.1em\approx\kern-.1em"
+%format _≈_ = _ "\kern\underscorespace{\approx}" _
+%format ≈C = "\kern-.1em\approx_C\kern-.1em"
+%format ≈D = "\kern-.1em\approx_D\kern-.1em"
+%format ≈S = "\kern-.1em\approx_S\kern-.1em"
 
 
 %%%%%%%%
 % basic types
 
+%format _∘_ = _ "{" ∘ "}\kern-\underscorespace" _
 %format refl = "\constructor{refl}"
+%format refl' = "\identifier{refl}"
 %format ⊤ = "\top"
 %format tt = "{\kern.125em\vrule height .85ex depth -.25ex width .5ex\kern.125em}"
 %format Σ = "\Sigma"
@@ -66,12 +82,57 @@
 %format inj₁ = "\constructor{inl}"
 %format inj₂ = "\constructor{inr}"
 %format ▿ =  "\triangledown"
+%format ▵ =  "\rotatebox[origin=c]{180}{$" ▿ "$}"
 %format Iso = "\constructor{Iso}"
 %format Iso.to = Iso "\recordmember" to
 %format Iso.from = Iso "\recordmember" from
 %format π₁ = proj₁
 %format π₂ = proj₂
 %format und-fromEq = "\identifier{und\text-fromEq}"
+%format Setoid = "\constructor{Setoid}"
+%format Setoid.Carrier = Setoid "\recordmember" Carrier
+%format Setoid._≈_ = Setoid "\recordmember" _≈_
+%format Level = "\constructor{Level}"
+%format Graph = "\constructor{Graph}"
+%format Category = "\constructor{Category}"
+%format ==> = "{\Rightarrow}"
+%format =C=> = "{\Rightarrow_C}"
+%format =D=> = "{\Rightarrow_D}"
+%format _==>_ = _ "{" ==> "}\kern-\underscorespace" _
+%format · = "{\cdot}"
+%format _·_ = _ "\kern\underscorespace{" · "}" _
+%format ·C = "{\cdot_C}"
+%format ·D = "{\cdot_D}"
+%format id-l = "\identifier{id\text-l}"
+%format id-r = "\identifier{id\text-r}"
+%format cong-l = "\identifier{cong\text-l}"
+%format cong-r = "\identifier{cong\text-r}"
+%format Functor = "\constructor{Functor}"
+%format equiv-preserving = "\identifier{equiv\text-preserving}"
+%format id-preserving = "\identifier{id\text-preserving}"
+%format comp-preserving = "\identifier{comp\text-preserving}"
+%format Iso = "\constructor{Iso}"
+%format from-to-inverse = "\identifier{from\text-to\text-inverse}"
+%format to-from-inverse = "\identifier{to\text-from\text-inverse}"
+%format terminal-iso = "\identifier{terminal\text-iso}"
+%format Span = "\constructor{Span}"
+%format span = "\constructor{span}"
+%format Span.M = Span "\recordmember" M
+%format Span.l = Span "\recordmember" l
+%format Span.r = Span "\recordmember" r
+%format triangle-l = "\identifier{triangle\text-l}"
+%format triangle-r = "\identifier{triangle\text-r}"
+%format SpanMorphism = "\constructor{SpanMorphism}"
+%format spanMorphism = "\constructor{spanMorphism}"
+%format SpanMorphism.m = SpanMorphism "\recordmember" m
+%format Slice = "\constructor{Slice}"
+%format slice = "\constructor{slice}"
+%format Slice.T = Slice "\recordmember" T
+%format Slice.s = Slice "\recordmember" s
+%format SliceMorphism = "\constructor{SliceMorphism}"
+%format sliceMorphism = "\constructor{sliceMorphism}"
+%format SliceMorphism.m = SliceMorphism "\recordmember" m
+%format SliceMorphism.triangle = SliceMorphism "\recordmember" triangle
 
 
 %%%%%%%%
@@ -85,7 +146,7 @@
 %format Refinement'.P = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" P
 %format Refinement'.forget = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" forget
 %format Refinement'.p = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" p
-
+%format forget-iso = "\identifier{forget\text-iso}"
 %format FRefinement = "\constructor{FRefinement}"
 
 %format Nat-List = "\identifier{Nat\text-List}"
@@ -148,7 +209,7 @@
 %format TDesc = "\constructor{TDesc}"
 %format _⊕_ = _ ⊕ "\kern-\underscorespace" _
 %format ⌊_⌋T = ⌊_⌋ "_{\kern-.5ptT}"
-%format _⊗_ = _ ⊗ "\kern-\underscorespace" _
+%format _⊗_ = _ "{" ⊗ "}\kern-\underscorespace" _
 %format pc-Ė = "\identifier{pc\text-" Ė "}"
 %format pcROD-double∇ = "\identifier{pcROD\text-double" ∇ "}"
 %format diffOrn-l = "\identifier{diffOrn\text-l}"
@@ -156,9 +217,14 @@
 %format diff-Ė-l = "\identifier{diff\text-" Ė "\text-l}"
 %format diffROrn-l = "\identifier{diffROrn\text-l}"
 %format diffROrn-l-double∇ = "\identifier{diffROrn\text-l\text-double" ∇ "}"
+%format _⊙_ = _ "{" ⊙ "}\kern-\underscorespace" _
+%format Ė-refl = "\identifier{" Ė "\text-refl}"
+%format Ė-trans = "\identifier{" Ė "\text-trans}"
 
 %format OptP = "\constructor{OptP}"
-%format RSem' = RSem
+%format RSem' = "\identifier{RSem}"
+
+%format OrnEq-forget = "\identifier{" OrnEq "\text-forget}"
 
 %format Swap = "\constructor{Swap}"
 %format Swap.Q = Swap "\recordmember" Q
@@ -166,7 +232,17 @@
 %format FSwap = "\constructor{FSwap}"
 %format ⊗-FSwap = "\identifier{{\otimes}\text-FSwap}"
 
-%format Ōrn = "\mathbb{O}\textsc{rn}"
+%format Fun = "\categorical{F}{un}"
+%format Fun-graph = "\identifier{" Fun "\text-graph}"
+%format Com = "\categorical{}{Com}"
+%format FamF = "\categorical{}{FamF}"
+%format Fam = "\categorical{F}{\kern-.6pt am}"
+%format Ōrn = "\categorical{O}{rn}"
+%format FRef = "\categorical{F}{ref}"
+%format FRefF = "\categorical{}{FRefF}"
+%format FRefC = "\categorical{}{FRefC}"
+%format Ind = "\categorical{}{Ind}"
+%format RSem = "\categorical{}{RSem}"
 
 %%%%%%%%
 % relations
@@ -273,3 +349,4 @@
 %format r₁≤l₁ = "\proofterm{" r₁ "{\leq}" l₁ "}"
 %format x₀≤x₁ = "\proofterm{" x₀ "{\leq}" x₁ "}"
 %format x₀≰x₁ = "\proofterm{" x₀ "{\nleq}" x₁ "}"
+%format pc-square = "\identifier{pc\text-square}"

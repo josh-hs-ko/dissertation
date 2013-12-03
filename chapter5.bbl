@@ -15,6 +15,7 @@
 \newblock In \emph{Foundations of Software Science and Computational
   Structures}, volume 6014 of \emph{Lecture Notes in Computer Science}, pages
   297--311. Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-12032-9\_21}.
 
 \bibitem[{Atkey et~al.(2012)Atkey, Johann, and
   Ghani}]{Atkey-refining-inductive-types}
@@ -46,6 +47,7 @@
 \newblock When is a function a fold or an unfold?
 \newblock \emph{Electronic Notes in Theoretical Computer Science},
   44(1):146--160.
+\newblock \doi{10.1016/S1571-0661(04)80906-X}.
 
 \bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
@@ -64,6 +66,7 @@
   \bibnamefont{McKinna} [2004].
 \newblock The view from the left.
 \newblock \emph{Journal of Functional Programming}, 14(1):69--111.
+\newblock \doi{10.1017/S0956796803004829}.
 
 \bibitem[{Mu et~al.(2009)Mu, Ko, and Jansson}]{Mu-AoPA}
 \bibfnamefont{Shin-Cheng} \bibnamefont{Mu}, \bibfnamefont{Hsiang-Shang}
@@ -71,5 +74,6 @@
 \newblock {A}lgebra of {P}rogramming in {A}gda: Dependent types for relational
   program derivation.
 \newblock \emph{Journal of Functional Programming}, 19(5):545--579.
+\newblock \doi{10.1017/S0956796809007345}.
 
 \end{thebibliography}

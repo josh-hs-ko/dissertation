@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -13,6 +13,18 @@
 \newblock Setoids in type theory.
 \newblock \emph{Journal of Functional Programming}, 13(2):261--293.
 \newblock \doi{10.1017/S0956796802004501}.
+
+\bibitem[{Harper and Pollack(1991)}]{Harper-universes}
+\bibfnamefont{Robert} \bibnamefont{Harper} and \bibfnamefont{Robert}
+  \bibnamefont{Pollack} [1991].
+\newblock Type checking with universes.
+\newblock \emph{Theoretical Computer Science}, 89(1):107--136.
+\newblock \doi{10.1016/0304-3975(90)90108-T}.
+
+\bibitem[{Mac~Lane(1998)}]{MacLane-categories}
+\bibfnamefont{Saunders} \bibnamefont{Mac~Lane} [1998].
+\newblock \emph{Categories for the Working Mathematician}.
+\newblock Springer-Verlag, second edition.
 
 \bibitem[{McBride(1999)}]{McBride-thesis}
 \bibfnamefont{Conor} \bibnamefont{McBride} [1999].
