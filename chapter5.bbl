@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -31,30 +31,19 @@
 \newblock \emph{Algebra of Programming}.
 \newblock Prentice-Hall.
 
-\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
-\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
-\newblock Transporting functions across ornaments.
-\newblock In \emph{International Conference on Functional Programming},
-  ICFP'12, pages 103--114. ACM.
-\newblock \doi{10.1145/2364527.2364544}.
+\bibitem[{Bird and Gibbons(2003)}]{Bird-arithmetic-coding}
+\bibfnamefont{Richard} \bibnamefont{Bird} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2003].
+\newblock Arithmetic coding with folds and unfolds.
+\newblock In \emph{Advanced Functional Programming}, volume 2638 of
+  \emph{Lecture Notes in Computer Science}, pages 1--26. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-44833-4\_1}.
 
-\bibitem[{Gibbons et~al.(2001)Gibbons, Hutton, and
-  Altenkirch}]{Gibbons-kernels}
-\bibfnamefont{Jeremy} \bibnamefont{Gibbons}, \bibfnamefont{Graham}
-  \bibnamefont{Hutton}, and \bibfnamefont{Thorsten} \bibnamefont{Altenkirch}
-  [2001].
-\newblock When is a function a fold or an unfold?
-\newblock \emph{Electronic Notes in Theoretical Computer Science},
-  44(1):146--160.
-\newblock \doi{10.1016/S1571-0661(04)80906-X}.
-
-\bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
-\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
-  \bibnamefont{Gibbons} [2013].
-\newblock Modularising inductive families.
-\newblock \emph{Progress in Informatics}, 10:65--88.
-\newblock \doi{10.2201/NiiPi.2013.10.5}.
+\bibitem[{Gibbons(2007)}]{Gibbons-metamorphisms}
+\bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007].
+\newblock Metamorphisms: Streaming representation-changers.
+\newblock \emph{Science of Computer Programming}, 65(2):108--139.
+\newblock \doi{10.1016/j.scico.2006.01.006}.
 
 \bibitem[{McBride(2011)}]{McBride-ornaments}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].
@@ -68,6 +57,30 @@
 \newblock \emph{Journal of Functional Programming}, 14(1):69--111.
 \newblock \doi{10.1017/S0956796803004829}.
 
+\bibitem[{McBride and Paterson(2008)}]{McBride-Applicative}
+\bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{Ross}
+  \bibnamefont{Paterson} [2008].
+\newblock Applicative programming with effects.
+\newblock \emph{Journal of Functional Programming}, 18(1):1--13.
+\newblock \doi{10.1017/S0956796807006326}.
+
+\bibitem[{Meijer et~al.(1991)Meijer, Fokkinga, and Paterson}]{Meijer-bananas}
+\bibfnamefont{Erik} \bibnamefont{Meijer}, \bibfnamefont{Maarten}
+  \bibnamefont{Fokkinga}, and \bibfnamefont{Ross} \bibnamefont{Paterson}
+  [1991].
+\newblock Functional programming with bananas, lenses, envelopes and barbed
+  wire.
+\newblock In \emph{Functional Programming Languages and Computer Architecture},
+  number 523 in Lecture Notes in Computer Science, pages 124--144.
+  Springer-Verlag.
+\newblock \doi{10.1007/3540543961\_7}.
+
+\bibitem[{Moggi(1991)}]{Moggi-monads}
+\bibfnamefont{Eugenio} \bibnamefont{Moggi} [1991].
+\newblock Notions of computation and monads.
+\newblock \emph{Information and Computation}, 93(1):55--92.
+\newblock \doi{10.1016/0890-5401(91)90052-4}.
+
 \bibitem[{Mu et~al.(2009)Mu, Ko, and Jansson}]{Mu-AoPA}
 \bibfnamefont{Shin-Cheng} \bibnamefont{Mu}, \bibfnamefont{Hsiang-Shang}
   \bibnamefont{Ko}, and \bibfnamefont{Patrik} \bibnamefont{Jansson} [2009].
@@ -75,5 +88,24 @@
   program derivation.
 \newblock \emph{Journal of Functional Programming}, 19(5):545--579.
 \newblock \doi{10.1017/S0956796809007345}.
+
+\bibitem[{Nakano(2013)}]{Nakano-jigsaw}
+\bibfnamefont{Keisuke} \bibnamefont{Nakano} [2013].
+\newblock Metamorphism in jigsaw.
+\newblock \emph{Journal of Functional Programming}, 23(2):161--173.
+\newblock \doi{10.1017/S0956796812000391}.
+
+\bibitem[{Nordstr{\"o}m(1988)}]{Nordstrom-accessibility}
+\bibfnamefont{Bengt} \bibnamefont{Nordstr{\"o}m} [1988].
+\newblock Terminating general recursion.
+\newblock \emph{BIT Numerical Mathematics}, 28(3):605--619.
+\newblock \doi{10.1007/BF01941137}.
+
+\bibitem[{Wadler(1992)}]{Wadler-essence}
+\bibfnamefont{Philip} \bibnamefont{Wadler} [1992].
+\newblock The essence of functional programming.
+\newblock In \emph{Principles of Programming Languages}, POPL'92, pages 1--14.
+  ACM.
+\newblock \doi{10.1145/143165.143169}.
 
 \end{thebibliography}

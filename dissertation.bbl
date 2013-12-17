@@ -1,4 +1,4 @@
-\begin{thebibliography}{30}
+\begin{thebibliography}{37}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -68,6 +68,14 @@
 \newblock \emph{Algebra of Programming}.
 \newblock Prentice-Hall.
 
+\bibitem[{Bird and Gibbons(2003)}]{Bird-arithmetic-coding}
+\bibfnamefont{Richard} \bibnamefont{Bird} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2003].
+\newblock Arithmetic coding with folds and unfolds.
+\newblock In \emph{Advanced Functional Programming}, volume 2638 of
+  \emph{Lecture Notes in Computer Science}, pages 1--26. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-44833-4\_1}.
+
 \bibitem[{Bishop and Bridges(1985)}]{Bishop-analysis}
 \bibfnamefont{Errett} \bibnamefont{Bishop} and \bibfnamefont{Douglas}
   \bibnamefont{Bridges} [1985].
@@ -122,6 +130,12 @@
   in type theory.
 \newblock \emph{Journal of Symbolic Logic}, 65(2):525--549.
 \newblock \doi{10.2307/2586554}.
+
+\bibitem[{Gibbons(2007)}]{Gibbons-metamorphisms}
+\bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007].
+\newblock Metamorphisms: Streaming representation-changers.
+\newblock \emph{Science of Computer Programming}, 65(2):108--139.
+\newblock \doi{10.1016/j.scico.2006.01.006}.
 
 \bibitem[{Gibbons et~al.(2001)Gibbons, Hutton, and
   Altenkirch}]{Gibbons-kernels}
@@ -181,6 +195,30 @@
 \newblock \emph{Journal of Functional Programming}, 14(1):69--111.
 \newblock \doi{10.1017/S0956796803004829}.
 
+\bibitem[{McBride and Paterson(2008)}]{McBride-Applicative}
+\bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{Ross}
+  \bibnamefont{Paterson} [2008].
+\newblock Applicative programming with effects.
+\newblock \emph{Journal of Functional Programming}, 18(1):1--13.
+\newblock \doi{10.1017/S0956796807006326}.
+
+\bibitem[{Meijer et~al.(1991)Meijer, Fokkinga, and Paterson}]{Meijer-bananas}
+\bibfnamefont{Erik} \bibnamefont{Meijer}, \bibfnamefont{Maarten}
+  \bibnamefont{Fokkinga}, and \bibfnamefont{Ross} \bibnamefont{Paterson}
+  [1991].
+\newblock Functional programming with bananas, lenses, envelopes and barbed
+  wire.
+\newblock In \emph{Functional Programming Languages and Computer Architecture},
+  number 523 in Lecture Notes in Computer Science, pages 124--144.
+  Springer-Verlag.
+\newblock \doi{10.1007/3540543961\_7}.
+
+\bibitem[{Moggi(1991)}]{Moggi-monads}
+\bibfnamefont{Eugenio} \bibnamefont{Moggi} [1991].
+\newblock Notions of computation and monads.
+\newblock \emph{Information and Computation}, 93(1):55--92.
+\newblock \doi{10.1016/0890-5401(91)90052-4}.
+
 \bibitem[{Monnier and Haguenauer(2010)}]{Monnier-singleton-types}
 \bibfnamefont{Stefan} \bibnamefont{Monnier} and \bibfnamefont{David}
   \bibnamefont{Haguenauer} [2010].
@@ -197,6 +235,12 @@
   program derivation.
 \newblock \emph{Journal of Functional Programming}, 19(5):545--579.
 \newblock \doi{10.1017/S0956796809007345}.
+
+\bibitem[{Nakano(2013)}]{Nakano-jigsaw}
+\bibfnamefont{Keisuke} \bibnamefont{Nakano} [2013].
+\newblock Metamorphism in jigsaw.
+\newblock \emph{Journal of Functional Programming}, 23(2):161--173.
+\newblock \doi{10.1017/S0956796812000391}.
 
 \bibitem[{Norell(2007)}]{Norell-thesis}
 \bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
@@ -221,5 +265,12 @@
 \newblock Data types {\`a} la carte.
 \newblock \emph{Journal of Functional Programming}, 18(4):423--436.
 \newblock \doi{10.1017/S0956796808006758}.
+
+\bibitem[{Wadler(1992)}]{Wadler-essence}
+\bibfnamefont{Philip} \bibnamefont{Wadler} [1992].
+\newblock The essence of functional programming.
+\newblock In \emph{Principles of Programming Languages}, POPL'92, pages 1--14.
+  ACM.
+\newblock \doi{10.1145/143165.143169}.
 
 \end{thebibliography}

@@ -32,6 +32,9 @@
 %format 0 = "\mathrm 0"
 %format 1 = "\mathrm 1"
 %format 2 = "\mathrm 2"
+%format 3 = "\mathrm 3"
+%format 4 = "\mathrm 4"
+%format 5 = "\mathrm 5"
 
 %format ₀ = "_{\mathrm 0}"
 %format ₁ = "_{\mathrm 1}"
@@ -47,8 +50,8 @@
 % arrows
 
 %format ≡ = "\kern-.1em\equiv\kern-.1em"
-%format _≡_ = _ "{\equiv}" _
-%format ≅ = "\cong"
+%format _≡_ = _ "\kern\underscorespace{\equiv}" _
+%format ≅ = "\mathrel{\cong}"
 %format _≅_ = _ "\kern\underscorespace{" ≅ "}" _
 %format ≐ = "\doteq"
 %format _≐_ = _ "\kern\underscorespace{" ≐ "}" _
@@ -57,7 +60,7 @@
 %format ≊' = "\kern-.1em\mathrel{\dot\approxeq}\kern-.1em"
 %format _≊'_ = _ "\kern\underscorespace{\dot\approxeq}" _
 %format ⇉ = "{\rightrightarrows}"
-%format _⇉_ = _ "{" ⇉ "}" _
+%format _⇉_ = _ "\kern\underscorespace{" ⇉ "}" _
 %format ≈ = "\kern-.1em\approx\kern-.1em"
 %format _≈_ = _ "\kern\underscorespace{\approx}" _
 %format ≈C = "\kern-.1em\approx_C\kern-.1em"
@@ -247,12 +250,40 @@
 %%%%%%%%
 % relations
 
+%format ℘ = "{\mathcal P}"
+%format (Power t) = ℘ t
+%format _↝_ = _ "{" ↝ "}\kern-\underscorespace" _
 %format Ṙ = "\mathbb R"
+%format _>>=_ = _ "{" >>= "}\kern-\underscorespace" _
+%format <$> = "\mathop{\raisebox{2.4pt}{\scalebox{1}[.4]{$\langle$}}\$\raisebox{2.4pt}{\scalebox{1}[.4]{$\rangle$}}}"
+%format _<$> = _ "{" <$> "}"
+%format <$>² = "\mathop{{" <$> "}\kern-.5pt^2}"
+%format _<$>² = _ "{" <$>² "}"
+%format • = "\mathop{\raisebox{2pt}{\scalebox{0.5}{$\bullet$}}}"
+%format _•_ = _ "\kern\underscorespace{" • "}\kern.8\underscorespace" _
+%format _∩_ = _ "\kern\underscorespace{" ∩ "}" _
+%format º = "\kern-.1em^\circ"
+%format _º = _ "{^\circ}"
+%format ⊆ = "\mathrel\subseteq"
+%format _⊆_ = _ "\kern\underscorespace{\subseteq}" _
+%format ⊇ = "\mathrel\supseteq"
+%format _⊇_ = _ "\kern\underscorespace{\supseteq}" _
+%format ≃ = "\mathrel\simeq"
+%format _≃_ = _ "\kern\underscorespace{\simeq}" _
+%format foldR = "(\kern-2.6pt[" _ "\kern.08em]\kern-2.6pt)"
+%format (cata(x)) = "(\kern-2.6pt[\," x "\,]\kern-2.6pt)"
+%format fun-preserves-fold = "\identifier{fun\text-preserves\text-fold}"
 %format Λ = "\Lambda"
-%format • = "\cdot"
 %format •Λ = • Λ
 %format α = "\alpha"
 %format min_•Λ_ = min _ •Λ _
+
+%format AlgList = "\constructor{AlgList}"
+%format AlgListP = "\constructor{AlgListP}"
+%format algOD-fusion-⊆ = "\identifier{algOD\text-fusion\text-{\subseteq}}"
+%format algOD-fusion-⊇ = "\identifier{algOD\text-fusion\text-{\supseteq}}"
+%format BVec = "\constructor{BVec}"
+%format foldl-alg = "\identifier{foldl\text-alg}"
 
 
 %%%%%%%%
@@ -350,3 +381,22 @@
 %format x₀≤x₁ = "\proofterm{" x₀ "{\leq}" x₁ "}"
 %format x₀≰x₁ = "\proofterm{" x₀ "{\nleq}" x₁ "}"
 %format pc-square = "\identifier{pc\text-square}"
+%format length-alg = "\identifier{length\text-alg}"
+%format Coin = "\constructor{Coin}"
+%format onep = "\constructor{1p}"
+%format twop = "\constructor{2p}"
+%format fivep = "\constructor{5p}"
+%format ≤C = "\!\mathrel{\leq_C}\!"
+%format _≤C_ = _ "{≤_C}\kern-\underscorespace" _
+%format CoinBag = "\constructor{CoinBag}"
+%format total-value-alg = "\identifier{total\text-value\text-alg}"
+%format total-value = "\identifier{total\text-value}"
+%format size-alg = "\identifier{size\text-alg}"
+%format min-coin-change = "\identifier{min\text-coin\text-change}"
+%format greedy-lemma = "\identifier{greedy\text-lemma}"
+%format producer-iso = "\identifier{producer\text-iso}"
+%format consumer-iso = "\identifier{consumer\text-iso}"
+%format streaming-lemma = "\identifier{streaming\text-lemma}"
+%format streaming-condition = "\identifier{streaming\text-condition}"
+%format nothing = "\constructor{nothing}"
+%format next = "\constructor{next}"

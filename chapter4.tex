@@ -306,21 +306,7 @@ OrnEq-forget :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
                 (O : Orn e D E) (P : Orn f D E) → OrnEq O P →
                 (e ≐ f) × ((j : J) → forget O {j} ≊' forget P {j})
 \end{code}
-One possible way to define |OrnEq| is simply to require that the semantics of two ornaments are equal; that is, the natural transformations decoded from corresponding response ornaments by |erase| should be extensionally equal.
-The latter condition is stated as |ROrnEq| below.
-\begin{code}
-OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
-         Orn e D E → Orn f D E → Set
-OrnEq {I} {J} {e} {f} O P =
-  (e ≐ f) × ((j : J) → ROrnEq (O (ok j)) (P (ok j)))
-  where
-    ROrnEq :  {D' D'' : RDesc I} {E' : RDesc J} →
-              ROrn e D' E' → ROrn f D'' E' → Set
-    ROrnEq {D'} {D''} {E'} O' P' =
-      (hs : ⟦ E' ⟧ (const ⊤)) → erase O' hs ≊ erase P' hs
-\end{code}
-Note that we only need extensional equality on a specific instance of |erase| taking response structures whose recursive positions are all of type~|⊤|, since the behaviour of |erase| on recursive positions is fixed.
-This simplification helps to avoid some nasty typing problems.
+The actual definition of |OrnEq| is deferred until \autoref{chap:equivalence}.
 
 \item Morphism composition is sequential composition~|_⊙_|\,, which merges two successive batches of modifications in a straightforward way.
 The definition is shown in \autoref{fig:sequential-composition}.
@@ -682,7 +668,7 @@ The proof of its universal property boils down to, very roughly speaking, dataty
 forget (diffOrn-l O P) ▵ forget (diffOrn-r O P)
 \end{code}
 which involves tricky manipulation of equality proofs but is achievable.
-After the pullback square~(\ref{eq:Fam-pullback}) is established in |Fam|, since the functor |Com| is pullback-preserving\todo{What is pullback preservation?}, we also get a pullback square in |Fun|:
+After the pullback square~(\ref{eq:Fam-pullback}) is established in |Fam|, since the functor |Com| is pullback-preserving, we also get a pullback square in |Fun|:
 \begin{equation}
 \begin{tikzpicture}[scale=5, baseline=(D.base)]
 \node(D) at (1, 0) {|Σ I (μ D)|};
@@ -700,7 +686,7 @@ After the pullback square~(\ref{eq:Fam-pullback}) is established in |Fam|, since
 \label{eq:Fun-pullback}
 \end{equation}
 
-\todo[inline]{mention commutativity, associativity}
+\todo[inline]{mention commutativity, associativity; should probably refactor the pullback square in |Fam| into the pullback square in |Ōrn| and pullback preservation of |Ind|}
 
 
 \section{The ornamental conversion isomorphisms}

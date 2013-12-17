@@ -71,7 +71,7 @@
 \makeatother
 
 \usepackage{enumitem}
-\setitemize{leftmargin=\parindent,labelindent=*,itemsep=.9\parskip,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setitemize{leftmargin=*,labelindent=0em,itemsep=.6\parskip,topsep=-.4\parskip,parsep=0pt,partopsep=0pt}
 
 \hyphenation{pa-ra-me-trise}
 \hyphenation{pa-ra-me-trised}
@@ -82,12 +82,14 @@
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
 \linespread{1.25}
+\usepackage{rsfso}
+\renewcommand{\emph}{\textbf}
 \newcommand{\keyword}{\mathbf}
 \newcommand{\constructor}{\mathsf}
 \newcommand{\identifier}{\mathit}
 \newcommand{\proofterm}[1]{{\color{gray}#1}}
 \newlength{\underscorespace}
-\setlength{\underscorespace}{.065em}
+\setlength{\underscorespace}{.8pt}
 \newcommand{\binderbracketl}{[}
 \newcommand{\binderbracketr}{]}
 \newlength{\binderspace}
