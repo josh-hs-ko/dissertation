@@ -83,7 +83,7 @@ which has identities and is associative.
 We will give the first few universe-polymorphic definitions with full detail about the levels, but will later suppress the syntactic noise wherever possible.}
 
 Before we move on to the definition of categories, though, special attention must be paid to equality on morphisms, which is usually coarser than definitional equality --- in |Fun|, for example, it is necessary to identify functions up to extensional equality (so uniqueness of morphisms in universal properties would make sense).
-One simple way to achieve this in Agda's intensional setting is to use \emph{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
+One ad hoc way to achieve this in Agda's intensional setting is to use \emph{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
 The type of setoids can be defined as a record which contains a carrier set, an equivalence relation on the set, and the three laws for the equivalence relation:
 \begin{code}
 record Setoid {c d : Level} : Set (suc (c ⊔ d)) where
@@ -382,7 +382,7 @@ record Iso C X Y : Set _ where
 \end{code}
 (The relation |_≅_| is formally defined as |Iso Fun|.)
 
-\todo[inline]{functors preserve isomorphisms; TBC}
+\todo[inline]{functors preserve isomorphisms (a quick demonstration of preorder reasoning); TBC}
 
 \section{Pullback properties of parallel composition}
 \label{sec:parallel-composition-pullback}
@@ -689,7 +689,9 @@ After the pullback square~(\ref{eq:Fam-pullback}) is established in |Fam|, since
 \todo[inline]{mention commutativity, associativity; should probably refactor the pullback square in |Fam| into the pullback square in |Ōrn| and pullback preservation of |Ind|}
 
 
-\section{The ornamental conversion isomorphisms}
+\section{Consequences}
+
+\subsection{The ornamental conversion isomorphisms}
 \label{sec:ornamental-conversion-isomorphisms}
 
 %The morphism part of the functor |RSem : Functor Ōrn FRef| translates ornaments into refinements that use the optimised predicates, which are defined via parallel composition, so the pullback properties for parallel composition hold for the optimised predicates.
@@ -799,7 +801,7 @@ We are thus forced to fuse all the above reasoning into one step to get a clean 
 %such that |proj₁ (Iso.to (xiso k))| is definitionally equal to |g {k}|.
 %Substituting |μ E| for~|X|, |μ ⌊ O ⊗ ⌈ S ⌉ ⌋| for~|Y|, |μ D ∘ e| for~|M|, and |forget O| for~|g|, and supplying a suitable |miso|, we get~(\ref{eq:rep-iso}) again, but this time the forgetful functions derived from the refinements using these isomorphisms would simply be definitionally equal to |forget O|, so it becomes trivial to show that the morphism part of |RSem| preserves equivalence.
 
-\section{The modularity isomorphisms}
+\subsection{The modularity isomorphisms}
 \label{sec:modularity-isomorphisms}
 
 The other important family of isomorphisms we should construct from the pullback properties of parallel composition is the modularity isomorphisms, which is restated as follows:

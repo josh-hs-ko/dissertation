@@ -18,6 +18,7 @@
 %format inferred = ".\kern.25pt" _
 %format := = "{\raisebox{.08pt}{$\mathop:$}\shorteq}"
 %format (proofterm(t)) = "\proofterm{" t "}"
+%format (vartype(t)) = "_{" t "}"
 
 %format syntax = "\keyword{syntax}"
 %format constructor = "\keyword{constructor}"
@@ -35,6 +36,10 @@
 %format 3 = "\mathrm 3"
 %format 4 = "\mathrm 4"
 %format 5 = "\mathrm 5"
+%format 6 = "\mathrm 6"
+%format 7 = "\mathrm 7"
+%format 8 = "\mathrm 8"
+%format 9 = "\mathrm 9"
 
 %format ₀ = "_{\mathrm 0}"
 %format ₁ = "_{\mathrm 1}"
@@ -161,9 +166,9 @@
 %format Upgrade.c = Upgrade "\recordmember" c
 %format _⇀_ = _ "{\rightharpoonup}\kern-\underscorespace" _
 %format (newforall(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
-%format (newforall'(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\kern-2.5pt\binderbracketl\," t "\,\binderbracketr\kern-2.5pt\binderbracketr\kern\binderskip"
+%format (newforall'(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\kern\binderskip"
 %format (fixedforall(t)) = "\forall\kern.5\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
-%format (fixedforall'(t)) = "\forall\kern.5\binderspace\binderbracketl\kern-2.5pt\binderbracketl\," t "\,\binderbracketr\kern-2.5pt\binderbracketr\kern\binderskip"
+%format (fixedforall'(t)) = "\forall\kern.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\kern\binderskip"
 
 %format id-FSwap = "\identifier{id\text-FSwap}"
 %format ⊗-FSwap = "\identifier{{\otimes}\text-FSwap}"
@@ -310,6 +315,7 @@
 %format Vec = "\constructor{Vec}"
 %format Length = "\constructor{Length}"
 %format Length-FSwap = "\identifier{Length\text-FSwap}"
+%format Vec' = Vec "^\prime"
 %format Square = "\constructor{Square}"
 %format OrdList = "\constructor{OrdList}"
 %format ≤A = "{\leq}_A\kern-\underscorespace"
@@ -386,17 +392,48 @@
 %format onep = "\constructor{1p}"
 %format twop = "\constructor{2p}"
 %format fivep = "\constructor{5p}"
-%format ≤C = "\!\mathrel{\leq_C}\!"
-%format _≤C_ = _ "{≤_C}\kern-\underscorespace" _
+%format ≤C = "\!\mathrel{\leq_\constructor{C}}\!"
+%format _≤C_ = _ "{≤_\constructor{C}}\kern-\underscorespace" _
 %format CoinBag = "\constructor{CoinBag}"
 %format total-value-alg = "\identifier{total\text-value\text-alg}"
 %format total-value = "\identifier{total\text-value}"
 %format size-alg = "\identifier{size\text-alg}"
 %format min-coin-change = "\identifier{min\text-coin\text-change}"
+%format GreedyBag = "\constructor{GreedyBag}"
+%format gnil = "\constructor{gnil}"
+%format gcons = "\constructor{gcons}"
+%format gnil' = "\constructor{gnil^\prime}"
+%format gcons' = "\constructor{gcons^\prime}"
+%format CoinBag' = "\constructor{CoinBag^\prime}"
+%format bnil = "\constructor{bnil}"
+%format bcons = "\constructor{bcons}"
+%format CoinOrderedView = "\constructor{CoinOrderedView}"
+%format CoinBag'View = "\constructor{CoinBag^\prime View}"
+%format view-CoinBag' = "\identifier{view\text-CoinBag^\prime}"
+%format add-penny = "\identifier{add\text-penny}"
+%format empty = "\constructor{empty}"
+%format oneponep = onep onep
+%format oneptwop = onep twop
+%format twoptwop = twop twop
+%format onepfivep = onep fivep
+%format twopfivep = twop fivep
+%format fivepfivep = fivep fivep
+%format view-ordered-coin = "\identifier{view\text-ordered\text-coin}"
 %format greedy-lemma = "\identifier{greedy\text-lemma}"
-%format producer-iso = "\identifier{producer\text-iso}"
-%format consumer-iso = "\identifier{consumer\text-iso}"
+%format c≤d = "\identifier{c{\leq}d}"
+%format e≤c = "\identifier{e{\leq}c}"
+%format maximum-coin = "\identifier{maximum\text-coin}"
+%format _<_ = _ "{<}" _
+%format <-rec = "\identifier{{<}\text-rec}"
+%format compare-with-zero = "\identifier{compare\text-with\text-zero}"
+%format ZeroView = "\constructor{ZeroView}"
+%format is-zero = "\constructor{is\text-zero}"
+%format above-zero = "\constructor{above\text-zero}"
+%format n>z = "\identifier{n{>}z}"
+%format d≤c = "\identifier{d{\leq}c}"
+%format production-iso = "\identifier{production\text-iso}"
+%format consumption-iso = "\identifier{consumption\text-iso}"
 %format streaming-lemma = "\identifier{streaming\text-lemma}"
 %format streaming-condition = "\identifier{streaming\text-condition}"
 %format nothing = "\constructor{nothing}"
-%format next = "\constructor{next}"
+%format next' = "\constructor{next}"

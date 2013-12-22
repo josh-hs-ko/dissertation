@@ -1,6 +1,8 @@
 \chapter{From intuitionistic type theory to dependently typed programming}
 \label{chap:background}
 
+\todo[inline]{specific issues regarding practical programming with type theory (including introduction to Agda); lead into internalism vs externalism}
+
 We start with an introduction to intuitionistic type theory \citep{ML-ITT} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the Agda language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
 Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
 While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program construction movement.
@@ -52,13 +54,13 @@ The first case only offers the nil constructor~|[]|, and the second case only of
 Because the form of the index restricts constructor choice, the recursive structure of a vector |as : Vec A n| must follow that of~|n|, i.e., the number of cons nodes in~|as| must match the number of successor nodes in~|n|.
 We can also declare the bottom-up vector datatype in index-first style:
 \begin{code}
-indexfirst data Vec (A : Set) : Nat → Set where
-  Vec A n  offers  nil (neq : n ≡ zero)
-           or      cons  (a : A) {m : Nat}
-                         (as : Vec A m) (meq : n ≡ suc m)
+indexfirst data Vec' (A : Set) : Nat → Set where
+  Vec' A n  offers  nil (neq : n ≡ zero)
+            or      cons  (a : A) {m : Nat}
+                          (as : Vec A m) (meq : n ≡ suc m)
 \end{code}
 Besides the field~|m| storing the length of the tail, two more fields |neq| and |meq| are inserted, demanding explicit equality proofs about the indices.
-When a vector of type |Vec A n| is demanded, we are ``free'' to choose between nil or cons regardless of the index~|n|; however, because of the equality constraints, we are indirectly forced into a particular choice.
+When a vector of type |Vec' A n| is demanded, we are ``free'' to choose between nil or cons regardless of the index~|n|; however, because of the equality constraints, we are indirectly forced into a particular choice.
 
 \block{Remark}{detagging}{The transformation from bottom-up vectors to top-down vectors is exactly what \varcitet{Brady-inductive-families-indices}{'s \emph{detagging} optimisation} does.
 With index-first datatypes, however, detagged representations are available directly, rather than arising from a compiler optimisation.}

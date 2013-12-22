@@ -163,9 +163,6 @@ However, the behaviour of a function taking a list may depend essentially on the
 For example, a function of type |List Nat → List Nat| might compute the sum~|s| of the input list and emit a list of length~|s| whose elements are all |zero|.
 We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.
 
-\block{Comparison}{type theory in colour}{\citet{Bernardy-color}
-\todo[inline]{TBC}}
-
 It is only the decomposing direction of refinements that causes problem in the case of function types, however; the promoting direction is perfectly valid for function types.
 For example, to promote the function
 \begin{code}
@@ -243,7 +240,7 @@ The most representative combinator for upgrades is the following one for synthes
 _⇀_ :  {X Y Z W : Set} →
        Refinement X Y → Upgrade Z W → Upgrade (X → Z) (Y → W)
 \end{code}
-Note that there should be a \emph{refinement} between the source types |X|~and~|Y|, rather than just an upgrade.
+Note that there should be a refinement between the source types |X|~and~|Y|, rather than just an upgrade.
 (As a consequence, we can produce upgrades between curried multi-argument function types but not between higher-order function types.)
 This is because, as we see in the |double|--|duplicate| example, we need the ability to decompose the source type~|Y|.
 
@@ -275,7 +272,8 @@ r ⇀ s = record
 \end{code}
 
 \begin{figure}
-\setlength{\mathindent}{0em}
+\codefigure\small
+\vskip-1.5\parskip
 \begin{code}
 -- the upgraded function type has an extra argument
 new :  {X : Set} (I : Set) {Y : I → Set} →
@@ -297,8 +295,7 @@ new' I u = record  case  P  =  (lambda(x)) ∀ {i} → Upgrade.P (u i) x
 
 syntax new' I ((lambda(i)) u) = (newforall'(i ∶ I)) u
 
--- the underlying and the upgraded function types
--- have a common argument
+-- the underlying and the upgraded function types have a common argument
 fixed :  (I : Set) {X : I → Set} {Y : I → Set} →
          (∀ i → Upgrade (X i) (Y i)) → Upgrade ((i : I) → X i) ((i : I) → Y i)
 fixed I u = record  case  P  =  (lambda(f)) ∀ i → Upgrade.P (u i) (f i)
@@ -318,6 +315,7 @@ fixed' I u = record  case  P     =  (lambda(f)) ∀ {i} → Upgrade.P (u i) (f {
 
 syntax fixed' I ((lambda(i)) u) = (fixedforall'(i ∶ I)) u
 \end{code}
+\vskip-2.5\parskip
 \caption{More combinators for upgrades.}
 \label{fig:upgrade-combinators}
 \end{figure}
@@ -518,7 +516,7 @@ computes the underlying list of a vector.}
 \label{sec:ornamental-descriptions}
 
 \begin{figure}
-\setlength{\mathindent}{0em}
+\codefigure\small
 \begin{code}
 data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁ where
   ṿ   :  {is : List I} (js : Ṗ is (InvImage e)) → ROrnDesc J e (ṿ is)
@@ -538,8 +536,7 @@ toRDesc (σ S OD)     = (σ'(s ∶ S)) toRDesc (OD s)
 toRDesc (Δ T OD)     = (σ'(t ∶ T)) toRDesc (OD t)
 toRDesc (∇ s OD)     = toRDesc OD
 
-toEq-Ṗ :  {I J : Set} {e : J → I}
-          (is : List I) (js : Ṗ is (InvImage e)) → Ė e (und-Ṗ is js) is
+toEq-Ṗ : {I J : Set} {e : J → I} (is : List I) (js : Ṗ is (InvImage e)) → Ė e (und-Ṗ is js) is
 toEq-Ṗ []        tt        = []
 toEq-Ṗ (i ∷ is)  (j , js)  = toEq j ∷ toEq-Ṗ is js
 
@@ -556,8 +553,7 @@ OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
 ⌊_⌋ : {I J : Set} {e : J → I} {D : Desc I} → OrnDesc J e D → Desc J
 ⌊ OD ⌋ j = toRDesc (OD (ok j))
 
-⌈_⌉ :  {I J : Set} {e : J → I} {D : Desc I}
-       (OD : OrnDesc J e D) → Orn e D ⌊ OD ⌋
+⌈_⌉ : {I J : Set} {e : J → I} {D : Desc I} (OD : OrnDesc J e D) → Orn e D ⌊ OD ⌋
 ⌈ OD ⌉ (ok j) = toROrn (OD (ok j))
 \end{code}
 \caption{Definitions for ornamental descriptions.}
@@ -778,7 +774,7 @@ and \,(ii)~an ornament whose forgetful function converts ordered vectors to plai
 The forgetful functions of the difference ornaments convert ordered vectors to ordered lists and vectors, removing only length and ordering information respectively.}
 
 \begin{figure}
-\setlength{\mathindent}{0em}
+\codefigure
 \begin{code}
 pc-Ė :  {I J K : Set} {e : J → I} {f : K → I} →
         {is : List I} {js : List J} {ks : List K} →
@@ -790,8 +786,8 @@ pc-Ė {e := e} {f}  (eeq ∷ eeqs)  (feq ∷ feqs)  =  ok (fromEq e eeq , fromEq
 mutual
 
   pcROD :  {I J K : Set} {e : J → I} {f : K → I}
-            {D : RDesc I} {E : RDesc J} {F : RDesc K} →
-            ROrn e D E → ROrn f D F → ROrnDesc (e ⋈ f) pull D
+           {D : RDesc I} {E : RDesc J} {F : RDesc K} →
+           ROrn e D E → ROrn f D F → ROrnDesc (e ⋈ f) pull D
   pcROD (ṿ eeqs)    (ṿ feqs)  = ṿ (pc-Ė eeqs feqs)
   pcROD (ṿ eeqs)    (Δ T P)   = (Δ'(t ∶ T))  pcROD (ṿ eeqs)  (P t)
   pcROD (σ S O)     (σ .S P)  = (σ'(s ∶ S))  pcROD (O s)    (P s)
@@ -874,12 +870,11 @@ So the product should really be a pullback to ensure this.\todo{\autoref{chap:ca
 where \highlight{\text{lighter box}} indicates modifications from |⌈ OrdListOD A _≤A_ ⌉| and \Highlight{\text{darker box}} from |ListD-VecD A|.}
 
 \begin{figure}
-\setlength{\mathindent}{0em}
+\codefigure\small
 \begin{code}
-diff-Ė-l :
-  {I J K : Set} {e : J → I} {f : K → I} →
-  {is : List I} {js : List J} {ks : List K} →
-  (eeqs : Ė e js is) (feqs : Ė f ks is) → Ė π₁ (und-Ṗ is (pc-Ė eeqs feqs)) js
+diff-Ė-l :  {I J K : Set} {e : J → I} {f : K → I} →
+            {is : List I} {js : List J} {ks : List K} →
+            (eeqs : Ė e js is) (feqs : Ė f ks is) → Ė π₁ (und-Ṗ is (pc-Ė eeqs feqs)) js
 diff-Ė-l           []            []            = []
 diff-Ė-l {e := e}  (eeq ∷ eeqs)  (feq ∷ feqs)  = und-fromEq e eeq ∷ diff-Ė-l eeqs feqs
 
@@ -906,10 +901,9 @@ mutual
     ROrn π₁ E (toRDesc (pcROD-double∇ O P eq))
   diffROrn-l-double∇ O P refl = diffROrn-l O P
 
-diffOrn-l :
-  {I J K : Set} {e : J → I} {f : K → I} →
-  {D : Desc I} {E : Desc J} {F : Desc K} →
-  (O : Orn e D E) (P : Orn f D F) → Orn π₁ E ⌊ O ⊗ P ⌋
+diffOrn-l :  {I J K : Set} {e : J → I} {f : K → I} →
+             {D : Desc I} {E : Desc J} {F : Desc K} →
+             (O : Orn e D E) (P : Orn f D F) → Orn π₁ E ⌊ O ⊗ P ⌋
 diffOrn-l O P (ok (j , k)) = diffROrn-l (O j) (P k)
 \end{code}
 \caption{Definitions for left difference ornament.}
@@ -984,7 +978,7 @@ Note that |p|~contains only values of the field marked as additional by~|Δ| in 
 The constructor tags are essential for determining the recursive structure of~|p|, but instead of being stored in~|p|, they are derived from |two|, which is part of the index of the type of~|p|.
 In general, here is how we compute an ornamental description for such proofs, using~|D| as the template:
 we incorporate the modifications made by~|O|, and delete the fields that already exist in~|D|, whose default values are derived in the index-first fashion from the inhabitant being promoted, which appears in the index of the type of a proof.
-The deletion is independent of~|O| and can be performed by the \emph{singleton ornament} for~|D| (\autoref{sec:ornamental-descriptions}), so the desired ornamental description is produced by the parallel composition of |O|~and |⌈ singletonOD D ⌉|:
+The deletion is independent of~|O| and can be performed by the singleton ornament for~|D| (\autoref{sec:ornamental-descriptions}), so the desired ornamental description is produced by the parallel composition of |O|~and |⌈ singletonOD D ⌉|:
 \begin{code}
 OptPOD :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
           Orn e D E → OrnDesc (e ⋈ proj₁) pull D
@@ -1167,7 +1161,7 @@ swaps |Length A| for |(lambda(n as)) length as ≡ n|.}
 
 \section{Examples}
 
-To further demonstrate the use of the ornament--refinement framework, we look at two dependently typed heap data structures adapted from \varcitet{Okasaki-data-structures}{'s work}.
+To further demonstrate the use of the ornament--refinement framework, we look at two dependently typed heap data structures adapted from \varcitet{Okasaki-data-structures}{'s work on purely functional data structures}.
 The first example about \emph{binomial heaps} shows that \citeauthor{Okasaki-data-structures}'s idea of \emph{numerical representations} can be elegantly captured by ornaments and the coherence properties computed with upgrades, and the second example about \emph{leftist heaps} demonstrates the power of parallel composition of ornaments by treating heap ordering and leftist balancing properties modularly.\todo[inline]{Postulate operations on~|Val| like |_≤?_|, |≤-refl|, |≤-trans|, and |≰-invert| in Chapter~2.}
 
 \subsection{Binomial heaps}
@@ -1662,16 +1656,14 @@ toList : {b : Val} {r : Nat} → LHeap b r → List Val
 toList = preorder ∘ forget (ITreeD-HeapD ⊙ diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉)
 \end{code}
 
-\begin{figure}
-\setlength{\mathindent}{0em}
+\begin{sidewaysfigure}
+\codefigure\small
 \begin{code}
 makeT : (x : Nat) →  {r₀  : Nat} (h₀  : LHeap x r₀  ) →
                      {r₁  : Nat} (h₁  : LHeap x r₁  ) → (Σ'(r ∶ Nat)) LHeap x r
 makeT x {r₀} h₀ {r₁} h₁ with r₀ ≤? r₁
-makeT x {r₀} h₀ {r₁} h₁ | yes  r₀≤r₁ =  suc r₀  ,
-                                        node x (proofterm(≤-refl))  r₀≤r₁                          h₁  h₀
-makeT x {r₀} h₀ {r₁} h₁ | no   r₀≰r₁ =  suc r₁  ,
-                                        node x (proofterm(≤-refl))  (proofterm((≰-invert r₀≰r₁)))  h₀  h₁
+makeT x {r₀} h₀ {r₁} h₁ | yes  r₀≤r₁  = suc r₀  , node x (proofterm(≤-refl))  r₀≤r₁                          h₁  h₀
+makeT x {r₀} h₀ {r₁} h₁ | no   r₀≰r₁  = suc r₁  , node x (proofterm(≤-refl))  (proofterm((≰-invert r₀≰r₁)))  h₀  h₁
 
 mutual
 
@@ -1684,26 +1676,16 @@ mutual
   merge' :  {b₀  : Val} {r₀   : Nat} → LHeap b₀  (suc r₀)  →
             {b₁  : Val} {r₁   : Nat} → LHeap b₁  r₁        →
             {b   : Val} → b ≤ b₀ → b ≤ b₁ → (Σ'(r ∶ Nat)) LHeap b r
-  merge'  h₀                           {b₁} {zero     } nil
-          b≤b₀ b≤b₁ = _ , (proofterm(lhrelax b≤b₀)) h₀
-  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)
-          b≤b₀ b≤b₁ with x₀ ≤? x₁
-  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)
-          b≤b₀ b≤b₁ | yes  x₀≤x₁ =
-            _ ,                 (proofterm(lhrelax (≤-trans b≤b₀ b₀≤x₀)))
-                                  (proj₂   (makeT x₀ t₀
-                                             (proj₂ (merge   u₀ (node x₁ x₀≤x₁ r₁≤l₁ t₁ u₁)
-                                                             (proofterm(≤-refl)) (proofterm(≤-refl))))))
-  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)
-          b≤b₀ b≤b₁ | no   x₀≰x₁ =
-            _ ,                    (proofterm(lhrelax (≤-trans b≤b₁ b₁≤x₁)))
-                                     (proj₂   (makeT x₁ t₁
-                                                  (proj₂ (merge'   (node x₀ (proofterm((≰-invert x₀≰x₁))) r₀≤l₀ t₀ u₀) u₁
-                                                                   (proofterm(≤-refl)) (proofterm(≤-refl)))))))
+  merge'  h₀                           {b₁} {zero     } nil                          b≤b₀ b≤b₁ = _ , (proofterm(lhrelax b≤b₀)) h₀
+  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)  b≤b₀ b≤b₁  with x₀ ≤? x₁
+  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)  b≤b₀ b≤b₁  | yes  x₀≤x₁ =
+    _ , (proofterm(lhrelax (≤-trans b≤b₀ b₀≤x₀))) (proj₂ (makeT x₀ t₀ (proj₂ (merge u₀ (node x₁ x₀≤x₁ r₁≤l₁ t₁ u₁) (proofterm(≤-refl)) (proofterm(≤-refl))))))
+  merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)  b≤b₀ b≤b₁  | no   x₀≰x₁ =
+    _ , (proofterm(lhrelax (≤-trans b≤b₁ b₁≤x₁))) (proj₂ (makeT x₁ t₁ (proj₂ (merge'  (node x₀ (proofterm((≰-invert x₀≰x₁))) r₀≤l₀ t₀ u₀) u₁ (proofterm(≤-refl)) (proofterm(≤-refl))))))
 \end{code}
-\caption{Merging two leftist heaps. Proof terms about ordering are coloured grey to aid comprehension (taking inspiration from --- but not really employing --- \emph{type theory in colour} \citep{Bernardy-color}).}
+\caption{Merging two leftist heaps. Proof terms about ordering are coloured grey to aid comprehension (taking inspiration from --- but not really employing --- \varcitet{Bernardy-color}{'s type theory in colour}).}
 \label{fig:merge}
-\end{figure}
+\end{sidewaysfigure}
 
 For modifying operations, however, we need to consider both heap ordering and the leftist property at the same time, so we should program directly with the composite datatype of leftist heaps.
 For example, a key operation is merging two heaps:
@@ -1767,4 +1749,4 @@ The counterpart of |makeT| can thus determine before a recursive call whether to
 
 \section{Discussion}
 
-\todo[inline]{summary of the three-level architecture of ornaments, refinements, and upgrades; bundle; why ornaments?; functor-level computation and recursion schemes}
+\todo[inline]{summary of the three-level architecture of ornaments, refinements, and upgrades; bundle; why ornaments?; functor-level computation and recursion schemes; compare with \citet{Bernardy-color}}

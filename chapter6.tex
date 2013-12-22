@@ -1,9 +1,7 @@
 \chapter{Categorical equivalence of ornaments and relational algebras}
 \label{chap:equivalence}
 
-\todo[inline]{algebras corresponding to singleton ornaments and ornaments for optimised predicates; banana-split law corresponding to parallel composition; optimised predicates for functional algebraic ornaments amount to equality}
-
-Consider the |AlgList| datatype in \autoref{sec:relations} again.
+Consider the |AlgList| datatype in \autoref{sec:algOD} again.
 The way it is refined relative to the plain list datatype looks canonical, in the sense that any variation of the list datatype can be programmed as a special case of |AlgList|:
 we can choose whatever index set we want by setting the carrier of the algebra~|R|; and by carefully programming~|R|, we can insert fields into the list datatype that add more information or put restriction on fields and indices.
 For example, if we want some new information in the nil case, we can program~|R| such that |R (nil-tag , tt) x| contains a field requesting that information; if, in the cons case, we need the targeted index~|x|, the head element~|a|, and the index~|x'| of the recursive position to be related in some way, we can program~|R| such that |R (cons-tag , a , x') x| expresses that relationship.
@@ -60,3 +58,19 @@ This is more a guideline than a precise criterion, though, as the closest work a
 (however, we believe that those results generalise to relations too).
 But this does encourage us to think about ornamentation computationally and to design new datatypes with relational algebraic methods.
 We illustrate this point with a solution to the \emph{minimum coin change problem} in the next section.
+
+\section{Ornaments and horizontal transformations}
+
+\section{Horizontal transformations and relational algebras}
+
+\section{Consequences}
+
+\subsection{Parallel composition and the banana-split law}
+
+\todo[inline]{algebras corresponding to singleton ornaments and ornaments for optimised predicates}
+
+\subsection{Ornamental algebraic ornaments}
+
+\section{Discussion}
+
+\todo[inline]{bad computational behaviour; ornaments for optimised representation}

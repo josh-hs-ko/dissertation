@@ -45,6 +45,7 @@
   everywhere.
 \newblock In \emph{Programming Languages meets Program Verification}, PLPV'10,
   pages 1--8. ACM.
+\newblock \doi{10.1145/1707790.1707792}.
 
 \bibitem[{Okasaki(1999)}]{Okasaki-data-structures}
 \bibfnamefont{Chris} \bibnamefont{Okasaki} [1999].
