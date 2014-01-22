@@ -4,7 +4,12 @@
 \setlength{\marginparwidth}{2.75cm}
 
 \usepackage{subfiles}
-\def\biblio{\renewcommand{\emph}{\textit}\bibliographystyle{dissertation}\bibliography{../bib}\listoftodos}
+\def\biblio{%
+  \renewcommand{\emph}{\textit}%
+  \renewcommand{\MakeUppercase}{\relax}%
+  \bibliographystyle{dissertation}%
+  \bibliography{../bib}%
+  \listoftodos}
 \def\subfilebiblio{\biblio}
 \def\headercorrection{\fancyhfoffset[L]{8pt}\fancyhfoffset[R]{-8pt}}
 \def\subfileheadercorrection{\headercorrection}
@@ -46,6 +51,7 @@
     \@starttoc{toc}%
     }
 \makeatother
+\setlength{\headheight}{14.5pt}
 
 \usepackage[labelfont=bf,labelsep=quad,font=small]{caption}
 \usepackage{rotating}
@@ -80,6 +86,11 @@
 \hyphenation{pa-ra-me-tri-sa-tion}
 \hyphenation{da-ta-type}
 \hyphenation{da-ta-types}
+
+\newcommand{\omission}{{\small[\ldots\!]}}
+
+\usepackage{bussproofs}
+\EnableBpAbbreviations
 
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
@@ -143,6 +154,8 @@
 \subfile{processed-chapter5}
 \subfile{processed-chapter6}
 \subfile{processed-chapter7}
+
+\backmatter
 
 \biblio
 

@@ -1,4 +1,4 @@
-\begin{thebibliography}{38}
+\begin{thebibliography}{53}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -32,6 +32,16 @@
 \newblock Why dependent types matter.
 \newblock Available at \url{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
 
+\bibitem[{Altenkirch et~al.(2007)Altenkirch, McBride, and
+  Swierstra}]{Altenkirch-OTT}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{Wouter} \bibnamefont{Swierstra}
+  [2007].
+\newblock Observational equality, now!
+\newblock In \emph{Programming Languages meets Program Verification}, PLPV'07,
+  pages 57--68. ACM.
+\newblock \doi{10.1145/1292597.1292608}.
+
 \bibitem[{Altenkirch and Morris(2009)}]{Altenkirch-indexed-containers}
 \bibfnamefont{Thorsten} \bibnamefont{Altenkirch} and \bibfnamefont{Peter}
   \bibnamefont{Morris} [2009].
@@ -61,6 +71,13 @@
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'13, pages 61--72. ACM.
 \newblock \doi{10.1145/2500365.2500577}.
+
+\bibitem[{Bertot and Cast{\'e}ran(2004)}]{Bertot-Coq}
+\bibfnamefont{Yves} \bibnamefont{Bertot} and \bibfnamefont{Pierre}
+  \bibnamefont{Cast{\'e}ran} [2004].
+\newblock \emph{Interactive Theorem Proving and Program Development ---
+  Coq'Art: The Calculus of Inductive Constructions}.
+\newblock Texts in Theoretical Computer Science. Springer-Verlag.
 
 \bibitem[{Bird and de~Moor(1997)}]{Bird-AoP}
 \bibfnamefont{Richard} \bibnamefont{Bird} and \bibfnamefont{Oege}
@@ -124,6 +141,11 @@
   ICFP'12, pages 103--114. ACM.
 \newblock \doi{10.1145/2364527.2364544}.
 
+\bibitem[{Dummett(2000)}]{Dummett-intuitionism}
+\bibfnamefont{Michael} \bibnamefont{Dummett} [2000].
+\newblock \emph{Elements of Intuitionism}.
+\newblock Oxford University Press, second edition.
+
 \bibitem[{Dybjer(1998)}]{Dybjer-induction-recursion}
 \bibfnamefont{Peter} \bibnamefont{Dybjer} [1998].
 \newblock A general formulation of simultaneous inductive-recursive definitions
@@ -147,12 +169,25 @@
   44(1):146--160.
 \newblock \doi{10.1016/S1571-0661(04)80906-X}.
 
+\bibitem[{Goguen et~al.(2006)Goguen, McBride, and McKinna}]{Goguen-elim}
+\bibfnamefont{Healfdene} \bibnamefont{Goguen}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2006].
+\newblock Eliminating dependent pattern matching.
+\newblock In \emph{Algebra, Meaning, and Computation}, volume 4060 of
+  \emph{Lecture Notes in Computer Science}, pages 521--540. Springer-Verlag.
+\newblock \doi{10.1007/11780274_27}.
+
 \bibitem[{Harper and Pollack(1991)}]{Harper-universes}
 \bibfnamefont{Robert} \bibnamefont{Harper} and \bibfnamefont{Robert}
   \bibnamefont{Pollack} [1991].
 \newblock Type checking with universes.
 \newblock \emph{Theoretical Computer Science}, 89(1):107--136.
 \newblock \doi{10.1016/0304-3975(90)90108-T}.
+
+\bibitem[{Heyting(1971)}]{Heyting-intuitionism}
+\bibfnamefont{Arend} \bibnamefont{Heyting} [1971].
+\newblock \emph{Intuitionism: An Introduction}.
+\newblock Amsterdam: North-Holland Publishing, third revised edition.
 
 \bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
@@ -161,20 +196,43 @@
 \newblock \emph{Progress in Informatics}, 10:65--88.
 \newblock \doi{10.2201/NiiPi.2013.10.5}.
 
+\bibitem[{Luo(1994)}]{Luo-type-theory}
+\bibfnamefont{Zhaohui} \bibnamefont{Luo} [1994].
+\newblock \emph{Computation and Reasoning: A Type Theory for Computer Science}.
+\newblock Clarendon Press.
+
 \bibitem[{Mac~Lane(1998)}]{MacLane-categories}
 \bibfnamefont{Saunders} \bibnamefont{Mac~Lane} [1998].
 \newblock \emph{Categories for the Working Mathematician}.
 \newblock Springer-Verlag, second edition.
 
-\bibitem[{Martin-L{\"o}f(1984)}]{ML-ITT}
-\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984].
+\bibitem[{Martin-L{\"o}f(1984{\natexlab{a}})}]{ML-constructive-math-programming}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984{\natexlab{a}}].
+\newblock Constructive mathematics and computer programming.
+\newblock \emph{Philosophical Transactions of the Royal Society of London},
+  312(1522):501--518.
+\newblock \doi{10.1098/rsta.1984.0073}.
+
+\bibitem[{Martin-L{\"o}f(1984{\natexlab{b}})}]{ML-ITT}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984{\natexlab{b}}].
 \newblock \emph{Intuitionistic Type Theory}.
 \newblock Bibliopolis, Napoli.
+
+\bibitem[{Martin-L{\"o}f(1987)}]{ML-truth-of-a-proposition}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1987].
+\newblock Truth of a proposition, evidence of a judgement, validity of a proof.
+\newblock \emph{Synthese}, 73(3):407--420.
 
 \bibitem[{McBride(1999)}]{McBride-thesis}
 \bibfnamefont{Conor} \bibnamefont{McBride} [1999].
 \newblock \emph{Dependently Typed Functional Programs and their Proofs}.
 \newblock Ph.D. thesis, University of Edinburgh.
+
+\bibitem[{McBride(2003)}]{McBride-unification}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2003].
+\newblock First-order unification by structural recursion.
+\newblock \emph{Journal of Functional Programming}, 13(6):1061--1075.
+\newblock \doi{10.1017/S0956796803004957}.
 
 \bibitem[{McBride(2004)}]{McBride-Epigram}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2004].
@@ -248,6 +306,13 @@
 \newblock \emph{BIT Numerical Mathematics}, 28(3):605--619.
 \newblock \doi{10.1007/BF01941137}.
 
+\bibitem[{Nordstr{\"o}m et~al.(1990)Nordstr{\"o}m, Peterson, and
+  Smith}]{Nordstroem-programming}
+\bibfnamefont{Bengt} \bibnamefont{Nordstr{\"o}m}, \bibfnamefont{Kent}
+  \bibnamefont{Peterson}, and \bibfnamefont{Jan~M.} \bibnamefont{Smith} [1990].
+\newblock \emph{Programming in Martin-L{\"o}f's Type Theory: An Introduction}.
+\newblock Oxford University Press.
+
 \bibitem[{Norell(2007)}]{Norell-thesis}
 \bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
 \newblock \emph{Towards a practical programming language based on dependent
@@ -266,11 +331,42 @@
 \newblock \emph{Purely functional data structures}.
 \newblock Cambridge University Press.
 
+\bibitem[{Paulin-Mohring(1989)}]{Paulin-Mohring-extraction}
+\bibfnamefont{Christine} \bibnamefont{Paulin-Mohring} [1989].
+\newblock Extracting ${F}_{\omega}$'s programs from proofs in the {Calculus of
+  Constructions}.
+\newblock In \emph{Principles of Programming Languages}, pages 89--104. ACM.
+\newblock \doi{10.1145/75277.75285}.
+
+\bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
+\bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}
+  \bibnamefont{Linger} [2007].
+\newblock Programming in {$\Omega$}mega.
+\newblock In \emph{Central-European Functional Programming School}, volume 5161
+  of \emph{Lecture Notes in Computer Science}, pages 158--227. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-88059-2_5}.
+
+\bibitem[{Streicher(1993)}]{Streicher-ITT}
+\bibfnamefont{Thomas} \bibnamefont{Streicher} [1993].
+\newblock Investigations into intentional type theory.
+\newblock Habilitation thesis, {L}udwig {M}aximilian {U}niversit\"{a}t.
+
 \bibitem[{Swierstra(2008)}]{Swierstra-data-types-a-la-carte}
 \bibfnamefont{Wouter} \bibnamefont{Swierstra} [2008].
 \newblock Data types {\`a} la carte.
 \newblock \emph{Journal of Functional Programming}, 18(4):423--436.
 \newblock \doi{10.1017/S0956796808006758}.
+
+\bibitem[{{The Univalent Foundations Program}(2013)}]{UFP-HoTT}
+\bibnamefont{{The Univalent Foundations Program}} [2013].
+\newblock \emph{Homotopy Type Theory: Univalent Foundations of Mathematics}.
+\newblock Institute for Advanced Study, Princeton.
+
+\bibitem[{Wadler(1987)}]{Wadler-views}
+\bibfnamefont{Philip} \bibnamefont{Wadler} [1987].
+\newblock Views: A way for pattern matching to cohabit with data abstraction.
+\newblock In \emph{Principles of Programming Languages}, pages 307--313. ACM.
+\newblock \doi{10.1145/41625.41653}.
 
 \bibitem[{Wadler(1992)}]{Wadler-essence}
 \bibfnamefont{Philip} \bibnamefont{Wadler} [1992].

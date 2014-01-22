@@ -296,6 +296,8 @@ computes to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| 
 
 \subsection{The Fold Fusion Theorem}
 
+\todo[inline]{Revise using upgrades.}
+
 As a first example of bridging internalist programming with relational calculation through algebraic ornamentation, let us consider the \emph{Fold Fusion Theorem}~\cite[Section~6.2]{Bird-AoP}:
 Let |D : Desc I| be a description, |R : X ↝ Y| a relation, and |S : Ḟ D X ↝ X| and |T : Ḟ D Y ↝ Y| algebras.
 If |R|~is a homomorphism from |S| to~|T|, i.e.,
@@ -510,7 +512,8 @@ We match~|g x| with either of the two patterns |next' b x' = (`cons , b , x' , t
 \item If the result is |next' b x'|, we should emit~|b| and and use |x'| as the new state; the recursively computed algebraic list is indexed with~|h x'|, and we are left with a proof obligation of type |g (h x) ≡ next' b (h x')| at Goal~0; we will come back to this proof obligation later.
 \item If the result is |nothing|, we should attempt to consume the input list.
 \begin{itemize}
-\item If the input list is empty, implying that the index~|h| of its type is just~|id|, both production and consumption have ended, so we return an empty list; the |nil| constructor requires a proof of |(fun g º) nothing (h x)|, which reduces to |g x ≡ nothing| and is discharged with the help of the ``inspect idiom'' in Agda's standard library (which, in a |with|-matching, gives a proof that the term being matched (in this case |g x|) is propositionally equal to the matched pattern (in this case |nothing|)).
+\item If the input list is empty, implying that the index~|h| of its type is just~|id|, both production and consumption have ended, so we return an empty list.
+The |nil| constructor requires a proof of |(fun g º) nothing (h x)|, which reduces to |g x ≡ nothing| and is discharged with the help of the ``inspect idiom'' in Agda's standard library (which, in a |with|-matching, gives a proof that the term being matched (in this case |g x|) is propositionally equal to the matched pattern (in this case |nothing|)).
 \item Otherwise the input list is nonempty, implying that |h|~is |h' ∘ flip f a| where |a|~is the head of the input list, and we should continue with the new state |f x a|, keeping the tail for further consumption.
 Typing directly works out because the index of the recursive result |h' (f x a)| and the required index |(h' ∘ flip f a) x| are definitionally equal.
 \end{itemize}

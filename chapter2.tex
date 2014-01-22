@@ -3,15 +3,383 @@
 
 \todo[inline]{specific issues regarding practical programming with type theory (including introduction to Agda); lead into internalism vs externalism}
 
-We start with an introduction to intuitionistic type theory \citep{ML-ITT} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the Agda language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
-Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
-While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program construction movement.
+We start with an introduction to Martin-Löf's intuitionistic type theory \citep{ML-TT73, ML-TT84, Nordstroem-programming} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the Agda language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
+Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics, like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
+While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program-correctness-by-construction movement.
 It has thus departed from the mathematical traditions considerably, and deviations can be found from syntactic presentations to the underlying philosophy.
 
-\section{Datatypes and universe construction}
+In principle, everything can be translated down to type theory.
+
+\section{Propositions as types}
+\label{sec:type-theory}
+
+Mathematics is all about mental constructions, that is, the intuitive grasp and manipulation of mental objects, the intuitionists say~\citep{Heyting-intuitionism, Dummett-intuitionism}.
+Take the natural numbers as an example.
+We have a distinct idea of how natural numbers are built: start from an origin~$0$, and form its successor~$1$, and then the successor of~$1$, which is~$2$, and so on.
+In other words, it is in our nature to be able to count, and counting is just the way the natural numbers are constructed.
+% It is an ongoing, deterministic sequence of constructions that reflects our awareness of the passage of time, which proceeds indefinitely in one direction and, as Kant argued, is intrinsic to the way we organise our perceptions.
+This construction then gives a specification of when we can immediately (i.e., directly intuitively) recognise a natural number, namely when it is~$0$ or a successor of some other natural number, and this specification of immediately recognisable forms is one of the conditions for forming the \emph{set} of natural numbers in Martin-Löf Type Theory.
+In symbols, we are justified by our intuition to have the \emph{formation rule}
+\begin{center}
+\AXC{} \UIC{|Nat : Set|} \DP
+\end{center}
+which says we can conclude (below the line) that |Nat| is a set from no assumptions (above the line), and the two \emph{introduction rules}
+\begin{center}
+\AXC{$\phantom{|n : Nat|}$} \UIC{|zero : Nat|} \DP \qquad
+\AXC{|n : Nat|} \UIC{|suc n : Nat|} \DP
+\end{center}
+specifying the \emph{canonical elements} of |Nat|, i.e., those elements that are immediately recognisable as belonging to~|Nat|, namely |zero| and |suc n| whenever $n$~is an element of |Nat|.
+There are natural numbers which are not in canonical form (like~$10^{10}$) but instead encode an effective method for computing a canonical element.
+We accept them as \emph{non-canonical elements} of~|Nat|, as long as they compute to a canonical form so we can see that they are indeed natural numbers.
+Thus, to form a set, we should be able to recognise its elements, either directly or indirectly, as bearing a certain form and thus belonging to the set, so the elements of the set are intuitively clear to us as a certain type of mental constructions.
+
+What is more characteristic of intuitionism is that the intuitionistic interpretation of propositions --- in particular the logical constants/connectives --- follows the same line of thought as the specification of the set of natural numbers.
+A proposition is an expression of its truth condition, and since intuitionistic truth follows from proofs, a proposition is clearly specified if and only if what constitutes a proof of it is determined~\citep{ML-truth-of-a-proposition}.
+What is a proof of a proposition, then? It is a piece of mental construction such that, upon inspection, the truth of the proposition is immediately recognised.
+For a simple example, in type theory we can formulate the formation rule for conjunctions
+\begin{center}
+\AXC{|A : Set|}
+\AXC{|B : Set|}
+\BIC{|A ∧ B : Set|} \DP
+\end{center}
+and the introduction rule
+\begin{center}
+\AXC{|a : A|} \AXC{|b : B|} \BIC{|(a , b) : A ∧ B|} \DP
+\end{center}
+saying that an immediately acceptable proof (element) of |A ∧ B| is a pair of a proof (element) of~|A| and a proof (element) of~|B|.
+This is the intuitive (canonical) way we admit as proving a conjunction, and any other (non-canonical) way of proving a conjunction must effectively yield a proof in the form of a pair.
+The relationship between a proposition and its proofs is thus exactly the same as the one between a set and its elements --- the proofs must be effectively recognisable as proving the proposition.
+Hence, in type theory, the notion of propositions and proofs is subsumed by the notion of sets and elements.
+This is called the \emph{propositions-as-types principle}, which reflects the observation that proofs are nothing but a certain kind of mental constructions.
+
+Notice that the notion of ``effective methods'' --- or computation --- was presumed when the notion of sets was introduced, and at some point we need to concretely specify an effective method.
+Since the description of every set includes an effective way to construct its canonical elements, it is possible to express an effective method that mimics the construction of an element by saying that the computation has the same structure as how the element is constructed.
+For a typical example, let us look again at the natural numbers.
+Suppose that we have a \emph{family of sets} |P : Nat → Set| indexed by elements of~|Nat|.
+(Since we only aim to present a casual sketch of type theory, we take the liberty of using Agda functions in places where terms under contexts should have been used.)
+% The elements of |Nat| are used as names for these sets, and |P n| denotes the set referred to by the name |n : Nat|.
+If we have an element~|z| of |P zero| and a method~|s| that, for any |n : Nat|, transforms an element of |P n| to an element of |P (suc n)|, then we can compute an element of |P n| for any given~|n| by essentially the same counting process with which we construct~|n|, but the counting now starts from~|z| instead of |zero| and proceeds with~|s| instead of |suc|.
+For instance, if a proof of~|P 2| is required, we can simply apply~|s| to~|z| twice, just like we apply |suc| to |zero| twice to form~|2|, so the computation was guided by the structure of~|2|.
+This explanation justifies the following \emph{elimination rule}
+\begin{center}
+\AXC{|P : Nat → Set|} \AXC{|z : P zero|} \AXC{|s : (n : Nat) → P n → P (suc n)|\qquad|n : Nat|}
+\TIC{|Nat-elim P z s n : P n|} \DP
+\end{center}
+The symbol |Nat-elim| symbolises the method described above, which, given |P|, |z|, and~|s|, transforms every natural number~|n| into something of type~|P n|.
+The actual computation performed by |Nat-elim| is stated as two \emph{computation rules} in the form of equality judgements (\autoref{sec:equality}):
+\begin{center}
+\AXC{|P : Nat → Set|} \AXC{|z : P zero|} \AXC{|s : (n : Nat) → P n → P (suc n)|}
+\TIC{|Nat-elim P z s zero = z IN P zero|} \DP
+\end{center}
+\begin{center}
+\AXC{|P : Nat → Set|} \AXC{|z : P zero|} \AXC{|s : (n : Nat) → P n → P (suc n)|\qquad|n : Nat|}
+\TIC{|Nat-elim P z s (suc n) = s n (Nat-elim P z s n) IN P (suc n)|} \DP
+\end{center}
+From the logic perspective, predicates on |Nat| are a special case of |Nat|-indexed families of sets like~|P|; |Nat-elim| then delivers the induction principle for natural numbers, as it produces a proof of~|P n| for every |n : Nat| if the base case~|z| and the inductive case~|s| can be proved.
+The propositions-as-types principle treats logical entities as ordinary mathematical objects; the logic hence inherits the computational meaning of intuitionistic mathematics and becomes constructive.
+
+By enabling the interplay of various sets governed by rules like the above ones, type theory is capable of formalising various mental constructions we manipulate in mathematics in a fully computational way, making it a powerful programming language.
+As \citet{ML-constructive-math-programming} noted: ``If programming is understood \omission\ as the design of the methods of computation \omission, then it no longer seems possible to distinguish the discipline of programming from constructive mathematics''.
+Indeed, sets are easily comparable with inductive datatypes in functional programming --- a formation rule names a datatype, the associated introduction rules list the constructors of the datatype, and the associated elimination rule and computation rules define a precisely typed version of primitive recursion on the datatype.
+
+The uniform treatment of programs and proofs in type theory reveals new possibilities regarding proofs of program correctness.
+Traditional mathematical theories employ a standalone logic language which is then used to talk about some postulated objects.
+For example, Peano arithmetic is set up by postulating axioms about natural numbers in the language of first-order logic.
+Inside the postulated system of natural numbers, there is no knowledge of logic formulas or proofs (except via exotic encodings) --- logic is at a higher level than the objects they are used to talk about.
+Programming systems based on such principle (e.g., Hoare logic~\citep{Hoare-logic}) then need to have a meta-level logic language to reason about properties of programs.
+In languages based on type theory, however, the two traditional levels are coherently integrated into one, so programs can be naturally constructed along with their correctness proofs.
+For example, the proposition $\forall\,|(a : A)|.~\exists\,|(b : B)|.~|R a b|$ is interpreted as the type of a function taking |a : A| to a pair consisting of |b : B| and a proof of the proposition |R a b|, so the result of type~|B| is guaranteed to be related to the input of type~|A| by~|R|.
+Checking of proof validity reduces to typechecking, and correctness proofs coexist with programs, as opposed to being separately presented at a meta-level.
+
+The propositions-as-types principle, however, can lead to a more intimate form of program correctness by construction by blurring the distinction between programs and proofs even further; this is introduced in \autoref{sec:internalism-and-externalism}, which opens the central topic studied by this thesis.
+Before that, we make a transition from type theory to practical programming in Agda by discussing the relationship between elimination and pattern matching (\autoref{sec:pattern-matching}) and our position on equality (\autoref{sec:equality}).
+We also introduce the notion of universes and construct a universe of index-first datatypes (\autoref{sec:universes}) which is used throughout this thesis.
+
+\section{Elimination vs pattern matching}
+\label{sec:pattern-matching}
+
+The formation rule and the introduction rules for a set directly translate into an algebraic datatype declaration in functional languages. For example, the type of natural numbers is translated into Agda as
+\begin{code}
+data Nat : Set where
+  zero : Nat
+  suc : Nat → Nat
+\end{code}
+Having a datatype, naturally we wish to write programs on that datatype.
+In functional programming, the pattern matching syntax is widely used for defining programs.
+It is key to the clarity of functional programs because it not only allows a function to be intuitively defined by several equations but also clearly conveys the strategy of splitting a problem into subproblems by case analysis.
+On the other hand, computations in type theory are specified using eliminators.
+Besides keeping the basic theory simple, one reason is that programs in type theory are demanded to be total, for a program must terminate if it is intended as a proof, and using eliminators enforces totality.
+Pattern matching and elimination are basically equivalent in expressive power, as eliminators can be easily defined by dependent pattern matching, and conversely dependent pattern matching can be reduced to elimination if \emph{uniqueness of identity proofs} --- also known as the \emph{K~axiom}~\citep{Streicher-ITT} --- is assumed~\citep{Goguen-elim}.
+Nevertheless, the use of pattern matching together with an interactive development environment is more informative and helpful in dependently typed languages than in simply typed ones, because splitting a problem into subproblems by case analysis in dependently typed programming often leads to nontrivial refinement of the goal type and even the context.
+
+To illustrate, let us look at an example of interactive development in Agda, whose design was inspired by \citet{McBride-view}.
+Consider the following inductively defined less-than-or-equal-to binary relation on natural numbers.
+\begin{code}
+data _≤_ (m : Nat) : Nat → Set where
+  refl : m ≤ m
+  step : (n : Nat) → m ≤ n → m ≤ suc n
+\end{code}
+Suppose we are asked to prove that |_≤_| is transitive, i.e., the term
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+\end{code}
+can be constructed.
+We define |trans| interactively by first putting pattern variables for the arguments on the left of its defining equation and leaving an ``interaction point'' on the right.
+Agda then tells us a term of type |x ≤ z| is expected.
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x y z p q = (goal(x ≤ z)(0))
+\end{code}
+We instruct Agda to perform case analysis on~|q|, and there are two cases: |refl| and |step w r| where |r|~has type |y ≤ w|.
+The original Goal~0 is split into two sub-goals, and unification is triggered for each sub-goal.
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x  .z  z               p refl        = (goal(x ≤ z {-"~\Vert~"-} p : x ≤ z)(1))
+trans x  y   {-"."-}(suc w)  p (step w r)  = (goal(x ≤ suc w)(2))
+\end{code}
+In Goal~1, the type of |refl| demands that |y|~be unified with~|z|, and hence the pattern variable~|y| is replaced with a ``dot pattern''~|.z| indicating that the value of~|y| is determined by unification to be~|z|.
+Therefore, on enquiry, Agda tells us that the type of~|p| in the context is now |x ≤ z| (which was originally |x ≤ y|).
+Similarly for Goal~|2|, |z|~is unified with |suc w| and the goal type is rewritten accordingly.
+We see that the case analysis has led to two subproblems with different goal types and contexts, where Goal~1 is easily solvable as there is a term in the context with the right type, namely~|p|.
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x  .z  z               p refl        = p
+trans x  y   {-"."-}(suc w)  p (step w r)  = (goal(x ≤ suc w)(2))
+\end{code}
+The second goal type |x ≤ suc w| looks like the conclusion of |step w : x ≤ w → x ≤ suc w|, so we use this term to reduce Goal~2 to Goal~3, which now requires a term of type |x ≤ w|.
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x  .z  z               p refl        = p
+trans x  y   {-"."-}(suc w)  p (step w r)  = step w (goal(x ≤ w)(3))
+\end{code}
+Now we see that the induction hypothesis term |trans x y w p r : x ≤ w| (note that |r|~is a sub-term of |step w r|) has the right type.
+Filling the term into Goal~3 completes the program.
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x  .z  z               p refl        = p
+trans x  y   {-"."-}(suc w)  p (step w r)  = step w (trans x y w p r)
+\end{code}
+In contrast, if we stick to the default elimination approach in type theory, we would be given the eliminator
+\begin{code}
+≤-elim :  (m : Nat) (P : (n : Nat) → m ≤ n → Set) →
+          ((t : m ≤ m) → P m t) →
+          ((n : Nat) (t : m ≤ n) → P n t → P (suc n) (step n t)) →
+          (n : Nat) (t : m ≤ n) → P n t
+\end{code}
+and write
+\begin{code}
+trans : (x y z : Nat) → x ≤ y → y ≤ z → x ≤ z
+trans x y z p q = ≤-elim y  ((lambda(y' _)) x ≤ y → x ≤ y')
+                            ((lambda(_ p')) p') ((lambda(w r ih p')) step w (ih p')) z q p
+\end{code}
+We are forced to write the program in continuation passing style, where the two continuations correspond to the two clauses in the pattern matching version and likewise have more specific goal types, and the relevant context, |p|~in this case, must be explicitly passed into the continuations in order to be refined to a more specific type.
+Comparing the two versions, we see that elimination is inherently harder to write and understand, especially when complicated dependent types are involved.
+If a function definition requires more than one level of elimination, then the advantage of using pattern matching over using eliminators becomes even more apparent.
+
+It is often the case that we need to perform pattern matching not only on an argument but also on some intermediate computation.
+In simply typed languages this is usually achieved by case expressions, a special case being if-then-else expressions for booleans.
+But again, pattern matching on intermediate computation can make refinements to the goal type and the context in dependently typed languages, so case expressions, being more like eliminators, become less desirable.
+\citet{McBride-view} thus proposed \emph{$with$-matching}, which generalises pattern guards and in effect shifts pattern matching on intermediate computation from the right of an equation to the left, sitting along with the arguments.
+For a plain example:
+\begin{code}
+insert : Nat → List Nat → List Nat
+insert y [] = y ∷ []
+insert y (x ∷ xs) with y ≤? x
+insert y (x ∷ xs) | true   = y ∷ x ∷ xs
+insert y (x ∷ xs) | false  = x ∷ insert y xs
+\end{code}
+This is essentially no different from a normal case expression, except that using |with| renders the result of |y ≤? x| as an additional argument in the context, which is then immediately matched with |true| or |false|.
+In this case, the original context --- |y|, |x|, and~|xs| --- is not affected by the pattern matching, but in more interesting cases it can be.
+For example, \varcitet{Wadler-views}{'s views} can be adapted to dependently typed programming in a more accurate manner, which are supported by |with| in Agda.
+Suppose we wish to implement a snoc-list view for cons-lists.
+We define the following view type
+\begin{code}
+data SnocView {A : Set} : List A → Set where
+  nil   : SnocView []
+  snoc  : (xs : List A) (x : A) → SnocView (xs ++ (x ∷ []))
+\end{code}
+intending to say that a list is either empty or has the form |xs ++ (x ∷ [])|, which is proved by the following covering function (whose accuracy is not possible in languages with simpler type disciplines):
+\begin{code}
+snocView : {A : Set} → (xs : List A) → SnocView xs
+snocView [] = nil
+snocView (x ∷ xs)                       with snocView xs
+snocView (x ∷ .[])                      | nil        = snoc [] x
+snocView (x ∷ {-"."-}(ys ++ (y ∷ [])))  | snoc ys y  = snoc (x ∷ ys) y
+\end{code}
+Then, for example, the function |init| which removes the last element (if any) can be implemented simply as
+\begin{code}
+init : {A : Set} → List A → List A
+init xs                       with snocView xs
+init .[]                      | nil        = []
+init {-"."-}(ys ++ (y ∷ []))  | snoc ys y  = ys
+\end{code}
+We see that, in both |snocView| and |init|, performing pattern matching on the result of |snocView xs| refines |xs| in the context to either |[]|~or |ys ++ (y ∷ [])| in the two cases.
+The refined context can be shown explicitly for each case because the matching on |snocView xs| is moved to the left, which is the same difference between using pattern matching and using eliminators.
+Hence |with|-matching is preferred to traditional case expressions for the same reason that pattern matching is preferred to eliminators: The former clearly expresses context/goal refinements in subproblems in an equational style that is easy to follow, especially when supported by an interactive development environment.
+
+\citet{McBride-view} described how programs using pattern matching can be translated into eliminator-based programs.
+They in fact proposed a general mechanism for invoking any programmer-defined eliminator using the pattern matching syntax, so programmers can choose whichever problem-splitting strategy they need and express that with pattern matching.
+% Additionally, a programmer-defined eliminator does not need to be higher-order; they can define the eliminator by a first-order program which is the covering function for a view.
+For example, the standard eliminator for~|Nat| says that to solve a programming problem~|P n| for any |n : Nat|, it is sufficient to solve the more specialised subproblems |P zero| and |P (suc n)| (assuming an answer of |P n|).
+This is not the only way to cover all natural numbers, of course; for example, we might split the problem into the two subproblems |P i| where |i < k| and |P (j + k)| where |j : Nat|, for some fixed~|k|.
+We should be able to match a natural number against such nonstandard patterns if that is the strategy we use to divide and solve the problem.
+Problem specifications can be made more precise by using dependent types, but the solutions would have to be equally precise as a result.
+Reintroducing pattern matching into dependently typed languages is one step towards helping programmers to describe such solutions naturally and clearly.
+
+\section{Equality}
+\label{sec:equality}
+
+In logic, the \emph{intension} of a concept is its internal, defining content, while the \emph{extension} of the concept is the range of objects it refers to.
+In mathematics, for example, the intension of the set $S = \{\, x \mid \text{$x \in Nat$ is even} \,\}$ is the description that the elements are even natural numbers, and the extension of the set is the enumeration $0$,~$2$, $4$, $6$,~$8$,~\ldots.
+Different intensions may nevertheless lead to the same extension, for example $T = \{\, x - 1 \mid \text{$x \in Nat$ is odd} \,\}$ is intensionally different from~$S$, but they have the same extension.
+In other words, $S$ and~$T$ use different ways to describe the same range of objects.
+The axiom of extensionality in set theory defines set equality to be the extensional one, so we consider $S$~and~$T$ to be the same set because the extension of $S$~and~$T$ are the same, even though they have different intensions.
+In intuitionistic mathematics, however, the default, fundamental equality is intensional.\todo{\citet{Luo-type-theory}}\
+The reason is that objects in intuitionistic mathematics are given to us as mental \emph{constructions}.
+For example, the construction of~$S$ is to find all the even natural numbers, while the construction of~$T$ is to find all the odd natural numbers and subtract~$1$ from each of them.
+The two constructions, i.e., descriptions, are different.
+We can still talk about extensional equality if needed, but that requires a separate definition, which can be a complex proposition in general.
+For sets, the definition would be $\forall\,x.~ x \in S \Leftrightarrow x \in T$, i.e., a bi-implication, and we can prove that two sets are extensionally equal in intuitionistic mathematics by proving the bi-implication as we do in classical mathematics.
+The difference is that in classical mathematics we talk exclusively about extensions and deliberately ignore intensions, so for example ``set equality'' always refers to the extensional one, whereas in intuitionistic mathematics intensions are also given emphasis.
+In other words, whereas in both intuitionistic and classical mathematics one can talk about extensionality, an intensional layer about syntactic descriptions of objects is present in intuitionistic mathematics, which is transparent in classical mathematics.
+
+The fundamental equality is formulated as \emph{judgemental equality} in type theory.
+For intuitionistic mathematics it is the intensional, syntactic equality, also known as \emph{definitional equality}, whereas for classical mathematics it is extensional equality.
+A characteristic feature of judgemental equality is that it is fully substitutive: judgementally equal terms can be freely substituted for one another.
+So after we prove that two sets are extensionally equal in classical mathematics, we can simply substitute one for the other because they are judgementally equal in the classical, extensional setting.
+Judgemental equality cannot be expressed as propositions or have proofs inside the theory, though, since it is a meta-theoretical concept, which, for example, is used in type checking in a language implementation and hence is not an entity in the language.
+To state equality between two objects as a proposition and have proof for that proposition inside the theory, we need \emph{propositional equality}, which can be defined by the following inductive family.
+\begin{code}
+data _≡_ {A : Set} (x : A) : A → Set where
+  refl : x ≡ x
+\end{code}
+The canonical way to prove an equality proposition |x ≡ y| is |refl|, which is permitted when |x|~and~|y| are judgementally equal.
+In general, however, computation may be required to prove an equality proposition. For example, the following ``catamorphic'' identity function on natural numbers
+\begin{code}
+id' : Nat → Nat
+id' zero     = zero
+id' (suc n)  = suc (id' n)
+\end{code}
+can be shown to be extensionally equal to the polymorphic identity function
+\begin{code}
+id : {A : Set} → A → A
+id x = x
+\end{code}
+by proving the proposition
+\begin{code}
+(n : Nat) → id n ≡ id' n
+\end{code}
+whose proof is by induction on~|n| and thus requires computation.
+It might be said that propositional equality is ``delayed'' judgemental equality in propositional form: The terms |id n| (which is definitionally just~|n|) and |id' n| are not judgementally equal, but they will compute to the same canonical term (and hence become judgementally equal) after substituting a concrete natural number for~|n|, allowing the computation to complete.
+\citet[page~19]{Streicher-ITT} suggested that we ``consider the identity type [|t ≡ s|] as a proposition stating a relation between the \emph{objects denoted by the terms} |t|~and~|s|, respectively, whereas the judgement |t = s IN A| is a statement of a relation between the \emph{terms} |t|~and~|s|[.]''
+Indeed, in an intensional setting, if we regard canonical terms to be the semantic objects denoted by terms, then it might be said that two terms are judgementally equal if their normal forms are syntactically identical, while two terms are propositionally equal if they can be proved to compute to the same canonical term after instantiating the context to canonical terms, i.e., they denote the same semantic object.
+Practically, when used for substitution, a proof of an equality proposition needs to be eliminated by applying the following standard eliminator commonly called~|J|.
+\begin{code}
+J :  {A : Set} {x : A} (P : (y : A) → x ≡ y → Set) →
+     P x refl → {y : A} → (eq : x ≡ y) → P y eq
+\end{code}
+A more convenient substitution operator can be defined in terms of~|J|.
+\begin{code}
+subst : {A : Set} (T : A → Set) → {x y : A} → x ≡ y → T x → T y
+subst T eq t = J ((lambda z _)) T z) t eq
+\end{code}
+It is like type-casting in programming languages and serves as an explicit proof inside the theory that |y|~can be regarded as~|x|.
+On the other hand, judgemental equality identifies terms at a more fundamental level and allows a term to be directly substituted for any other term identified with it, without need of any justification inside the theory.
+
+The type of |refl| says that judgementally equal terms are propositionally equal, so judgemental equality is embedded into propositional equality.
+If we add the converse \emph{equality reflection rule}
+\[ \AXC{|x : A|} \AXC{|y : A|} \AXC{|eq : x ≡ y|} \TIC{|x = y IN A|} \DP \]
+to the theory, injecting propositional equality back into judgemental equality, then the resulting type theory is called \emph{extensional}.
+Type theory without the equality reflection rule is called \emph{intensional}, indicating that its judgemental equality is syntactic.
+Extensional type theory gets the name because merely syntactic comparison no longer suffices to determine whether two terms are judgementally equal; extensional reasoning may be involved.
+For example, extensionally equal functions become judgementally equal in extensional type theory:
+Suppose |f|~and~|g| are functions of type |A → B| and we have a proof |fgeq : (x : A) → f x ≡ g x|. Then
+\begin{flalign*}
+\hskip\mathindent   & f & \\
+\hskip\mathindent =~& \reason{$\eta$-expansion} & \\
+\hskip\mathindent   & |(lambda(x)) f x| & \\
+\hskip\mathindent =~& \reason{equality reflection --- |f x = g x IN B| since |fgeq x : f x ≡ g x|} & \\
+\hskip\mathindent   & |(lambda(x)) g x| & \\
+\hskip\mathindent =~& \reason{$\eta$-contraction} & \\
+\hskip\mathindent   & g \qquad \in A → B
+\end{flalign*}
+In general, however, |f|~and~|g| may have very different intensions, so adopting the equality reflection rule makes judgemental equality extensional.
+The intensional layer present in intuitionistic mathematics thus collapses: The fundamental equality is extensional equality as in classical mathematics, so there is no longer a separate notion of intensional equality. Having extensional equality as judgemental equality makes extensional reasoning much easier because no justification is needed for substitution of extensionally equal terms inside the theory.
+This is the norm in classical mathematics, where extensionality dominates. For example, in category theory, a universal function (i.e., a universal arrow in the category of sets and total functions) is unique \emph{up to extensional equality}, and category theorists substitute functions satisfying the same universal property for one another all the time.
+For a language implementation, this means that the programmer can do more than syntactic substitutions without need of explicitly specifying type casts and what equality proofs to use.
+For example, to show that |id| is extensionally equal to |id'|, we would write the following:
+\begin{code}
+ideq : (n : Nat) → id n ≡ id' n
+ideq zero     = refl
+ideq (suc n)  = (goal(suc n ≡ suc (id' n))())
+\end{code}
+How the proof is completed depends on whether we are working intensionally or extensionally. If we are working intensionally, the hole needs to be filled with the term
+\begin{code}
+cong suc (ideq n) : suc n ≡ suc (id' n)
+\end{code}
+where
+\begin{code}
+cong : {A B : Set} → (f : A → B) → {x y : A} → x ≡ y → f x ≡ f y
+\end{code}
+That is, we need to indicate explicitly that we are using an inductively computed result |ideq n : n ≡ id_Nat n|, which needs to be further modified by |cong suc| to match the goal type.
+On the other hand, if we are working extensionally, a simple |refl| suffices!
+The typechecker is told by our placement of |refl| that |suc n| and |suc (id' n)| are actually judgementally equal, and has to somehow figure out that there is a term that has type |n ≡ id' n|, so |n|~and~|id' n| are judgementally equal by equality reflection, and thus |suc n| and |suc (id' n)| are indeed judgementally equal by congruence.
+This example illustrates that type checking in an extensional setting cannot simply resort to syntactic equality of normal forms but needs to search for arbitrary equality proofs. The typechecker can ask for hints from the programmer, like in Sheard's {$\Omega$}mega language~\citep{Sheard-Omega}, but type checking becomes undecidable in general.
+Another perspective to look at this problem is that the rewriting system underlying judgemental equality loses confluence, since different normal forms may be equated due to the equality reflection rule.
+Consequently, checking syntactic equality of normal forms is no longer a sound way to do type checking.
+Losing confluence also means that the computational meaning is disrupted since term reduction becomes nondeterministic.
+Therefore, the reasoning power offered by extensional type theory may be tempting, but to preserve good computational behaviour we have to stick to intensional type theory, namely giving up the equality reflection rule and keeping judgemental equality intensional.
+
+%Notice that even though we have to stick to intensional type theory, we can still reason about extensional properties, like in intuitionistic mathematics.
+%It is just inconvenient to do so.
+%For example, we can always define an extensional equivalence relation stating what it means for two functions to be extensionally equal and use that relation throughout the proofs, but we are not entitled to do substitution, since substitution does not necessarily respect any relation we define.
+%Losing the ability to do substitution, extensional reasoning soon become too heavyweight and difficult to use. A classic example is |W|-types (for \emph{well orderings})~\cite{ML-TT84}, which can be used to capture all inductive types naturally in extensional type theory but much less conveniently in intensional type theory.
+%\begin{code}
+%data W (A : Set) (B : A → Set) : Set~ where} \\
+%\quad \_{\lhd}\_ &:& (a : A) → (B a → W A B) → W A B
+%\end{code}%
+%An element of $W A B$ is a possibly infinitely branching tree but whose depth is finite. The type of natural numbers, for example, can be defined by
+%\[ Nat = W Bool (\lambda b \mapsto if~ b~ then~ \top~ else~ \bot) \]
+%where $\top$ is a one-element set whose only constructor is~$tt$ and $\bot$ is a set with no elements. Zero may be defined by
+%\[ zero = false \lhd \lambda () : Nat \]
+%where $\lambda ()$ stands for a function whose domain is empty. The successor function may be defined by
+%\[ suc = \lambda n \mapsto true \lhd (\lambda\_ \mapsto n) : Nat → Nat ~\text. \]
+%In intensional type theory, however, we run into trouble when we try to define the elimination principle for $Nat$.
+%\begin{code4}
+%\s{elimNat : (P : Nat → Set) → {}} \\
+%\s{\quad P zero → (\forall~ n → P n → P (suc n)) → \forall~ n → P n} \\
+%elimNat & P & pz & ps & (false \lhd f) &=& \hole{P (false \lhd f)}{0} \\[.75ex]
+%elimNat & P & pz & ps & (\rlap{$true$}\phantom{false} \lhd f) &=& \hole{P (\rlap{$true$}\phantom{false} \lhd f)}{1}
+%\end{code4}%
+%In goal~$0$ we wish to fill in $pz : P (false \lhd \lambda ())$ to satisfy the goal type $P (false \lhd f)$, but the two types are not the same because $f$ is not necessarily intensionally equal to $\lambda ()$.
+%Goal~$1$ has a similar problem.
+%We get the problem because we claim that $zero$ and $suc n$ cover all the elements in $Nat$, but intensionally that is not the case, since $zero$ and $suc$ are just a specific implementation of the extensional zero and successor function; there are other intensionally different implementations, leading to elements which we cannot generate from $zero$ and $suc$.
+%We might instead formulate the elimination principle as
+%\begin{code6}
+%\s{elimNat' : (P : Nat → Set) → {}} \\
+%\s{\quad (\forall~ f → P (false \lhd f) \equiv P zero) → (\forall~ f → P (true \lhd f) \equiv P (suc (f tt))) → {}} \\
+%\s{\quad P zero → (\forall~ n → P n → P (suc n)) → \forall~ n → P n} \\
+%elimNat' & P & cz & cs & pz & ps & (false \lhd f) ~rewrite~ cz f &=& pz \\
+%elimNat' & P & cz & cs & pz & ps & (\rlap{$true$}\phantom{false} \lhd f) ~rewrite~ cs f &=& \\
+%\multicolumn{9}{r}{ps (f tt) (elimNat' P cz cs pz ps (f tt)) ~\text,}
+%\end{code6}%
+%requiring that $P$ respects extensional equality,\footnote{Here propositional equality between \emph{sets} is used, which in fact requires another definition of $\_{\equiv}\_$ which is a level higher in the universe hierarchy.} or as
+%\begin{code4}
+%\s{elimNat'' : (P : Nat → Set) → {}} \\
+%\s{\quad (\forall~ f → P (false \lhd f)) → (\forall~ f → P (f tt) → P (true \lhd f)) → \forall~ n → P n} \\
+%elimNat'' & P & pz & ps & (false \lhd f) &=& pz f \\
+%elimNat'' & P & pz & ps & (\rlap{$true$}\phantom{false} \lhd f) &=& ps f (elimNat'' P pz ps (f tt)) ~\text,
+%\end{code4}%
+%explicitly requiring that $P$ holds for all intensional elements of $Nat$.
+%But both approaches are rather inconvenient and the premises quickly become tedious to specify when we move on to more complicated types.
+
+\todo[inline]{heterogeneous equality, \citet{Altenkirch-OTT}, \citet{UFP-HoTT}}
+
+\section{Datatypes and universes}
+\label{sec:universes}
 
 Central to \emph{datatype-generic programming} is the idea that the definitional structure of datatypes can be coded as first-class entities and thus become ordinary parameters to programs.
-The same idea is also found in Martin-Löf's Type Theory~\citep{ML-ITT}, in which a set of codes for datatypes is called a \emph{universe} (à la Tarski), and there is a decoding function translating codes to actual types.
+The same idea is also found in Martin-Löf's Type Theory, in which a set of codes for datatypes is called a \emph{universe} (à la Tarski), and there is a decoding function translating codes to actual types.
 Type theory being the foundation of dependently typed languages, universe construction can be done directly in such languages, so datatype-generic programming becomes just ordinary programming in the dependently typed world~\citep{Altenkirch-GP-within-DTP}.
 In this section we construct a universe of \emph{index-first datatypes}~\citep{Chapman-levitation, Dagand-functional-ornaments}, on which a second universe of \emph{ornaments}, to be constructed in \autoref{sec:ornaments}, will depend.
 
@@ -195,8 +563,7 @@ Index-first declarations will only be regarded in this thesis as informal hints 
 \begin{code}
 mutual
 
-  fold :  {I : Set} {D : Desc I} →
-          {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
+  fold : {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
   fold {I} {D} f {i} (con ds) = f (mapFold D (D i) f ds)
 
   mapFold :  {I : Set} (D : Desc I) (D' : RDesc I) →
@@ -211,8 +578,7 @@ mutual
 
 Direct function definitions by pattern matching work fine for individual datatypes, but when we need to define operations and to state properties for all the datatypes encoded by the universe, it is necessary to have a generic |fold| operator parametrised by descriptions:
 \begin{code}
-fold :  {I : Set} {D : Desc I} →
-        {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
+fold : {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
 \end{code}
 There is also a generic |induction| operator, which can be used to prove generic propositions about all encoded datatypes and subsumes |fold|, but |fold| is much easier to use when the full power of |induction| is not required.
 The implementations of both operators are adapted for our two-level universe from those in \varcitet{McBride-ornaments}{'s original work}.
@@ -260,5 +626,125 @@ The reason for choosing to stick to first-order representation is simply to obta
 This choice, however, does complicate some subsequent datatype-generic definitions (e.g., ornaments).
 It would probably be helpful to think of the parts involving |ṿ|~and~|Ṗ| in these definitions as specialisations of higher-order representations to first-order ones.}
 
-\section{Internalism vs externalism}
-\label{sec:internalism-vs-externalism}
+\section{Internalism and externalism}
+\label{sec:internalism-and-externalism}
+
+The use of ``such that'' to describe objects that have certain properties is universal in mathematics.
+If the objects in question have type~|A|, then objects with certain properties form a subset of~|A|, and using ``such that'' to describe such objects means that the subset is formed by specifying a suitable predicate on~|A|.
+In type theory, this can be modelled by the \emph{dependent pair} type.
+\begin{code}
+data Σ (A : Set) (B : A → Set) : Set where
+  pair : (x : A) → B x → Σ A B
+\end{code}
+When |A|~is interpreted as a ground set and |B|~as a predicate on~|A|, an element of |Σ A B| is an element~|x| of~|A| paired with a proof that |B x| holds.
+For example, lists of elements of type~|A| with a certain length~|n| are specified by
+\begin{code}
+Σ (List A) ((lambda(xs)) length xs ≡ n)
+\end{code}
+where |length : {A : Set} → List A → Nat| computes the length of a list.
+This |Σ|-type can be naturally read as ``the lists~|xs| such that the length of~|xs| is~|n|'', bearing some similarity to the notation of set comprehension.
+%Another example is natural numbers bounded above by a certain number.
+%We define a predicate
+%\begin{code}
+%data _>_ : Nat → Nat → Set where
+%\quad base &:& \{m : Nat\} → suc m > zero \\
+%\quad step &:& \{m~n : Nat\} → m > n → suc m > suc n
+%\end{code}%
+%and use the type
+%\[ Σ Nat (\lambda n \mapsto m > n) \]
+%to characterise those natural numbers bounded above by~$m$.
+Besides being deeply rooted in mathematical traditions, in practice this approach offers very good composability: Whenever a new property is needed, the programmer simply defines a new predicate and uses a |Σ|-type to impose that predicate on an existing datatype.
+Predicates easily compose by pointwise conjunction, so objects with two or more properties can be conveniently specified.
+When programs are the objects we reason about, this style naturally suggests a logical distinction between programs and proofs: Programs are written in the first place, and proofs are conducted afterwards with reference to existing programs and do not interfere with their execution.
+Consequently, proofs may be erased as they are irrelevant to the computational behaviour of programs.
+This conception underlies many developments in type theory and theorem proving.
+For example, \citet{Luo-type-theory} consistently argued that proofs should not be identified with programs, one of the reasons being that logic should be regarded as independent from the objects being reasoned about.
+A subset theory was described by \citet{Nordstroem-programming} to suppress the second component, i.e., the proof part, of |Σ|-types.
+The proof assistant \textsc{Coq}~\citep{Bertot-Coq} is also designed to support this proving-after-programming style, which is also famous for supporting program extraction from proof scripts~\citep{Paulin-Mohring-extraction}.
+
+On the other hand, proponents of dependently typed programming believe that, instead of regarding dependent types as yet another type system we impose on existing programs, we should rethink about what programs can be written in a dependently typed language.
+One such reconsideration is the movement of using inductive families directly for representing data with constraints.
+The classic example is vectors, which are lists indexed by their length.
+\begin{code}
+data Vec (A : Set) : Nat → Set where
+  []   : Vec A zero
+  _∷_  : A → {n : Nat} → Vec A n → Vec A (suc n)
+\end{code}
+% This is an inductive \emph{family} of types: A bunch of types indexed by~$Nat$ are inductively defined simultaneously, so when constructing an element of the member type at index~$i$, we can inductively request not only elements from the same type at~$i$, but also elements from member types at indices other than~$i$.
+% For $Vec A$, the constructor~$\nil$ constructs an element of the member type at index $zero$, and the constructor~$\_{\cons}\_$ constructs an element of the member type at $suc n$ after inductively requesting an element of the member type at~$n$.
+A simple inductive argument shows that a vector of type |Vec A n| must be of length~|n|.
+This fact holds for a vector \emph{by construction}, in contrast to the previous approach using |Σ|-types, where the length statement is made about a plain list already constructed.\todo{use the new version of explanations of the names internalism and externalism}
+%In epistemology, a distinction is made between \emph{internalism} and \emph{externalism}: An internalist insists that a subject must have justification for a belief in order to call it knowledge, whereas an externalist admits a belief as knowledge as long as there is justification for it, even when the justification is not available to the subject.
+%Since inductive families encode constraints in themselves, we might characterise the way of programming which models data with constraints using inductive families as \emph{internalist}, suggesting data ``know'' their own correctness by construction; the traditional approach, in contrast, may be described as \emph{externalist}, as proofs are constructed externally to the objects which they talk about.
+
+To illustrate why it can be beneficial to switch from externalism to internalism, suppose we wish to extract the head element from a nonempty list.\todo{draw from the papers}
+%In more traditional functional languages like Haskell, the best we can do is to write
+%\begin{code}
+%head : List a → a
+%head []        = error "head: empty list"
+%head (x ∷ xs)  = x
+%\end{code1}%
+%The type system cannot preclude the possibility that the input list is empty, so we had better deal with it, but the only thing we can do in the empty-list case is reporting an error.
+%In dependently typed languages, however, we can require that the input list must be nonempty.
+%The externalists would impose a length constraint on the input list and write
+%\begin{code}
+%\s{head : \{A : Set\} → (xs : List A) → (l : length xs > zero) → A} \\
+%head & \nil & () \\
+%head & (x \cons xs) & \_ &=& x ~\text.
+%\end{code}%
+%We do pattern matching on the input list: If it is empty, then the type of~$l$ becomes $zero > zero$, which cannot be unified with the type of either of the two constructors. Thus in this case the proof~$l$ cannot possibly be given in the first place if the program is well typed, which is indicated by the absurd pattern~$()$, and we can omit the definition for this case.
+%If the input list is nonempty, then we can deliver the head element; the proof is irrelevant in this case.
+%The internalists would use vectors and write
+%\begin{code1}
+%\s{vhead : \{A : Set\} → \forall~ \{n\} → Vec A (suc n) → A} \\
+%vhead & (x \cons xs) &=& x ~\text.
+%\end{code1}%
+%We do pattern matching on the input vector: This time, however, the nil case is impossible since $suc n$, the index of the type of the input vector, cannot be unified with $zero$, which is the index of the type of the constructor~$\nil$.
+%This case is thus (safely) omitted.
+%The remaining case is cons, and again we can easily deliver the head element.
+%A more general example is safe lookup which extracts from a list the element at a particular index.
+%Externalists would use natural numbers as indices and write
+%\begin{code3}
+%\s{lookup : \{A : Set\} → (xs : List A) → (i : Nat) → length xs > i → A} \\
+%lookup & \nil & \_ & () \\
+%lookup & (x \cons xs) & zero & \_ &=& x \\
+%lookup & (x \cons xs) & (suc i) & (step l) &=& lookup xs i l ~\text.
+%\end{code3}%
+%Again proofs need to be manipulated explicitly.
+%Internalists would first define the \emph{finite numbers} to represent the indices.
+%\begin{code}
+%\s{data~ Fin : Nat → Set~ where} \\
+%\quad zero &:& \{m : Nat\} → Fin (suc m) \\
+%\quad suc &:& \{m : Nat\} → Fin m → Fin (suc m)
+%\end{code}%
+%A finite number of type $Fin m$ is a natural number bounded above by~$m$.
+%The lookup function would then be defined on vectors.
+%\begin{code2}
+%\s{vlookup : \{A : Set\} → \forall~ \{n\} → Vec A n → Fin n → A} \\
+%vlookup & (x \cons xs) & zero &=& x \\
+%vlookup & (x \cons xs) & (suc i) &=& vlookup xs i
+%\end{code2}%
+%We first perform pattern matching on the index, which points out that $n$ is non-zero and thus the vector is nonempty, so next we only need to match the vector with cons.
+%In the $suc$ case where we need to make the recursive call, the indices in the type of $xs$ and~$i$ match perfectly, so the recursive call can be made as if we were writing a simply typed version.
+%We see that, by exploiting inductive families, correctness proofs are built into and manipulated simultaneously with the data, allowing constraints to be expressed succinctly, and in ideal cases like $vlookup$, programs can be written in blissful ignorance of the proofs.
+%Of course, this is possible because the program we write and the associated proof have essentially the same structure; otherwise it would be more difficult to write the program in the internalist way.
+
+Perhaps not surprisingly, internalist reasoning is rarely seen in mathematics.
+Here are two possible explanations.
+The first, philosophical one is that the platonist character of classical mathematics, i.e., the presupposition that mathematical objects are independently existing entities, naturally leads to externalism.
+The mathematical objects exist \textit{a priori}, and then our proofs are written about them.
+There is thus a clear ``phase distinction,'' which makes it strange to mix proofs with objects.
+The second, practical explanation (which also works for non-platonist mathematics) is that it is hard to justify the correctness of an internalist program in prose without silently converting the internalist program to an externalist one.
+For example, we would say ``a vector of length~$n$'' and go on about how its length relates to the result, etc., which is not so different from saying ``a \emph{list} of length~|n|'' and so on --- we still need to talk and reason about the constraints separately, unlike how we write an internalist program, which only manipulates data.
+It might be said that the correctness proof of an internalist program is more syntactic in nature, which in general is more suitable for being checked by machines, while mathematical writing aims to describe the intuition behind so human readers can get the high-level ideas.
+Even if correctness is implied by the syntactic structure, it is still desirable to have an intuitive explanation of why it is so in prose.
+Therefore, as the same degree of explanation is needed no matter whether constraints are integrated into syntax or not, it is reasonable to just keep the syntax simple, refraining from using internalist types in mathematical writing.
+% \note{See if we can fit the claim that Martin-Löf's presentation of type theory is internalist here, and mention the relationship between the datatype of typed terms and the typing relation in the next paragraph.}
+
+Type theory makes it possible to mix programs with logic, and thus allows us to bind and manipulate data and proofs together, which is quite different from the programming styles we are used to.
+We do not know how much potential internalism has, but as its possibility remains to be explored, it seems premature to stick to the traditional, externalist approach that strictly separates programming from logic.
+Another supporting example is that optimisation of dependently typed programs may exploit value dependencies in types and eliminate a substantial portion of code~\citep{Brady-inductive-families-indices} --- the length of a vector does not need to be actually stored, |vhead| can just assume that the input vector starts with a cons node, etc.
+Program optimisation thus does not necessarily take the form of program extraction, which is based on the distinction between programs and proofs.
+As \citet{McBride-Epigram} said, ``[t]here is a tendency to see programming as a fixed notion, essentially untyped. In this view, we make sense of and organise programs by assigning types to them, the way a biologist classifies species, and in order to classify more the exotic creatures, like |printf| or the |zipWith| family, one requires more exotic types. This conception fails to engage with the full potential of types to make a positive contribution to program construction''.
+To support this belief, he presented a development of the first-order unification algorithm, which has long been described using general recursion and required separate termination and correctness proofs, as a structurally recursive, dependently typed program which is correct by construction~\citep{McBride-unification}.
+The moral is that, to truly adopt internalism, we need to reconsider how we design datatypes and write programs, so their correctness are simply manifested in their construction, reducing the need of external justification which can be more awkward to produce.
