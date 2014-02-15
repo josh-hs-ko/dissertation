@@ -1,0 +1,71 @@
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\bibnamefont}[1]{#1}
+\providecommand{\bibfnamefont}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Altenkirch et~al.(2005)Altenkirch, McBride, and
+  McKinna}]{Altenkirch-why-dependent-types-matter}
+\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
+  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
+\newblock Why dependent types matter.
+\newblock Available at \url{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
+
+\bibitem[{Bishop and Bridges(1985)}]{Bishop-analysis}
+\bibfnamefont{Errett} \bibnamefont{Bishop} and \bibfnamefont{Douglas}
+  \bibnamefont{Bridges} [1985].
+\newblock \emph{Constructive Analysis}.
+\newblock Springer-Verlag.
+
+\bibitem[{Bove and Dybjer(2009)}]{Bove-dependent-types-at-work}
+\bibfnamefont{Ana} \bibnamefont{Bove} and \bibfnamefont{Peter}
+  \bibnamefont{Dybjer} [2009].
+\newblock Dependent types at work.
+\newblock In \emph{Language Engineering and Rigorous Software Development},
+  volume 5520 of \emph{Lecture Notes in Computer Science}, pages 57--99.
+  Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-03153-3_2}.
+
+\bibitem[{Martin-L{\"o}f(1975)}]{ML-TT73}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1975].
+\newblock An intuitionistic theory of types: Predicative part.
+\newblock In \emph{Logic Colloquium '73}, volume~80 of \emph{Studies in Logic
+  and the Foundations of Mathematics}, pages 73--118. Elsevier B.V.
+\newblock \doi{10.1016/S0049-237X(08)71945-1}.
+
+\bibitem[{Martin-L{\"o}f(1984)}]{ML-TT84}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984].
+\newblock \emph{Intuitionistic Type Theory}.
+\newblock Bibliopolis, Napoli.
+
+\bibitem[{McBride(2004)}]{McBride-Epigram}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2004].
+\newblock Epigram: Practical programming with dependent types.
+\newblock In \emph{Advanced Functional Programming}, volume 3622 of
+  \emph{Lecture Notes in Computer Science}, pages 130--170. Springer-Verlag.
+\newblock \doi{10.1007/11546382_3}.
+
+\bibitem[{Nordstr{\"o}m et~al.(1990)Nordstr{\"o}m, Peterson, and
+  Smith}]{Nordstrom-programming}
+\bibfnamefont{Bengt} \bibnamefont{Nordstr{\"o}m}, \bibfnamefont{Kent}
+  \bibnamefont{Peterson}, and \bibfnamefont{Jan~M.} \bibnamefont{Smith} [1990].
+\newblock \emph{Programming in Martin-L{\"o}f's Type Theory: An Introduction}.
+\newblock Oxford University Press.
+
+\bibitem[{Norell(2007)}]{Norell-thesis}
+\bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
+\newblock \emph{Towards a practical programming language based on dependent
+  type theory}.
+\newblock Ph.D. thesis, Chalmers University of Technology.
+
+\bibitem[{Norell(2009)}]{Norell-Agda}
+\bibfnamefont{Ulf} \bibnamefont{Norell} [2009].
+\newblock Dependently typed programming in {A}gda.
+\newblock In \emph{Advanced Functional Programming}, volume 5832 of
+  \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
+\newblock \doi{10.1007/978-3-642-04652-0_5}.
+
+\end{thebibliography}

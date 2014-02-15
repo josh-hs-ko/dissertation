@@ -11,11 +11,11 @@
 One common approach to program derivation is by algebraic transformations of functional programs: one begins with a specification in the form of a functional program that expresses straightforward but possibly inefficient computation, and transforms it into an extensionally equal but more efficient functional program by applying algebraic laws and theorems.
 Using functional programs as the specification language means that specifications are directly executable, but the deterministic nature of functional programs can result in less flexible specifications.
 For example, when specifying an optimisation problem using a functional program that generates all feasible solutions and chooses an optimal one among them, the program would enforce a particular way of choosing the optimal solution, but such enforcement should not be part of the specification.
-To gain more flexibility, the specification language was later generalised to \emph{relational programs}.
+To gain more flexibility, the specification language was later generalised to \key{relational programs}.
 With relational programs, we specify only the relationship between input and output without actually specifying a way to execute the programs, so specifications in the form of relational programs can be as flexible as possible.
 Though lacking a directly executable semantics, most relational programs can still be read computationally as potentially partial and nondeterministic mappings, so relational specifications largely remain computationally intuitive as functional specifications.
 
-To emphasise the computational interpretation of relations, we will mainly model a relation between sets |A|~and~|B| as a function sending each element of~|A| to a \emph{subset} of~|B|.
+To emphasise the computational interpretation of relations, we will mainly model a relation between sets |A|~and~|B| as a function sending each element of~|A| to a \key{subset} of~|B|.
 We define subsets by
 \begin{code}
 ℘ : Set → Set₁
@@ -30,7 +30,7 @@ any = const ⊤
 \end{code}
 The subset |any : (Power A)| associates the unit type~|⊤| with every element of~|A|.
 Since |⊤|~is inhabited, |any| can produce any element of~|A|.
-While |℘|~cannot be made into a conventional monad~\citep{Moggi-monads, Wadler-essence} because it is not an endofunctor, it can still be equipped with the usual monadic programming combinators, giving rise to a \emph{relative monad}~\citep{Altenkirch-relative-monads}:
+While |℘|~cannot be made into a conventional monad~\citep{Moggi-monads, Wadler-essence} because it is not an endofunctor, it can still be equipped with the usual monadic programming combinators, giving rise to a \key{relative monad}~\citep{Altenkirch-relative-monads}:
 \begin{itemize}
 \item The monadic unit is defined as
 \begin{code}
@@ -87,7 +87,7 @@ _∩_ : {I : Set} {X Y : I → Set} → (X ↝ Y) → (X ↝ Y) → (X ↝ Y)
 (R ∩ S) x y = R x y × S x y
 \end{code}
 \item Unlike a function, which distinguishes between input and output, inherently a relation treats its domain and codomain symmetrically.
-This is reflected by the presence of the following \emph{converse} operator:
+This is reflected by the presence of the following \key{converse} operator:
 \begin{code}
 _º : {I : Set} {X Y : I → Set} → (X ↝ Y) → (Y ↝ X)
 (R º) y x = R x y
@@ -109,7 +109,7 @@ mapR (σ S D)       R (s , xs)  =  (pair s) <$> (mapR (D s) R xs)
 \caption{Definition for relators.}
 \label{fig:relators}
 \end{figure}
-\item We will also need \emph{relators}, i.e., functorial maps on relations:
+\item We will also need \key{relators}, i.e., functorial maps on relations:
 \begin{code}
 Ṙ :  {I : Set} (D : Desc I) {X Y : I → Set} →
      (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
@@ -141,12 +141,12 @@ For example, a relation~|R| is a preorder if it is reflexive and transitive.
 In relational terms, these two conditions are expressed simply as
 \[ |idR ⊆ R| \qquad\text{and}\qquad |R • R ⊆ R| \]
 and are easily manipulable in calculations.
-Another important notion is \emph{monotonic algebras}~\cite[Section 7.2]{Bird-AoP}: an algebra |S : Ḟ D X ↝ X| is \emph{monotonic} on |R : X ↝ X| (usually an ordering) if
+Another important notion is \key{monotonic algebras}~\cite[Section 7.2]{Bird-AoP}: an algebra |S : Ḟ D X ↝ X| is \key{monotonic} on |R : X ↝ X| (usually an ordering) if
 \begin{code}
 S • Ṙ D R ⊆ R • S
 \end{code}
 which says that if two input values to~|S| have their recursive positions related by~|R| and are otherwise equal, then the output values would still be related by~|R|.
-In the context of optimisation problems, monotonicity can be used to capture the \emph{principle of optimality}, as will be shown in \autoref{sec:minimum-coin-change}.
+In the context of optimisation problems, monotonicity can be used to capture the \key{principle of optimality}, as will be shown in \autoref{sec:minimum-coin-change}.
 
 \todo[inline]{probably a simple example of relational calculation here?}
 
@@ -259,7 +259,7 @@ algOD D R (ok (i , j)) = algROD (D i) ((lambda(js)) R js j)
 
 The above can be generalised to all datatypes encoded by the |Desc| universe.
 Let |D : Desc I| be a description and |R : Ḟ D X ↝ X| (where |X : I → Set|) an algebra.
-The \emph{algebraic ornamentation} of~|D| with~|R| is an ornamental description
+The \key{algebraic ornamentation} of~|D| with~|R| is an ornamental description
 \begin{code}
 algOD D R : OrnDesc (Σ I X) proj₁ D
 \end{code}
@@ -293,18 +293,19 @@ computes to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| 
 %The method was demonstrated by \citet{McBride-ornaments} with a correct-by-construction compiler for a small language, and will be demonstrated again in \autoref{sec:minimum-coin-change}.
 
 \section{Examples}
+\label{sec:internalism-examples}
 
 \subsection{The Fold Fusion Theorem}
 
 \todo[inline]{Revise using upgrades.}
 
-As a first example of bridging internalist programming with relational calculation through algebraic ornamentation, let us consider the \emph{Fold Fusion Theorem}~\cite[Section~6.2]{Bird-AoP}:
+As a first example of bridging internalist programming with relational calculation through algebraic ornamentation, let us consider the \key{Fold Fusion Theorem}~\cite[Section~6.2]{Bird-AoP}:
 Let |D : Desc I| be a description, |R : X ↝ Y| a relation, and |S : Ḟ D X ↝ X| and |T : Ḟ D Y ↝ Y| algebras.
 If |R|~is a homomorphism from |S| to~|T|, i.e.,
 \begin{code}
 R • S ≃ T • Ṙ D R
 \end{code}
-which is referred to as the \emph{fusion condition}, then we have
+which is referred to as the \key{fusion condition}, then we have
 \begin{code}
 R • (cata(S)) ≃ (cata(T))
 \end{code}
@@ -388,16 +389,16 @@ which converts a bounded vector whose length is at most~|m| to a vector of lengt
 \subsection{The Streaming Theorem for list metamorphisms}
 \label{sec:metamorphism-streaming}
 
-A \emph{metamorphism}~\citep{Gibbons-metamorphisms} is an unfold after a fold --- it consumes a data structure to compute an intermediate value and then produces a new data structure using the intermediate value as the seed.
+A \key{metamorphism}~\citep{Gibbons-metamorphisms} is an unfold after a fold --- it consumes a data structure to compute an intermediate value and then produces a new data structure using the intermediate value as the seed.
 In this section we will restrict ourselves to metamorphisms consuming and producing lists.
-As \citeauthor{Gibbons-metamorphisms} noted, (list) metamorphisms in general cannot be automatically optimised in terms of time and space, but under certain conditions it is possible to refine a list metamorphism to a \emph{streaming algorithm} --- which can produce an initial segment of the output list without consuming all of the input list --- or a parallel algorithm~\citep{Nakano-jigsaw}.
-In the rest of this section, we prove the \emph{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} by implementing the streaming algorithm given by the theorem with algebraic ornamented lists such that the algorithm satisfies its metamorphic specification by construction.
+As \citeauthor{Gibbons-metamorphisms} noted, (list) metamorphisms in general cannot be automatically optimised in terms of time and space, but under certain conditions it is possible to refine a list metamorphism to a \key{streaming algorithm} --- which can produce an initial segment of the output list without consuming all of the input list --- or a parallel algorithm~\citep{Nakano-jigsaw}.
+In the rest of this section, we prove the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} by implementing the streaming algorithm given by the theorem with algebraic ornamented lists such that the algorithm satisfies its metamorphic specification by construction.
 
 Our first step is to formulate a metamorphism as a relational specification of the streaming algorithm.
 \begin{itemize}
-\item The fold part needs a twist since using the conventional fold --- known as the \emph{right fold} for lists since the direction of computation on a list is from right to left (cf.~wind direction) --- does not easily give rise to a streaming algorithm.
+\item The fold part needs a twist since using the conventional fold --- known as the \key{right fold} for lists since the direction of computation on a list is from right to left (cf.~wind direction) --- does not easily give rise to a streaming algorithm.
 This is because we wish to talk about ``partial consumption'' naturally: for a list, partial consumption means examining and removing some elements of the list to get a sub-list on which we can resume consumption, and the natural way to do this is to consume the list from the left, examining and removing head elements and keeping the tail.
-We should thus use the \emph{left fold} instead, which is usually defined as
+We should thus use the \key{left fold} instead, which is usually defined as
 \begin{code}
 foldl : {A X : Set} → (X → A → X) → X → List A → X
 foldl f x []        = x
@@ -422,7 +423,7 @@ The left fold can thus be linked to the relational fold by
 \begin{code}
 (cata(fun g º)) º : const X ↝ const (List A)
 \end{code}
-This is only an approximation because, while the relation does produce a list, the resulting list is inductive rather than coinductive, so the relation is actually a \emph{well-founded} unfold, which is incapable of producing an infinite list.
+This is only an approximation because, while the relation does produce a list, the resulting list is inductive rather than coinductive, so the relation is actually a \key{well-founded} unfold, which is incapable of producing an infinite list.
 \end{itemize}
 Thus, given a ``left algebra'' for consuming |List A|
 \begin{code}
@@ -432,7 +433,7 @@ and a coalgebra for producing |List B|
 \begin{code}
 g : const X ⇉ Ḟ (ListD B) (const X)
 \end{code}
-which together satisfy a \emph{streaming condition} that we will see later, the streaming algorithm we implement, which takes as input the initial value |x : X| for the left fold, should be included in the following metamorphic relation:
+which together satisfy a \key{streaming condition} that we will see later, the streaming algorithm we implement, which takes as input the initial value |x : X| for the left fold, should be included in the following metamorphic relation:
 \begin{code}
 meta f g x = (cata(fun g º)) º • fun (foldl f x) : const (List A) ↝ const (List B)
 \end{code}
@@ -547,11 +548,11 @@ This is commutativity of production and consumption (see \autoref{fig:production
 The function |h : X → X| is the state transformation resulting from consumption of the input list~|as|.
 From the initial state~|x|, we can either
 \begin{itemize}
-\item apply~|g| to~|x| to \emph{produce}~|b| and reach a new state~|x'|, and then apply~|h| to \emph{consume} the list and update the state to~|h x'|, or
-\item apply~|h| to \emph{consume} the list and update the state to~|h x|, and then apply~|g| to~|h x| to \emph{produce} an element and reach a new state,
+\item apply~|g| to~|x| to \key{produce}~|b| and reach a new state~|x'|, and then apply~|h| to \key{consume} the list and update the state to~|h x'|, or
+\item apply~|h| to \key{consume} the list and update the state to~|h x|, and then apply~|g| to~|h x| to \key{produce} an element and reach a new state,
 \end{itemize}
 and we need to prove that the outcomes are the same: doing production using~|g| and consumption using~|h| in whichever order should emit the same element and reach the same final state.
-This cannot be true in general, so we should impose some commutativity condition on |f|~and~|g|, which is called the \emph{streaming condition}:
+This cannot be true in general, so we should impose some commutativity condition on |f|~and~|g|, which is called the \key{streaming condition}:
 \begin{code}
 StreamingCondition f g : Set
 StreamingCondition f g =
@@ -583,7 +584,7 @@ Suppose that we have an unlimited number of 1-penny, 2-pence, and 5-pence coins,
 \begin{code}
 data Coin : Set where onep twop fivep : Coin
 \end{code}
-Given |n : Nat|, the \emph{minimum coin change problem} asks for the least number of coins that make up |n|~pence.
+Given |n : Nat|, the \key{minimum coin change problem} asks for the least number of coins that make up |n|~pence.
 We can give a relational specification of the problem with the following minimisation operator:
 \begin{code}
 min_•Λ_ : {I : Set} {-"\kern-1pt"-} {X Y : I → Set} {-"\kern-1pt"-} (R : Y ↝ Y) {-"\kern-1pt"-} (S : X ↝ Y) → (X ↝ Y)
@@ -593,7 +594,7 @@ An input |x : X i| for some |i : I| is mapped by |min R •Λ S| to |y : Y i| if
 (We think of~|R| as mapping larger inputs to smaller outputs.)
 Intuitively, we can think of |min R •Λ S| as consisting of two steps: the first step |Λ S| computes the set of all possible results yielded by~|S|, and the second step |min R| nondeterministically chooses a minimum result from that set.
 We use bags of coins as the type of solutions, and represent them as decreasingly ordered lists indexed with an upper bound.
-(This is a deliberate choice to make the derivation work, but one would naturally turn to this representation having attempted to apply the \emph{Greedy Theorem}, which will be introduced shortly.)
+(This is a deliberate choice to make the derivation work, but one would naturally turn to this representation having attempted to apply the \key{Greedy Theorem}, which will be introduced shortly.)
 If we define the ordering on coins as
 \begin{code}
 _≤C_ : Coin → Coin → Set
@@ -704,7 +705,7 @@ Thus all we need to do to solve the minimum coin change problem is
 
 \subsubsection{Refining the specification}
 
-The key to refining |min-coin-change| to the converse of a fold lies in the following version of the \emph{Greedy Theorem}, which is essentially a specialisation of \varcitet{Bird-AoP}{'s Theorem~10.1}:
+The key to refining |min-coin-change| to the converse of a fold lies in the following version of the \key{Greedy Theorem}, which is essentially a specialisation of \varcitet{Bird-AoP}{'s Theorem~10.1}:
 Let |D : Desc I| be a description, |R : μ D ↝ μ D| a preorder, and |S : Ḟ D X ↝ X| an algebra.
 Consider the specification
 \begin{code}
@@ -719,7 +720,7 @@ is monotonic on~|R|, i.e.,
 \begin{code}
 α • Ṙ D R ⊆ R • α
 \end{code}
-and there is a relation (ordering) |Q : Ḟ D X ↝ Ḟ D X| such that the \emph{greedy condition}
+and there is a relation (ordering) |Q : Ḟ D X ↝ Ḟ D X| such that the \key{greedy condition}
 \begin{code}
 α • Ṙ D ((cata(S)) º) • (Q ∩ (S º • S)) º ⊆ R º • α • Ṙ D ((cata(S)) º)
 \end{code}
@@ -729,7 +730,7 @@ is satisfied, then we have
 \end{code}
 Here we offer an intuitive explanation of the Greedy Theorem, but the theorem admits an elegant calculational proof, which can be faithfully reprised in Agda.
 The monotonicity condition states that if |ds : Ḟ D (μ D) i| for some |i : I| is better than |ds' : Ḟ D (μ D) i| under |Ṙ D R|, i.e., |ds|~and~|ds'| are equal except that the recursive positions of~|ds| are all better than the corresponding recursive positions of~|ds'| under~|R|, then |con ds : μ D i| would be better than |con ds' : μ D i| under~|R|.
-This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \emph{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
+This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
 The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem which has significant influence on the quality of solutions:
 Suppose that there are two decompositions |xs| and |xs' : Ḟ D X i| of some problem |x : X i| for some |i : I|, i.e., both |xs|~and~|xs'| are in |S º x : (Power (Ḟ D X i))|, and assume that |xs|~is better than~|xs'| under~|Q|.
 Then for any solution resulting from~|xs'| (computed by |α • Ṙ D ((cata(S)) º)|) there always exists a better solution resulting from~|xs|, so ignoring~|xs'| would only rule out worse solutions.
@@ -862,7 +863,7 @@ greedy-lemma :  (c d : Coin) → c ≤C d →
                 (Σ'(l' ∶ Nat)) CoinBag' d n l' × (l' ≤ l)
 \end{code}
 That is, given a problem (i.e., a value to be represented by coins), if |c : Coin| is a choice of decomposition (i.e., the first coin used) no better than |d : Coin| (i.e., |c ≤C d| --- recall that we prefer larger denominations), and |b : CoinBag' c m l| is a solution of size~|l| to the remaining subproblem~|m| resulting from choosing~|c|, then there is a solution to the remaining subproblem~|n| resulting from choosing~|d| whose size~|l'| is no greater than~|l|.
-We define two \emph{views}~\citep{McBride-view} --- or ``customised pattern matching'' --- to aid the analysis:
+We define two \key{views}~\citep{McBride-view} --- or ``customised pattern matching'' --- to aid the analysis:
 \begin{itemize}
 \item The first view analyses a proof of |c ≤C d| and exhausts all possibilities of |c|~and~|d|,
 \begin{code}
@@ -968,7 +969,7 @@ gnil' : {c : Coin} → GreedyBag c 0
 \begin{itemize}
 \item the first obligation reduces to |value d + n' ≡ n|, so we may just specialise~|n| to |value d + n'| and discharge the obligation;
 \item for the second obligation, any~|ns| satisfying |total-value-alg ns ≡ value d + n'| must be of the form |(`cons , e , e≤c , m' , tt)| for some |e : Coin|, |e≤c : e ≤C c|, and |m' : Nat| since the right-hand side |value d + n'| of the equality is non-zero, and |Q|~maps~|ns| to |(`cons , d , d≤c , n' , tt)| if |e ≤C d|, so |d|~should be the largest ``usable'' coin if this obligation is to be discharged.
-We say that |d : Coin| is \emph{usable} with respect to some |c : Coin| and |n : Nat| if |d|~is bounded above by~|c| and can be part of a solution to the problem for |n|~pence:
+We say that |d : Coin| is \key{usable} with respect to some |c : Coin| and |n : Nat| if |d|~is bounded above by~|c| and can be part of a solution to the problem for |n|~pence:
 \begin{code}
 UsableCoin : Nat → Coin → Coin → Set
 UsableCoin n c d = (d ≤C c) × ((Σ'(n' ∶ Nat)) value d + n' ≡ n)

@@ -15,10 +15,10 @@
 %format mapsto = "\mapsto"
 %format (lambda(x)) = "\lambda\," x "\," mapsto "\!"
 %format sep = "\kern.14em;"
-%format inferred = ".\kern.25pt" _
+%format INF = ".\kern-.25em"
 %format := = "{\raisebox{.08pt}{$\mathop:$}\shorteq}"
 %format (proofterm(t)) = "\proofterm{" t "}"
-%format (vartype(t)) = "_{" t "}"
+%format (vartype(t)) = "^{\kern-1pt" t "}"
 
 %format syntax = "\keyword{syntax}"
 %format constructor = "\keyword{constructor}"
@@ -30,6 +30,7 @@
 
 %format Set = "\constructor{Set}"
 %format Set₁ = "\constructor{Set_1}"
+%format Set₂ = "\constructor{Set_2}"
 
 %format 0 = "\mathrm 0"
 %format 1 = "\mathrm 1"
@@ -83,10 +84,13 @@
 %format ⊤ = "\top"
 %format tt = "{\kern.125em\vrule height .85ex depth -.25ex width .5ex\kern.125em}"
 %format Σ = "\Sigma"
+%format Σ.proj₁ = Σ "\recordmember" proj₁
+%format Σ.proj₂ = Σ "\recordmember" proj₂
 %format (Σ'(t)) = Σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
 %format pair = _ "\kern.1em,\kern-.1em" _
 %format proj₁ = "\constructor{outl}"
 %format proj₂ = "\constructor{outr}"
+%format _×_ = _ "{\times}\kern-\underscorespace" _
 %format × = "\!\times\!"
 %format inj₁ = "\constructor{inl}"
 %format inj₂ = "\constructor{inr}"
@@ -299,24 +303,37 @@
 %format zero = "\constructor{zero}"
 %format suc = "\constructor{suc}"
 %format Nat-elim  = "\constructor{Nat\text-elim}"
-%format ≤-elim = "\constructor{≤\text-elim}"
+%format _+_ = _ "{+}\kern-\underscorespace" _
+%format _+'_ = _ "{+^\prime}\kern-\underscorespace" _
+%format ≤N = "\!\mathrel{\leq_\constructor{N}}\!"
+%format _≤N_ = _ "{\leq_\constructor{N}}" _
+%format ≤N-elim = "\constructor{{≤}_\constructor{N}\text-elim}"
 %format ≤-trans = "\identifier{{" ≤ "}\text-trans}"
 %format Fin = "\constructor{Fin}"
 %format List = "\constructor{List}"
 %format ListS = "\constructor{ListS}"
 %format nil = "\constructor{nil}"
 %format cons = "\constructor{cons}"
+%format SnocView = "\constructor{SnocView}"
 %format snoc = "\constructor{snoc}"
 %format [] = "[\kern1pt]"
 %format _∷_ = _ "\kern\underscorespace" ∷ _
 %format ++ = "{+\kern-7pt+}"
 %format _++_ = _ "{" ++ "}\kern-\underscorespace" _
+%format append-length = "\identifier{append\text-length}"
 %format ListTag = "\constructor{ListTag}"
 %format `nil = "`" nil
 %format `cons = "`" cons
 %format NatD-ListD = "\identifier{NatD\text-ListD}"
 %format ListD-VecD = "\identifier{ListD\text-VecD}"
 %format Vec = "\constructor{Vec}"
+%format insert-length = "\identifier{insert\text-length}"
+%format insert-EV = "\identifier{insert}_\identifier{EV}"
+%format insert-ordered = "\identifier{insert\text-ordered}"
+%format insert-EO = "\identifier{insert}_\identifier{EO}"
+%format insert-EOV = "\identifier{insert}_\identifier{EOV}"
+%format insert-V = "\identifier{insert}_\identifier{V}"
+%format Vec-iso = "\identifier{Vec\text-iso}"
 %format Length = "\constructor{Length}"
 %format Length-FSwap = "\identifier{Length\text-FSwap}"
 %format Vec' = Vec "^\prime"
@@ -331,6 +348,7 @@
 %format yes = "\constructor{yes}"
 %format no = "\constructor{no}"
 %format _≤_ = _ "{\leq}\kern-\underscorespace" _
+%format step = "\constructor{step}"
 %format ≤-refl = "\identifier{{\leq}\text-refl}"
 %format ≤? = "{\leq}_?"
 %format _≤?_ = _ ≤? _
@@ -338,6 +356,7 @@
 %format ord-xs = "\identifier{ord\text-xs}"
 %format len-xs = "\identifier{len\text-xs}"
 %format b'≤x = "\identifier{" b' "\kern-\underscorespace{" ≤ "}x}"
+%format b'≤y = "\identifier{" b' "\kern-\underscorespace{" ≤ "}y}"
 %format BTree = "\constructor{BTree}"
 %format Bin = "\constructor{Bin}"
 %format one = "\constructor{one}"

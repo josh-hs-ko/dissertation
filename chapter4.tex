@@ -4,7 +4,7 @@
 \autoref{chap:refinements-and-ornaments} left some obvious holes in the theory of ornaments.
 For instance:
 \begin{itemize}
-\item When it comes to composition of ornaments, the following \emph{sequential composition} is probably the first that comes to mind (rather than parallel composition), which is evidence that the ornamental relation is transitive:
+\item When it comes to composition of ornaments, the following \key{sequential composition} is probably the first that comes to mind (rather than parallel composition), which is evidence that the ornamental relation is transitive:
 \begin{code}
 _⊙_ :  {I J K : Set} {e : J → I} {f : K → J} →
        {D : Desc I} {E : Desc J} {F : Desc K} →
@@ -29,7 +29,7 @@ In more detail:
 \item Categories and functors are abstractions for compositional structures and structure-preserving maps between them.
 Facts about translations between ornaments, refinements, and functions can thus be neatly organised under the categorical language (\autoref{sec:categories-and-functors}).
 \item Parallel composition merges two compatible ornaments and does nothing more; in other words, it computes the least informative ornament that contains the information of both ornaments.
-Characterisation of such \emph{universal constructions} is a speciality of category theory; in our case, parallel composition can be shown to satisfy some \emph{pullback properties} (\autoref{sec:parallel-composition-pullback}).
+Characterisation of such \key{universal constructions} is a speciality of category theory; in our case, parallel composition can be shown to satisfy some \key{pullback properties} (\autoref{sec:parallel-composition-pullback}).
 \item Universal constructions are unique up to isomorphism, so it is convenient to establish isomorphisms about universal constructions.
 The pullback properties of parallel composition can thus help to construct the ornamental conversion isomorphisms (\autoref{sec:ornamental-conversion-isomorphisms}) and the modularity isomorphisms (\autoref{sec:modularity-isomorphisms}).
 \end{itemize}
@@ -59,7 +59,7 @@ The pullback properties of parallel composition can thus help to construct the o
 \label{fig:categories}
 \end{figure}
 
-A first approximation of a category is a (directed multi-) \emph{graph}, which consists of a set of objects (nodes) and a collection of sets of morphisms (edges) indexed with their source and target objects:
+A first approximation of a category is a (directed multi-) \key{graph}, which consists of a set of objects (nodes) and a collection of sets of morphisms (edges) indexed with their source and target objects:
 \begin{code}
 record Graph {l m : Level} : Set (suc (l ⊔ m)) where
   field
@@ -83,7 +83,7 @@ which has identities and is associative.
 We will give the first few universe-polymorphic definitions with full detail about the levels, but will later suppress the syntactic noise wherever possible.}
 
 Before we move on to the definition of categories, though, special attention must be paid to equality on morphisms, which is usually coarser than definitional equality --- in |Fun|, for example, it is necessary to identify functions up to extensional equality (so uniqueness of morphisms in universal properties would make sense).
-One ad hoc way to achieve this in Agda's intensional setting is to use \emph{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
+One ad hoc way to achieve this in Agda's intensional setting is to use \key{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
 The type of setoids can be defined as a record which contains a carrier set, an equivalence relation on the set, and the three laws for the equivalence relation:
 \begin{code}
 record Setoid {c d : Level} : Set (suc (c ⊔ d)) where
@@ -136,7 +136,7 @@ record Category {l m n : Level} : Set (suc (l ⊔ m ⊔ n)) where
 \label{fig:category}
 \end{figure}
 
-Similarly, we can define the type of categories as a record containing a set of objects, a collection of \emph{setoids} of morphisms indexed by source and target objects, the composition operator on morphisms, the identity morphisms, and the identity and associativity laws for composition.
+Similarly, we can define the type of categories as a record containing a set of objects, a collection of \key{setoids} of morphisms indexed by source and target objects, the composition operator on morphisms, the identity morphisms, and the identity and associativity laws for composition.
 The definition is shown in \autoref{fig:category}.
 Two notations are introduced to improve readability: |X ==> Y| is defined to be the carrier set of the setoid of morphisms from~|X| to~|Y|, and |f ≈ g| is defined to be the equivalence between the morphisms |f|~and~|g| as specified by the setoid to which |f|~and~|g| belong.
 The last two laws |cong-l| and |cong-r| require morphism composition to preserve the equivalence on morphisms; they are given in this form to work better with the equational reasoning combinators commonly used in Agda (see, for example, the AoPA library~\citep{Mu-AoPA}).
@@ -190,7 +190,7 @@ record Functor {l m n l' m' n' : Level}
 \label{fig:functor}
 \end{figure}
 
-Categories are graphs with a compositional structure, and \emph{functors} are transformations between categories that preserve the compositional structure.
+Categories are graphs with a compositional structure, and \key{functors} are transformations between categories that preserve the compositional structure.
 The definition of functors is shown in \autoref{fig:functor}: a functor consists of two mappings, one on objects and the other on morphisms, where the morphism part preserves all structures on morphisms, including equivalence, identity, and composition.
 For example, we have two functors from |Fam| to |Fun|, one summing components together
 \begin{code}
@@ -310,7 +310,7 @@ The actual definition of |OrnEq| is deferred until \autoref{chap:equivalence}.
 
 \item Morphism composition is sequential composition~|_⊙_|\,, which merges two successive batches of modifications in a straightforward way.
 The definition is shown in \autoref{fig:sequential-composition}.
-There is also a family of \emph{identity ornaments}:
+There is also a family of \key{identity ornaments}:
 \begin{code}
 idOrn : {I : Set} (D : Desc I) → Orn id D D
 idOrn {I} D (ok i) = idROrn (D i)
@@ -387,10 +387,10 @@ record Iso C X Y : Set _ where
 \section{Pullback properties of parallel composition}
 \label{sec:parallel-composition-pullback}
 
-One of the great advantages of category theory is the ability to formulate the idea of \emph{universal constructions} generically and concisely, which we will use to give parallel composition a useful macroscopic characterisation.
+One of the great advantages of category theory is the ability to formulate the idea of \key{universal constructions} generically and concisely, which we will use to give parallel composition a useful macroscopic characterisation.
 An intuitive way to understand the idea of a universal construction is to think of it as a ``best'' solution to some specification.
-More precisely, the specification is represented as a category whose objects are all possible solutions and whose morphisms are evidence of how the solutions ``compare'' with each other, and a ``best'' solution is a \emph{terminal object} in this category, meaning that it is ``evidently better'' than all objects in the category.
-For the actual definition: an object in a category~|C| is \emph{terminal} when it satisfies the \emph{universal property} that for every object~|X'| there is a unique morphism from~|X'| to~|X|, i.e., the setoid |Morphism X' X| has a unique inhabitant:\todo{name scoping}
+More precisely, the specification is represented as a category whose objects are all possible solutions and whose morphisms are evidence of how the solutions ``compare'' with each other, and a ``best'' solution is a \key{terminal object} in this category, meaning that it is ``evidently better'' than all objects in the category.
+For the actual definition: an object in a category~|C| is \key{terminal} when it satisfies the \key{universal property} that for every object~|X'| there is a unique morphism from~|X'| to~|X|, i.e., the setoid |Morphism X' X| has a unique inhabitant:\todo{name scoping}
 \begin{code}
 Terminal C : Object → Set _
 Terminal C X = (X' : Object) → Singleton (Morphism X' X)
@@ -417,10 +417,10 @@ Thus, to prove that two constructions are isomorphic, one way would be to prove 
 This is the main method we use to construct the ornamental conversion isomorphisms in \autoref{sec:ornamental-conversion-isomorphisms} and the modularity isomorphisms in \autoref{sec:modularity-isomorphisms}, both involving parallel composition.
 The goal of the rest of this section, then, is to find suitable universal properties that characterise parallel composition, preparing for Sections \ref{sec:ornamental-conversion-isomorphisms}~and~\ref{sec:modularity-isomorphisms}.
 
-As said earlier, parallel composition computes the least informative ornament that contains the information of two compatible ornaments, and this is exactly a categorical \emph{product}.
+As said earlier, parallel composition computes the least informative ornament that contains the information of two compatible ornaments, and this is exactly a categorical \key{product}.
 Below we construct the definition of categorical products step by step.
 Let |C|~be a category and |L|,~|R| two objects in~|C|.
-A \emph{span} over |L|~and~|R| is defined by
+A \key{span} over |L|~and~|R| is defined by
 \begin{code}
 record Span C L R : Set _ where
   constructor span
@@ -486,7 +486,7 @@ In particular, a product of |L|~and~|R| contains the least informative object th
 We thus aim to characterise parallel composition as a product of two compatible ornaments.
 This means that ornaments should be the objects of some category, but so far we only know that ornaments are morphisms of the category |Ōrn|.
 We are thus directed to construct a category whose objects are morphisms in an ambient category~|C|, so when we use |Ōrn| as the ambient category, parallel composition can be characterised as a product in the derived category.
-Such a category is in general a \emph{comma category}~\citep[\S\,II.6]{MacLane-categories}, whose objects are morphisms with arbitrary source and target objects, but here we should restrict ourselves to a special case called a \emph{slice category}, since we seek to form products of only compatible ornaments (whose less informative end coincide) rather than arbitrary ones.
+Such a category is in general a \key{comma category}~\citep[\S\,II.6]{MacLane-categories}, whose objects are morphisms with arbitrary source and target objects, but here we should restrict ourselves to a special case called a \key{slice category}, since we seek to form products of only compatible ornaments (whose less informative end coincide) rather than arbitrary ones.
 A slice category is parametrised with an ambient category~|C| and an object~|B| in~|C|, and has
 \begin{itemize}
 \item objects: all the morphisms in~|C| with target~|B|,
@@ -543,7 +543,7 @@ Objects in a slice category are thus morphisms with a common target, and when th
 We have arrived at the characterisation of parallel composition as a product in a slice category on top of |Ōrn|.
 The composite term ``product in a slice category'' has become a multi-layered concept and can be confusing; to facilitate comprehension, we give several new definitions that can sometimes deliver better intuition.
 Let |C|~be an ambient category and |X|~an object in~|C|.
-We refer to spans over two slices |f|,~|g : Slice C X| alternatively as \emph{squares} over |f|~and~|g|:
+We refer to spans over two slices |f|,~|g : Slice C X| alternatively as \key{squares} over |f|~and~|g|:
 \begin{code}
 Square C f g : Set _
 Square C f g = Span (SliceCategory C X) f g
@@ -588,17 +588,17 @@ since diagrammatically a square looks like
 \node at (-1.25, 1.8) {$f$};
 \node at (1.25, 1.8) {$g$};
 \end{tikzpicture} \]
-In a square~|q|, we will refer to the object |Slice.T (Span.M q)|, i.e., the node~|W| in the diagrams above, as the \emph{vertex} of~|q|:
+In a square~|q|, we will refer to the object |Slice.T (Span.M q)|, i.e., the node~|W| in the diagrams above, as the \key{vertex} of~|q|:
 \begin{code}
 vertex : Square C f g → Object
 vertex = Slice.T ∘ Span.M
 \end{code}
-A product of |f|~and~|g| is alternatively referred to as a \emph{pullback} of |f|~and~|g|; that is, it is a square over |f|~and~|g| satisfying
+A product of |f|~and~|g| is alternatively referred to as a \key{pullback} of |f|~and~|g|; that is, it is a square over |f|~and~|g| satisfying
 \begin{code}
 Pullback C f g : Square C f g → Set _
 Pullback C f g = Product (SliceCategory C X) f g
 \end{code}
-Equivalently, if we define the \emph{square category} over |f|~and~|g| as
+Equivalently, if we define the \key{square category} over |f|~and~|g| as
 \begin{code}
 SquareCategory C f g : Category
 SquareCategory C f g = SpanCategory (SliceCategory C X) f g
@@ -840,7 +840,7 @@ For fixed |i|, |j|, |k|, and~|x|, the set
 \begin{code}
 N (ok (j , k) , ok (i , x))
 \end{code}
-along with the cartesian projections is a product, which trivially extends to a pullback since there is a forgetful function from each of the two component sets to the \emph{singleton} set |μ ⌊ S ⌋ (i , x)|, as shown in the following diagram:
+along with the cartesian projections is a product, which trivially extends to a pullback since there is a forgetful function from each of the two component sets to the \key{singleton} set |μ ⌊ S ⌋ (i , x)|, as shown in the following diagram:
 \[ \begin{tikzpicture}[scale=5]
 \node(D) at (1.25, 0) {|μ ⌊ S ⌋ (i , x)|};
 \node(E) at (0, 0) {|μ ⌊ O  ⊗ ⌈ S ⌉ ⌋ (j , ok (i , x))|};

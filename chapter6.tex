@@ -49,7 +49,7 @@ clsAlg OL (cons-tag  , a , ok b'  )  (ok b)  =  (b ≤A a) × (b' ≡ a)
 \end{code}In the nil case, the empty list can be mapped to any |ok b| because any |b : A| is a lower bound of the empty list; in the cons case, where |a : A| is the head and |ok b'| is a result of classifying the tail, i.e., |b' : A| is a lower bound of the tail, the list can be mapped to~|ok b| if |b : A| is a lower bound of~|a| and |a|~is exactly~|b'|.
 
 Perhaps the most important consequence of the completeness theorem (in its present form) is that it provides a new perspective on the expressive power of ornaments and inductive families.
-We showed in a previous paper~\cite{Ko-pcOrn} that every ornament induces a promotion predicate and a corresponding family of isomorphisms (which is restated as~(\ref{eq:promotion-isomorphisms}) in \autoref{sec:descriptions-and-ornaments}).
+We showed in a previous paper~\cite{Ko-pcOrn} that every ornament induces a promotion predicate and a corresponding family of isomorphisms.
 But one question was untouched: can we determine (independently from ornaments) the range of predicates induced by ornaments?
 An answer to this question would tell us something about the expressive power of ornaments, and also about the expressive power of inductive families in general, since the inductive families we use are usually ornamentations of simpler algebraic datatypes from traditional functional programming.
 The completeness theorem offers such an answer: ornament-induced promotion predicates are exactly those expressible as relational folds (up to pointwise isomorphism).

@@ -1,4 +1,4 @@
-\begin{thebibliography}{53}
+\begin{thebibliography}{66}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -127,6 +127,36 @@
   ICFP'10, pages 3--14. ACM.
 \newblock \doi{10.1145/1863543.1863547}.
 
+\bibitem[{Constable et~al.(1985)Constable, Allen, Bromley, Cleaveland, Cremer,
+  Harper, Howe, Knoblock, Mendler, Panangaden, Sasaki, and
+  Smith}]{Constable-Nuprl}
+\bibfnamefont{R.~L.} \bibnamefont{Constable}, \bibfnamefont{S.~F.}
+  \bibnamefont{Allen}, \bibfnamefont{H.~M.} \bibnamefont{Bromley},
+  \bibfnamefont{W.~R.} \bibnamefont{Cleaveland}, \bibfnamefont{J.~F.}
+  \bibnamefont{Cremer}, \bibfnamefont{R.~W.} \bibnamefont{Harper},
+  \bibfnamefont{D.~J.} \bibnamefont{Howe}, \bibfnamefont{T.~B.}
+  \bibnamefont{Knoblock}, \bibfnamefont{N.~P.} \bibnamefont{Mendler},
+  \bibfnamefont{P.}~\bibnamefont{Panangaden}, \bibfnamefont{J.~T.}
+  \bibnamefont{Sasaki}, and \bibfnamefont{S.~F.} \bibnamefont{Smith} [1985].
+\newblock \emph{Implementing Mathematics with the Nuprl Proof Development
+  System}.
+\newblock Prentice-Hall.
+
+\bibitem[{Coquand and Huet(1988)}]{Coquand-calculus-of-constructions}
+\bibfnamefont{Thierry} \bibnamefont{Coquand} and \bibfnamefont{G{\'e}rard}
+  \bibnamefont{Huet} [1988].
+\newblock The calculus of constructions.
+\newblock \emph{Information and Computation}, 76(2--3):95--120.
+\newblock \doi{10.1016/0890-5401(88)90005-3}.
+
+\bibitem[{Coquand and Paulin-Mohring(1990)}]{Coquand-CiC}
+\bibfnamefont{Thierry} \bibnamefont{Coquand} and \bibfnamefont{Christine}
+  \bibnamefont{Paulin-Mohring} [1990].
+\newblock Inductively defined types.
+\newblock In \emph{International Conference on Computer Logic}, volume 417 of
+  \emph{Lecture Notes in Computer Science}, pages 50--66. Springer-Verlag.
+\newblock \doi{10.1007/3-540-52335-9_47}.
+
 \bibitem[{Dagand and McBride(2012{\natexlab{a}})}]{Dagand-elaboration}
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
   \bibfnamefont{Conor} \bibnamefont{McBride} [2012{\natexlab{a}}].
@@ -146,6 +176,11 @@
 \newblock \emph{Elements of Intuitionism}.
 \newblock Oxford University Press, second edition.
 
+\bibitem[{Dybjer(1994)}]{Dybjer-inductive-families}
+\bibfnamefont{Peter} \bibnamefont{Dybjer} [1994].
+\newblock Inductive families.
+\newblock \emph{Formal Aspects of Computing}, 6(4):440--465.
+
 \bibitem[{Dybjer(1998)}]{Dybjer-induction-recursion}
 \bibfnamefont{Peter} \bibnamefont{Dybjer} [1998].
 \newblock A general formulation of simultaneous inductive-recursive definitions
@@ -153,8 +188,15 @@
 \newblock \emph{Journal of Symbolic Logic}, 65(2):525--549.
 \newblock \doi{10.2307/2586554}.
 
-\bibitem[{Gibbons(2007)}]{Gibbons-metamorphisms}
-\bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007].
+\bibitem[{Gibbons(2007{\natexlab{a}})}]{Gibbons-DGP}
+\bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007{\natexlab{a}}].
+\newblock Datatype-generic programming.
+\newblock In \emph{Spring School on Datatype-Generic Programming}, volume 4719
+  of \emph{Lecture Notes in Computer Science}, pages 1--71. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-76786-2_1}.
+
+\bibitem[{Gibbons(2007{\natexlab{b}})}]{Gibbons-metamorphisms}
+\bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007{\natexlab{b}}].
 \newblock Metamorphisms: Streaming representation-changers.
 \newblock \emph{Science of Computer Programming}, 65(2):108--139.
 \newblock \doi{10.1016/j.scico.2006.01.006}.
@@ -189,12 +231,41 @@
 \newblock \emph{Intuitionism: An Introduction}.
 \newblock Amsterdam: North-Holland Publishing, third revised edition.
 
+\bibitem[{Hudak et~al.(2007)Hudak, Hughes, Peyton~Jones, and
+  Wadler}]{Hudak-history-of-Haskell}
+\bibfnamefont{Paul} \bibnamefont{Hudak}, \bibfnamefont{John}
+  \bibnamefont{Hughes}, \bibfnamefont{Simon} \bibnamefont{Peyton~Jones}, and
+  \bibfnamefont{Philip} \bibnamefont{Wadler} [2007].
+\newblock A history of {H}askell: Being lazy with class.
+\newblock In \emph{History of Programming Languages}, pages 1--55. ACM.
+\newblock \doi{10.1145/1238844.1238856}.
+
+\bibitem[{Ko and Gibbons(2011)}]{Ko-OAOAOO}
+\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2011].
+\newblock Modularising inductive families.
+\newblock In \emph{Workshop on Generic Programming}, WGP'11, pages 13--24. ACM.
+\newblock \doi{10.1145/2036918.2036921}.
+
 \bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
   \bibnamefont{Gibbons} [2013].
 \newblock Modularising inductive families.
 \newblock \emph{Progress in Informatics}, 10:65--88.
 \newblock \doi{10.2201/NiiPi.2013.10.5}.
+
+\bibitem[{Leroy(2009)}]{Leroy-CompCert}
+\bibfnamefont{Xavier} \bibnamefont{Leroy} [2009].
+\newblock A formally verified compiler back-end.
+\newblock \emph{Journal of Automated Reasoning}, 43(4):363--446.
+\newblock \doi{10.1007/s10817-009-9155-4}.
+
+\bibitem[{Letouzey(2003)}]{Letouzey-Coq-extraction}
+\bibfnamefont{Pierre} \bibnamefont{Letouzey} [2003].
+\newblock A new extraction for {C}oq.
+\newblock In \emph{Types for Proofs and Programs}, volume 2646 of \emph{Lecture
+  Notes in Computer Science}, pages 200--219. Springer-Verlag.
+\newblock \doi{10.1007/3-540-39185-1_12}.
 
 \bibitem[{Luo(1994)}]{Luo-type-theory}
 \bibfnamefont{Zhaohui} \bibnamefont{Luo} [1994].
@@ -206,6 +277,13 @@
 \newblock \emph{Categories for the Working Mathematician}.
 \newblock Springer-Verlag, second edition.
 
+\bibitem[{Martin-L{\"o}f(1975)}]{ML-TT73}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1975].
+\newblock An intuitionistic theory of types: Predicative part.
+\newblock In \emph{Logic Colloquium '73}, volume~80 of \emph{Studies in Logic
+  and the Foundations of Mathematics}, pages 73--118. Elsevier B.V.
+\newblock \doi{10.1016/S0049-237X(08)71945-1}.
+
 \bibitem[{Martin-L{\"o}f(1984{\natexlab{a}})}]{ML-constructive-math-programming}
 \bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984{\natexlab{a}}].
 \newblock Constructive mathematics and computer programming.
@@ -213,7 +291,7 @@
   312(1522):501--518.
 \newblock \doi{10.1098/rsta.1984.0073}.
 
-\bibitem[{Martin-L{\"o}f(1984{\natexlab{b}})}]{ML-ITT}
+\bibitem[{Martin-L{\"o}f(1984{\natexlab{b}})}]{ML-TT84}
 \bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984{\natexlab{b}}].
 \newblock \emph{Intuitionistic Type Theory}.
 \newblock Bibliopolis, Napoli.
@@ -228,12 +306,6 @@
 \newblock \emph{Dependently Typed Functional Programs and their Proofs}.
 \newblock Ph.D. thesis, University of Edinburgh.
 
-\bibitem[{McBride(2003)}]{McBride-unification}
-\bibfnamefont{Conor} \bibnamefont{McBride} [2003].
-\newblock First-order unification by structural recursion.
-\newblock \emph{Journal of Functional Programming}, 13(6):1061--1075.
-\newblock \doi{10.1017/S0956796803004957}.
-
 \bibitem[{McBride(2004)}]{McBride-Epigram}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2004].
 \newblock Epigram: Practical programming with dependent types.
@@ -245,6 +317,12 @@
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].
 \newblock Ornamental algebras, algebraic ornaments.
 \newblock To appear in \textit{Journal of Functional Programming}.
+
+\bibitem[{McBride(2012)}]{McBride-polynomial-testing}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2012].
+\newblock A polynomial testing principle.
+\newblock Available at
+  \url{https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf}.
 
 \bibitem[{McBride and McKinna(2004)}]{McBride-view}
 \bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{James}
@@ -307,7 +385,7 @@
 \newblock \doi{10.1007/BF01941137}.
 
 \bibitem[{Nordstr{\"o}m et~al.(1990)Nordstr{\"o}m, Peterson, and
-  Smith}]{Nordstroem-programming}
+  Smith}]{Nordstrom-programming}
 \bibfnamefont{Bengt} \bibnamefont{Nordstr{\"o}m}, \bibfnamefont{Kent}
   \bibnamefont{Peterson}, and \bibfnamefont{Jan~M.} \bibnamefont{Smith} [1990].
 \newblock \emph{Programming in Martin-L{\"o}f's Type Theory: An Introduction}.
@@ -338,6 +416,18 @@
 \newblock In \emph{Principles of Programming Languages}, pages 89--104. ACM.
 \newblock \doi{10.1145/75277.75285}.
 
+\bibitem[{Peyton~Jones(1997)}]{PJ-guards}
+\bibfnamefont{Simon} \bibnamefont{Peyton~Jones} [1997].
+\newblock A new view of guards.
+\newblock Available at
+  \url{http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html}.
+
+\bibitem[{Reynolds(2000)}]{Reynolds-intrinsic-extrinsic-semantics}
+\bibfnamefont{John~C.} \bibnamefont{Reynolds} [2000].
+\newblock The meaning of types --- from intrinsic to extrinsic semantics.
+\newblock Basic Research in Computer Science (BRICS) Report Series RS-00-32,
+  Department of Computer Science, University of Aarhus.
+
 \bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
 \bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}
   \bibnamefont{Linger} [2007].
@@ -346,9 +436,15 @@
   of \emph{Lecture Notes in Computer Science}, pages 158--227. Springer-Verlag.
 \newblock \doi{10.1007/978-3-540-88059-2_5}.
 
+\bibitem[{Smith(1988)}]{Smith-independence-fourth-axiom}
+\bibfnamefont{Jan~M.} \bibnamefont{Smith} [1988].
+\newblock The independence of {P}eano's fourth axiom from {M}artin-{L}{\"o}f's
+  type theory without universes.
+\newblock \emph{Journal of Symbolic Logic}, 53(3):840--845.
+
 \bibitem[{Streicher(1993)}]{Streicher-ITT}
 \bibfnamefont{Thomas} \bibnamefont{Streicher} [1993].
-\newblock Investigations into intentional type theory.
+\newblock Investigations into intensional type theory.
 \newblock Habilitation thesis, {L}udwig {M}aximilian {U}niversit\"{a}t.
 
 \bibitem[{Swierstra(2008)}]{Swierstra-data-types-a-la-carte}

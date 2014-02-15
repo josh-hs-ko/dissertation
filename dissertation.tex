@@ -89,14 +89,23 @@
 
 \newcommand{\omission}{{\small[\ldots\!]}}
 
+\newcommand{\name}{\textsc}
+\newcommand{\Agda}{\name{Agda}}
+
+\newcommand{\sidenote}[1]{{\small\color[gray]{.45}(#1)}}
+
 \usepackage{bussproofs}
 \EnableBpAbbreviations
+
+\usepackage{soul}
+\setul{1.2pt}{.5pt}
+\renewcommand{\emph}{\ul}
+\newcommand{\key}{\textbf}
 
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
 \linespread{1.25}
 \usepackage{rsfso}
-\renewcommand{\emph}{\textbf}
 \newcommand{\keyword}{\mathbf}
 \newcommand{\constructor}{\mathsf}
 \newcommand{\identifier}{\mathit}
