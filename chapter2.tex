@@ -6,7 +6,7 @@ This chapter serves three purposes.
 \item The general theme of the thesis is set up by describing the propositions-as-types-principle~(\autoref{sec:propositions-as-types}) and its influence on program construction~(\autoref{sec:externalism-and-internalism}).
 \item It is explained that, while we adopt \Agda\ as the expository language, we make sure that, at least in principle, every \Agda\ program in this thesis can be translated down to well-studied aspects of type theory --- no mysterious \Agda-specific semantics is used.
 Specifically, we briefly discuss foundational aspects of pattern matching~(\autoref{sec:pattern-matching}) and equality~(\autoref{sec:equality}).
-\item \Agda-specific syntax, notational conventions, and basic constructions used throughout the thesis are also introduced.
+\item Most of \Agda-specific syntax, notational conventions, and basic constructions used throughout the thesis are also introduced.
 In particular, a universe for ``index-first'' inductive families is constructed~(\autoref{sec:universes}), which is the basis of essentially all later constructions.
 \end{itemize}
 
@@ -66,7 +66,7 @@ This explanation justifies the following \key{elimination rule}
 \AXC{|P : Nat → Set|} \AXC{|z : P zero|} \AXC{|s : (n : Nat) → P n → P (suc n)|\qquad|n : Nat|}
 \TIC{|Nat-elim P z s n : P n|} \DP
 \end{center}
-\sidenote{The type of~|s| illustrates \Agda's syntax for dependent functions --- the value~|n| of the first argument is referred to in the types of the second argument and the result.}
+\sidenote{The type of~|s| illustrates \Agda's syntax for dependent function types --- the value~|n| of the first argument is referred to in the types of the second argument and the result.}
 The symbol |Nat-elim| symbolises the method described above, which, given |P|, |z|, and~|s|, transforms every natural number~|n| into an inhabitant of the set~|P n|.
 The actual computation performed by |Nat-elim| is stated as two \key{computation rules} in the form of equality judgements (see \autoref{sec:equality}):
 \begin{center}
@@ -317,7 +317,13 @@ Formally, this is stated as the ``reflection principle'': two propositionally eq
 A propositional equality satisfying the reflection principle --- e.g., the \Agda\ one --- can sometimes be too discriminating.
 For example, in category theory (which we use in Chapters \ref{chap:categorical}~and~\ref{chap:equivalence}), a universal function (i.e., a universal morphism in the category of sets and total functions) is unique \emph{up to extensional (i.e., pointwise) equality}, but pointwise propositionally equal functions are usually not propositionally equal themselves.
 (If, under the empty context, two pointwise propositionally equal functions are propositionally equal themselves, then by the reflection principle they are also judgementally equal, but the two functions can well have different intensions.)
-While we can explicitly work with pointwise equality on functions, not being able to identify extensionally equal functions propositionally means that we do not automatically get basic properties like
+Of course, we can explicitly work with pointwise equality on functions, i.e., establishing and using properties formulated in terms of the relation
+\begin{code}
+_≐_ : {A B : Set} → (A → B) → (A → B) → Set
+_≐_ {A} f g = (x : A) → f x ≡ g x
+\end{code}
+\sidenote{The implicit argument~|A| is explicitly displayed in curly braces on the left-hand side of the equation since we need to refer to~|I| on the right-hand side.}
+Not being able to identify extensionally equal functions propositionally, however, means that we do not automatically get basic properties like
 \begin{code}
 cong : {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 \end{code}
@@ -500,7 +506,6 @@ where |_⇉_| is defined by
 _⇉_ : {I : Set} → (I → Set) → (I → Set) → Set
 _⇉_ {I} X Y = {i : I} → X i → Y i
 \end{code}
-\sidenote{The implicit argument~|I| is explicitly displayed in curly braces on the left-hand side of the equation since we need to refer to~|I| on the right-hand side.}
 
 \block{Remark}{presentation of universes and their decoding}{We always present universes (e.g., |RDesc|) along with their decoding (e.g., |⟦_⟧| for |RDesc|) to emphasise the meaning of the codes, even when the decoding is not logically tied to the codes (cf.~\varcitet{ML-TT84}{'s universe}, which is inductive-recursive~\citep{Dybjer-induction-recursion} and must present the universe and its decoding simultaneously).}
 
@@ -518,7 +523,12 @@ open Σ
 
 syntax Σ A (λ a → T) = (Σ'(a ∶ A)) T
 \end{code}
-An inhabitant |p : Σ A X| is a pair where the type of the second component depends on the first component --- a cartesian product |A × B| is thus a special case, which is defined as |Σ A ((lambda(_)) B)|.
+An inhabitant of |Σ A X| is a pair where the type of the second component depends on the first component, and is written by listing values for the fields like
+\begin{code}
+record  case  proj₁  = a
+        sep   proj₂  = x endcase
+\end{code}
+(where |a : A| and |x : X a|) --- a cartesian product |A × B| is thus a special case, which is defined as |Σ A ((lambda(_)) B)|.
 The |constructor| declaration gives rise to a constructor function
 \begin{code}
 pair : {A : Set} {X : A → Set} → (a : A) → X a → Σ A X
@@ -564,7 +574,7 @@ NatD tt = σ ListTag λ  case  `nil   mapsto  ṿ []
                        sep   `cons  mapsto  ṿ (tt ∷ []) endcase
 \end{code}
 The index request is necessarily~|tt|, and we respond with a field of type |ListTag| representing the constructor choices.
-A pattern-matching lambda function follows, which computes the trailing responses to the two possible values |`nil| and |`cons| for the field: if the field receives |`nil|, then we are constructing zero, which takes no recursive values, so we write |ṿ []| to end this branch; if the |ListTag| field receives |`cons|, then we are constructing a successor, which takes a recursive value at index~|tt|, so we write |ṿ (tt ∷ [])|.}
+A pattern-matching lambda function \sidenote{which is syntactically distinguished by enclosing its body in curly braces} follows, which computes the trailing responses to the two possible values |`nil| and |`cons| for the field: if the field receives |`nil|, then we are constructing zero, which takes no recursive values, so we write |ṿ []| to end this branch; if the |ListTag| field receives |`cons|, then we are constructing a successor, which takes a recursive value at index~|tt|, so we write |ṿ (tt ∷ [])|.}
 
 \block{Example}{lists}{The datatype of lists is parametrised by the element type.
 We represent parametrised descriptions simply as functions producing descriptions, so the declaration of lists corresponds to a function taking element types to descriptions.
@@ -607,7 +617,7 @@ _++_ : List A → List A → List A
 []        ++ bs = bs
 (a ∷ as)  ++ bs = a ∷ (as ++ bs)
 \end{code}
-Later on, when an encoded datatype is defined, we almost always supply a corresponding index-first datatype declaration immediately afterwards, which is thought of as giving definitions of higher-level terms for type and data constructors --- the terms |List|, |[]|, and~|_∷_| above, for example, can be considered to be defined by the index-first declaration of lists given in \autoref{sec:index-first-datatypes}.
+Later on, encoded datatypes are almost always accompanied by corresponding index-first datatype declarations, which are thought of as giving definitions of higher-level terms for type and data constructors --- the terms |List|, |[]|, and~|_∷_| above, for example, can be considered to be defined by the index-first declaration of lists given in \autoref{sec:index-first-datatypes}.
 Index-first declarations will only be regarded in this thesis as informal hints at how encoded datatypes are presented at a higher level; we do not give a formal treatment of the elaboration process from index-first declarations to corresponding descriptions and definitions of higher-level terms.
 (One such treatment was given by \citet{Dagand-elaboration}.)
 
@@ -744,8 +754,7 @@ _++_ : {A : Set} {m n : Nat} → Vec A m → Vec A n → Vec A (n + m)
 \end{code}
 we would be forced to perform two type-casts that could have been avoided.
 Not only does the program look ugly, but this can also cause a cascade effect when we need to write other programs whose types depend on this program (e.g., externalist proofs about it), which would have to deal with the type-casts.
-\citet{McBride-polynomial-testing} gave a more interesting example: to prove the polynomial testing principle (two polynomial functions of degree~$n$ are pointwise equal if they agree at $n + 1$ different points), \citeauthor{McBride-polynomial-testing} started with a datatype of encodings of polynomial functions indexed by degree but, after trying to program with the datatype, quickly found out that the datatype should instead be indexed by an arbitrary upper bound of the degree so a relaxed form of the polynomial testing principle can be naturally programmed (two polynomial functions of degree \key{at most}~$n$ are pointwise equal if they agree at $n + 1$ different points).
-% The moral is that an internalist type does not easily lead to a natural program without careful consideration with respect to the specification.
+\citet{McBride-polynomial-testing} gave a more interesting example: to prove the polynomial testing principle (two polynomial functions of degree~$n$ are pointwise equal if they agree at $n + 1$ different points), \citeauthor{McBride-polynomial-testing} started with a datatype of encodings of polynomial functions indexed by degree but, after trying to program with the datatype, quickly found out that the datatype should instead be indexed by an arbitrary upper bound of the degree so a relaxed form of the polynomial testing principle can be naturally programmed (two polynomial functions of degree \emph{at most}~$n$ are pointwise equal if they agree at $n + 1$ different points).
 Scalability is another issue, especially when the only tool we have is the primitive language of datatype declarations: writing a datatype declaration with a sophisticated property internalised is comparable to programming a sophisticated algorithm in assembly language, and understanding the meaning of a complicated datatype declaration takes thorough reading and some inductive guessing and reasoning.
 In short, the complexity of internalist types has made type design a nontrivial programming problem, and we are in serious lack of type-level programming support.
 
@@ -773,13 +782,13 @@ ExtVec A n = (Σ'(xs ∶ List A)) length xs ≡ n
 \end{code}
 prove that |insert| increases the length of a list by one,
 \begin{code}
-insert-length :  (y : Val) {xs : List Val} {n : Nat} →
+insert-length :  (y : Val) {n : Nat} (xs : List Val) →
                  length xs ≡ n → length (insert y xs) ≡ suc n
 \end{code}
 and define insertion on vectors as
 \begin{code}
 insert-EV : Val → {n : Nat} → ExtVec Val n → ExtVec Val (suc n)
-insert-EV y (xs , len) = insert y xs , insert-length y len
+insert-EV y (xs , len) = insert y xs , insert-length y xs len
 \end{code}
 which processes the list and the length proof by |insert| and |insert-length| respectively.
 Similarly for ordered lists (indexed with a lower bound), the externalist would use the |Σ|-type
@@ -797,11 +806,11 @@ Insertion on ordered lists is then
 \begin{code}
 insert-EO :  (y : Val) {b : Val} → ExtOrdList b →
              {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdList b'
-insert-EO y (xs , ord) b'≤y b'≤b = insert y xs , insert-ordered y ord b'≤y b'≤b
+insert-EO y (xs , ord) b'≤y b'≤b = insert y xs , insert-ordered y xs ord b'≤y b'≤b
 \end{code}
 where |insert-ordered| proves that |insert| preserves ordering:
 \begin{code}
-insert-ordered :  (y : Val) {xs : List Val} {b : Val} → Ordered b xs →
+insert-ordered :  (y : Val) {b : Val} (xs : List Val) → Ordered b xs →
                   {b' : Val} → b' ≤ y → b' ≤ b → Ordered b' (insert y xs)
 \end{code}
 Now the externalist has arrived at a modular list library (albeit a tiny one), which contains
@@ -819,13 +828,13 @@ and insertion simply uses |insert-ordered| and |insert-length| to process the tw
 \begin{code}
 insert-EOV :  (y : Val) {b : Val} {n : Nat} → ExtOrdVec b n →
               {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdVec b' (suc n)
-insert-EOV y (xs , ord , len) b'≤y b'≤b =  insert y xs ,
-                                           insert-ordered y ord b'≤y b'≤b ,
-                                           insert-length y len
+insert-EOV y (xs , ord , len) b'≤y b'≤b =  insert          y xs ,
+                                           insert-ordered  y xs ord b'≤y b'≤b ,
+                                           insert-length   y xs len
 \end{code}
 This is the kind of library we are looking for, except that the types are all externalist.
 The externalist and internalist types are not unrelated, however.
-For example, internalist and externalist vectors are related by the representation-converting isomorphisms:
+For example, internalist and externalist vectors are related by the indexed family of \key{conversion isomorphisms}:
 \begin{code}
 Vec-iso A : (n : Nat) → Vec A n ≅ ExtVec A n
 \end{code}
@@ -838,27 +847,30 @@ computes the underlying list of a vector and a proof that the list has length~|n
 Iso.from (Vec-iso A n) : ((Σ'(xs : List A)) length xs ≡ n) → Vec A n
 \end{code}
 promotes a list to a vector when there is a proof that the list has length~|n|.
-(The definition of~|_≅_|\,, which is actually an instance of a record type |Iso|, appears in \autoref{sec:categories-and-functors}.)
+(The definition of~|_≅_|\,, which is actually an instance of a record datatype |Iso|, appears in \autoref{sec:categories-and-functors}.)
 To get insertion on internalist vectors, we convert the input vector to its externalist representation, make |insert-EV| do the work, and convert the result back to the internalist representation; more formally, the operation
 \begin{code}
 insert-V : Val → {n : Nat} → Vec Val n → Vec Val (suc n)
 \end{code}
 is defined by the commutative diagram:
-\[ \begin{tikzpicture}[x=220pt, y=80pt]
+\begin{center}
+\begin{tikzpicture}[x=220pt, y=80pt]
 \node             (Vec-Val-n)        at (0,  0) {|Vec Val n|\vphantom{(}};
 \node             (Vec-Val-suc-n)    at (1,  0) {|Vec Val (suc n)|};
 \node[align=left] (ExtVec-Val-n)     at (0, -1) {|(Σ'(xs ∶ List Val))|\\~~|length xs ≡ n|};
 \node[align=left] (ExtVec-Val-suc-n) at (1, -1) {|(Σ'(xs ∶ List Val))|\\~~|length xs ≡ suc n|};
 \path[->] (Vec-Val-n)        edge node[above]{|insert-V y|}                                (Vec-Val-suc-n)
           (Vec-Val-n)        edge node[label on arrow]{|Iso.to (Vec-iso Val n)|}           (ExtVec-Val-n)
-          (ExtVec-Val-n)     edge node[above]{|insert y *|} node[below]{|insert-length y|} (ExtVec-Val-suc-n)
+          (ExtVec-Val-n)     edge node[above]{|insert y *|} node[below]{|insert-length y _|} (ExtVec-Val-suc-n)
           (ExtVec-Val-suc-n) edge node[label on arrow]{|Iso.from (Vec-iso Val (suc n))|}   (Vec-Val-suc-n);
-\end{tikzpicture} \]
-Similarly, we can get insertion for internalist ordered lists and ordered vectors from the externalist library by suitable conversion isomorphisms of the same form as |Vec-iso|.
+\end{tikzpicture}
+\end{center}
+(The |_*_|~operator is defined by |(f * g) (x , y) = (f x , g y)|, and the underscore leaves out the term for \Agda\ to infer.)
+Similarly, we can get insertion for internalist ordered lists and ordered vectors (definitions to appear in \autoref{chap:refinements-and-ornaments}) from the externalist library by suitable conversion isomorphisms of the same form as |Vec-iso|.
 It is due to these conversion isomorphisms between internalist and externalist representations that we can \key{analyse} internalist datatypes into externalist components, which can then be modularly processed.
 This analysis of internalist datatypes and its application to modular library structuring is explored in \autoref{chap:refinements-and-ornaments} (in particular, the insertion example is resolved in \autoref{sec:insertion}).
 
-The interconnecting isomorphisms between internalism and externalism also shed some light on supporting internalist type design.
+The interconnection between internalism and externalism (in the form of conversion isomorphisms) also shed some light on supporting internalist type design.
 The \key{synthetic} direction of the interconnection goes from basic types and predicates to internalist types.
 It is conceivable that, for externalist predicates of some particular form, we can manufacture corresponding internalist types on the other side of the interconnection.
 The externalist side of the interconnection is usually kept non-dependently typed, so it is possible to use existing non-dependently typed calculi to derive suitable externalist predicates from specifications, which are then used to manufacture datatypes on the internalist side for type-directed programming.

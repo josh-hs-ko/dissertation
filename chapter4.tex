@@ -16,12 +16,12 @@ Correspondingly, we expect that
 are extensionally equal.
 That is, the sequential compositional structure of ornaments corresponds to the compositional structure of forgetful functions.
 We wish to state such correspondences in concise terms.
-\item While parallel composition of ornaments has a sensible definition (\autoref{sec:parallel-composition}), it is defined by case analysis at the microscopic level of individual fields.
+\item While parallel composition of ornaments~(\autoref{sec:parallel-composition}) has a sensible definition, it is defined by case analysis at the microscopic level of individual fields.
 Such a microscopic definition is difficult to comprehend, and so are any subsequent definitions and proofs.
 It is desirable to have a macroscopic characterisation of parallel composition, so the nature of parallel composition is immediately clear, and subsequent definitions and proofs can be done in a more abstract manner.
-\item The ornamental conversion isomorphisms (\autoref{sec:optimised-predicates}) and the modularity isomorphisms (\autoref{sec:predicate-swapping}) were left unimplemented.
-Both sets of isomorphisms are about the optimised predicates (\autoref{sec:optimised-predicates}), which are defined in terms of parallel composition with singleton ornaments (\autoref{sec:ornamental-descriptions}).
-We thus expect that the existence of these isomorphisms can be explained in terms of properties of parallel composition and singleton ornaments.
+\item The ornamental conversion isomorphisms~(\autoref{sec:optimised-predicates}) and the modularity isomorphisms~(\autoref{sec:predicate-swapping}) were left unimplemented.
+Both sets of isomorphisms are about the optimised predicates~(\autoref{sec:optimised-predicates}), which are defined in terms of parallel composition with singleton ornamentation~(\autoref{sec:ornamental-descriptions}).
+We thus expect that the existence of these isomorphisms can be explained in terms of properties of parallel composition and singleton ornamentation.
 \end{itemize}
 A lightweight organisation of the ornament--refinement framework in basic category theory~\citep{MacLane-categories} can help to fill up all these holes.
 In more detail:
@@ -29,11 +29,11 @@ In more detail:
 \item Categories and functors are abstractions for compositional structures and structure-preserving maps between them.
 Facts about translations between ornaments, refinements, and functions can thus be neatly organised under the categorical language (\autoref{sec:categories-and-functors}).
 \item Parallel composition merges two compatible ornaments and does nothing more; in other words, it computes the least informative ornament that contains the information of both ornaments.
-Characterisation of such \key{universal constructions} is a speciality of category theory; in our case, parallel composition can be shown to satisfy some \key{pullback properties} (\autoref{sec:parallel-composition-pullback}).
+Characterisation of such \key{universal constructions} is a speciality of category theory; in our case, parallel composition can be shown to be a categorical \key{pullback}~(\autoref{sec:parallel-composition-pullback}).
 \item Universal constructions are unique up to isomorphism, so it is convenient to establish isomorphisms about universal constructions.
-The pullback properties of parallel composition can thus help to construct the ornamental conversion isomorphisms (\autoref{sec:ornamental-conversion-isomorphisms}) and the modularity isomorphisms (\autoref{sec:modularity-isomorphisms}).
+The status of parallel composition being a pullback can thus help to construct the ornamental conversion isomorphisms (in \autoref{sec:ornamental-conversion-isomorphisms}) and the modularity isomorphisms (in \autoref{sec:modularity-isomorphisms}).
 \end{itemize}
-
+\autoref{sec:categorical-discussion} concludes with some discussion.
 
 \section{Categories and functors}
 \label{sec:categories-and-functors}
@@ -78,12 +78,12 @@ _·_  : {X Y Z : Object} → (Y ==> Z) → (X ==> Y) → (X ==> Z)
 \end{code}
 which has identities and is associative.
 
-\block{Syntactic remark}{universe polymorphism}{Many definitions in this chapter (like |Graph| above) employ Agda's universe polymorphism~\citep{Harper-universes}, so the definitions can be instantiated at suitable levels of the |Set| hierarchy as needed.
+\block{Syntactic remark}{universe polymorphism}{Many definitions in this chapter (like |Graph| above) employ \Agda's \key{universe polymorphism}~\citep{Harper-universes}, so the definitions can be instantiated at suitable levels of the |Set| hierarchy as needed.
 (For example, the type of |Fun-graph| is implicitly instantiated as |Graph {1} {1}|, since both |Set| and any |A → B| (where |A|, |B : Set|) are of type |Set₁|.)
 We will give the first few universe-polymorphic definitions with full detail about the levels, but will later suppress the syntactic noise wherever possible.}
 
 Before we move on to the definition of categories, though, special attention must be paid to equality on morphisms, which is usually coarser than definitional equality --- in |Fun|, for example, it is necessary to identify functions up to extensional equality (so uniqueness of morphisms in universal properties would make sense).
-One ad hoc way to achieve this in Agda's intensional setting is to use \key{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
+One ad hoc way to achieve this in \Agda's intensional setting is to use \key{setoids}~\citep{Barthe-setoids} --- sets with an explicitly specified equivalence relation --- to represent sets of morphisms.
 The type of setoids can be defined as a record which contains a carrier set, an equivalence relation on the set, and the three laws for the equivalence relation:
 \begin{code}
 record Setoid {c d : Level} : Set (suc (c ⊔ d)) where
@@ -139,7 +139,7 @@ record Category {l m n : Level} : Set (suc (l ⊔ m ⊔ n)) where
 Similarly, we can define the type of categories as a record containing a set of objects, a collection of \key{setoids} of morphisms indexed by source and target objects, the composition operator on morphisms, the identity morphisms, and the identity and associativity laws for composition.
 The definition is shown in \autoref{fig:category}.
 Two notations are introduced to improve readability: |X ==> Y| is defined to be the carrier set of the setoid of morphisms from~|X| to~|Y|, and |f ≈ g| is defined to be the equivalence between the morphisms |f|~and~|g| as specified by the setoid to which |f|~and~|g| belong.
-The last two laws |cong-l| and |cong-r| require morphism composition to preserve the equivalence on morphisms; they are given in this form to work better with the equational reasoning combinators commonly used in Agda (see, for example, the AoPA library~\citep{Mu-AoPA}).
+The last two laws |cong-l| and |cong-r| require morphism composition to preserve the equivalence on morphisms; they are given in this form to work better with the equational reasoning combinators commonly used in \Agda\ (see, for example, the AoPA library~\citep{Mu-AoPA}).
 
 Now we can define the category |Fun| of sets and functions as
 \begin{code}
@@ -220,7 +220,7 @@ both of which can be easily discharged.
 \subsubsection{Categories for refinements and ornaments}
 
 Some constructions in \autoref{chap:refinements-and-ornaments} can now be organised under several categories and functors.
-For a start, we already saw that refinements are interesting only because of their intensional contents; this is reflected in an isomorphism of categories between the category |Fam| and the category |FRef| of type families and refinement families (i.e., there are two functors back and forth inverse to each other).
+For a start, we already saw that refinements are interesting only because of their intensional contents; this is reflected in an \emph{isomorphism} of categories between the category |Fam| and the category |FRef| of type families and refinement families (i.e., there are two functors back and forth inverse to each other).
 An object in |FRef| is an indexed family of sets as in |Fam|, and a morphism from |(J , Y)| to |(I , X)| consists of a function |e : J → I| on the indices and a refinement family of type |FRefinement e X Y|.
 As for the equivalence on morphisms, it suffices to use extensional equality on the index functions and componentwise extensional equality on refinement families, where extensional equality on refinements means extensional equality on their forgetful functions (extracted by |Refinement.forget|), which we have shown in \autoref{sec:individual-refinements} to be the core of refinements.
 Formally:
@@ -254,7 +254,7 @@ Note that |FRefF| remains a familiar covariant functor rather than a contravaria
 FRefC : Functor Fam FRef
 FRefC = record
   {    object    =  id
-  sep  morphism  =  (lambda((e , u))) e , ((lambda((ok j))) canonRef (u {j}))
+  sep  morphism  =  λ case (e , u) mapsto e , λ case (ok j) mapsto canonRef (u {j}) endcase endcase
   sep  proofs-of-laws }
 \end{code}
 \end{itemize}
@@ -306,7 +306,7 @@ OrnEq-forget :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
                 (O : Orn e D E) (P : Orn f D E) → OrnEq O P →
                 (e ≐ f) × ((j : J) → forget O {j} ≊' forget P {j})
 \end{code}
-The actual definition of |OrnEq| is deferred until \autoref{chap:equivalence}.
+The actual definition of |OrnEq| is deferred to \autoref{chap:equivalence}.
 
 \item Morphism composition is sequential composition~|_⊙_|\,, which merges two successive batches of modifications in a straightforward way.
 The definition is shown in \autoref{fig:sequential-composition}.
@@ -634,7 +634,7 @@ We could attempt to establish that, for any two ornaments |O : Orn e D E| and |P
 \end{tikzpicture}
 \label{eq:pc-square}
 \end{equation}
-The Agda term for this square is
+The \Agda\ term for this square is
 \begin{code}
 pc-square : Square Ōrn (slice (J , E) (e , O)) (slice (K , F) (f , P))
 pc-square = span  (slice (e ⋈ f , ⌊ O ⊗ P ⌋) (pull, ⌈ O ⊗ P ⌉))
@@ -642,8 +642,8 @@ pc-square = span  (slice (e ⋈ f , ⌊ O ⊗ P ⌋) (pull, ⌈ O ⊗ P ⌉))
                   (sliceMorphism (π₂  , diffOrn-r  O P)  (goal()(1)))
 \end{code}
 where Goal~0 has type |OrnEq (O ⊙ diffOrn-l O P) ⌈ O ⊗ P ⌉| and Goal~1 has type |OrnEq (P ⊙ diffOrn-r O P) ⌈ O ⊗ P ⌉|, both of which can be discharged.
-Comparing the commutative diagram~(\ref{eq:pc-square}) and the Agda term |pc-square|, it should be obvious how concise the categorical language can be --- the commutative diagram expresses the structure of the Agda term in a clean and visually intuitive way.
-Since terms like |pc-square| can be reconstructed from commutative diagrams and the categorical definitions, from now on we will present commutative diagrams as representations of the corresponding Agda terms and omit the latter.
+Comparing the commutative diagram~(\ref{eq:pc-square}) and the \Agda\ term |pc-square|, it should be obvious how concise the categorical language can be --- the commutative diagram expresses the structure of the \Agda\ term in a clean and visually intuitive way.
+Since terms like |pc-square| can be reconstructed from commutative diagrams and the categorical definitions, from now on we will present commutative diagrams as representations of the corresponding \Agda\ terms and omit the latter.
 The pullback property of~(\ref{eq:pc-square}) is not too useful by itself, though: |Ōrn| is a quite restricted category, so a universal property established in |Ōrn| has limited applicability.
 Instead, we are more interested in the pullback property of the image of~(\ref{eq:pc-square}) under |Ind| in |Fam|:
 \begin{equation}
@@ -789,9 +789,9 @@ and arriving at~(\ref{eq:rep-iso}).
 
 \end{itemize}
 
-\block*{Formalisation detail}{There is a twist when it comes to formalisation of the proof in Agda, however, due to Agda's intensionality: It is possible to formalise the lemma and the change of variables individually and chain them together, but the resulting isomorphisms would have a very complicated definition due to suspended type casts.
+\block*{Formalisation detail}{There is a twist when it comes to formalisation of the proof in \Agda, however, due to \Agda's intensionality: It is possible to formalise the lemma and the change of variables individually and chain them together, but the resulting isomorphisms would have a very complicated definition due to suspended type casts.
 If we use them to construct the refinement family in the morphism part of |RSem|, it would be rather difficult to prove that the morphism part of |RSem| preserves equivalence.
-We are thus forced to fuse all the above reasoning into one step to get a clean Agda definition such that |RSem| preserves equivalence automatically, but the idea is still essentially the same.}
+We are thus forced to fuse all the above reasoning into one step to get a clean \Agda\ definition such that |RSem| preserves equivalence automatically, but the idea is still essentially the same.}
 %To ensure that the isomorphisms have a straightforward definition, we should instead construct them in one step with the following lemma: Again suppose that $|iso : Σ K X| \cong |Σ L Y|$ such that |Iso.from iso| is extensionally equal to some |f ** g|. If there exist |M : K → Set| such that there is an isomorphism
 %\[ |miso k : M k| ~\cong~ |(Σ'(l ∶ L)) f l ≡ k| \]
 %for every |k : K|, and |g : X ⇉ M| such that
@@ -920,5 +920,6 @@ We thus get a pullback in |Fam| of the same slices as~(\ref{eq:N-pullback}) whos
 Having the two pullbacks, by~(\ref{eq:vertex-iso}) we get an isomorphism in |Fam| between |(pull ⋈ proj₁ , M)| and |(pull ⋈ proj₁ , N)|, whose index part can be shown to be identity, so there are componentwise isomorphisms between |M|~and~|N| in |Fun|, arriving at~(\ref{eq:modularity}).
 
 \section{Discussion}
+\label{sec:categorical-discussion}
 
 \todo[inline]{elimination of arbitrariness of type-theoretic constructions; functor-level abstraction; compare with purely categorical approach}

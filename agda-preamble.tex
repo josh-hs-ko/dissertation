@@ -56,23 +56,23 @@
 %%%%%%%%
 % arrows
 
-%format ≡ = "\kern-.1em\equiv\kern-.1em"
+%format ≡ = "\rel{\equiv}"
 %format _≡_ = _ "\kern\underscorespace{\equiv}" _
-%format ≅ = "\mathrel{\cong}"
+%format ≅ = "\rel{\cong}"
 %format _≅_ = _ "\kern\underscorespace{" ≅ "}" _
-%format ≐ = "\doteq"
+%format ≐ = "\rel{\doteq}"
 %format _≐_ = _ "\kern\underscorespace{" ≐ "}" _
-%format ≊ = "\kern-.1em\approxeq\kern-.1em"
+%format ≊ = "\rel{\approxeq}"
 %format _≊_ = _ "\kern\underscorespace{\approxeq}" _
-%format ≊' = "\kern-.1em\mathrel{\dot\approxeq}\kern-.1em"
+%format ≊' = "\rel{\dot\approxeq}"
 %format _≊'_ = _ "\kern\underscorespace{\dot\approxeq}" _
 %format ⇉ = "{\rightrightarrows}"
 %format _⇉_ = _ "\kern\underscorespace{" ⇉ "}" _
-%format ≈ = "\kern-.1em\approx\kern-.1em"
+%format ≈ = "\rel{\approx}"
 %format _≈_ = _ "\kern\underscorespace{\approx}" _
-%format ≈C = "\kern-.1em\approx_C\kern-.1em"
-%format ≈D = "\kern-.1em\approx_D\kern-.1em"
-%format ≈S = "\kern-.1em\approx_S\kern-.1em"
+%format ≈C = "\rel{\approx_C}"
+%format ≈D = "\rel{\approx_D}"
+%format ≈S = "\rel{\approx_S}"
 
 
 %%%%%%%%
@@ -84,23 +84,30 @@
 %format ⊤ = "\top"
 %format tt = "{\kern.125em\vrule height .85ex depth -.25ex width .5ex\kern.125em}"
 %format Σ = "\Sigma"
+%format (Σ'(t)) = Σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
+%format pair = _ "\kern.1em,\kern-.1em" _
+%format proj₁ = "\identifier{outl}"
+%format proj₂ = "\identifier{outr}"
 %format Σ.proj₁ = Σ "\recordmember" proj₁
 %format Σ.proj₂ = Σ "\recordmember" proj₂
-%format (Σ'(t)) = Σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
-%format pair = _ "\kern.1em,\kern-.1em" _
-%format proj₁ = "\constructor{outl}"
-%format proj₂ = "\constructor{outr}"
 %format _×_ = _ "{\times}\kern-\underscorespace" _
 %format × = "\!\times\!"
 %format inj₁ = "\constructor{inl}"
 %format inj₂ = "\constructor{inr}"
 %format ▿ =  "\triangledown"
+%format _▿_ =  _ "{" ▿ "}\kern-\underscorespace" _
 %format ▵ =  "\rotatebox[origin=c]{180}{$" ▿ "$}"
+%format _▵_ = _ "{" ▵ "}\kern-\underscorespace" _
+%format _*_ = _ "{" * "}\kern-\underscorespace" _
 %format Iso = "\constructor{Iso}"
 %format Iso.to = Iso "\recordmember" to
 %format Iso.from = Iso "\recordmember" from
-%format π₁ = proj₁
-%format π₂ = proj₂
+%format _⋈_ = _ "\kern\underscorespace{\bowtie}" _
+%format _⋈_.i = _⋈_ "\recordmember" i
+%format _⋈_.j = _⋈_ "\recordmember" j
+%format _⋈_.k = _⋈_ "\recordmember" k
+%format π₁ = proj₁ "_{\bowtie}"
+%format π₂ = proj₂ "_{\bowtie}"
 %format und-fromEq = "\identifier{und\text-fromEq}"
 %format Setoid = "\constructor{Setoid}"
 %format Setoid.Carrier = Setoid "\recordmember" Carrier
@@ -170,14 +177,20 @@
 %format Upgrade.u = Upgrade "\recordmember" u
 %format Upgrade.c = Upgrade "\recordmember" c
 %format _⇀_ = _ "{\rightharpoonup}\kern-\underscorespace" _
-%format (newforall(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
-%format (newforall'(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\kern\binderskip"
-%format (fixedforall(t)) = "\forall\kern.5\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
-%format (fixedforall'(t)) = "\forall\kern.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\kern\binderskip"
+%format (newforall(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
+%format (newforall'(t)) = "\forall^+\kern-.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\hskip\binderskip"
+%format (fixedforall(t)) = "\forall\kern.5\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
+%format (fixedforall'(t)) = "\forall\kern.5\binderspace\binderbracketl\kern-.05em\binderbracketl\," t "\,\binderbracketr\kern-.05em\binderbracketr\hskip\binderskip"
+%format new-Σ = "\identifier{new\text-}\kern-.5pt\Sigma"
+%format (newSigma(t)) = "\Sigma^+\kern-.5\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
+%format ×⁺ = "\!\mathop{\times^{\kern-1pt+}}\!"
+%format _×⁺_ = _ "{\times^{\kern-1pt+}}\kern-\underscorespace" _
 
 %format id-FSwap = "\identifier{id\text-FSwap}"
 %format ⊗-FSwap = "\identifier{{\otimes}\text-FSwap}"
 
+%format ⁻¹ = "{}^{-1}"
+%format _⁻¹_ = _ ⁻¹ "{\kern-\underscorespace}" _
 %format InvImage = "\constructor{InvImage}"
 %format ok = "\constructor{ok}"
 
@@ -187,7 +200,7 @@
 %format RDesc = "\constructor{RDesc}"
 %format ṿ = "\constructor{v}"
 %format σ = "\upsigma"
-%format (σ'(t)) = σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format (σ'(t)) = σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (σ''(t)) = σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
 %format Ṗ = "\mathbb P"
 %format Ṗ-map = "\identifier{" Ṗ "\text-map}"
@@ -204,10 +217,10 @@
 %format ROrn = "\constructor{ROrn}"
 %format Orn = "\constructor{Orn}"
 %format Δ = "\Delta"
-%format (Δ'(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format (Δ'(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (Δ''(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
 %format ∇ = "\rotatebox[origin=c]{180}{$" Δ "$}"
-%format (∇'(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\kern\binderskip"
+%format (∇'(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (∇''(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
 %format ROrnDesc = "\constructor{ROrnDesc}"
 %format OrnDesc = "\constructor{OrnDesc}"
@@ -240,7 +253,7 @@
 %format OrnEq-forget = "\identifier{" OrnEq "\text-forget}"
 
 %format Swap = "\constructor{Swap}"
-%format Swap.Q = Swap "\recordmember" Q
+%format Swap.P = Swap "\recordmember" P
 %format Swap.i = Swap "\recordmember" i
 %format FSwap = "\constructor{FSwap}"
 %format ⊗-FSwap = "\identifier{{\otimes}\text-FSwap}"
@@ -274,11 +287,11 @@
 %format _∩_ = _ "\kern\underscorespace{" ∩ "}" _
 %format º = "\kern-.1em^\circ"
 %format _º = _ "{^\circ}"
-%format ⊆ = "\mathrel\subseteq"
+%format ⊆ = "\rel{\subseteq}"
 %format _⊆_ = _ "\kern\underscorespace{\subseteq}" _
-%format ⊇ = "\mathrel\supseteq"
+%format ⊇ = "\rel{\supseteq}"
 %format _⊇_ = _ "\kern\underscorespace{\supseteq}" _
-%format ≃ = "\mathrel\simeq"
+%format ≃ = "\rel{\simeq}"
 %format _≃_ = _ "\kern\underscorespace{\simeq}" _
 %format foldR = "(\kern-2.6pt[" _ "\kern.08em]\kern-2.6pt)"
 %format (cata(x)) = "(\kern-2.6pt[\," x "\,]\kern-2.6pt)"
@@ -290,8 +303,13 @@
 
 %format AlgList = "\constructor{AlgList}"
 %format AlgListP = "\constructor{AlgListP}"
-%format algOD-fusion-⊆ = "\identifier{algOD\text-fusion\text-{\subseteq}}"
-%format algOD-fusion-⊇ = "\identifier{algOD\text-fusion\text-{\supseteq}}"
+%format algOD-FSwap = "\identifier{algOD\text-FSwap}"
+%format fcond-⊆ = "\identifier{fcond_{\subseteq}}"
+%format fcond-⊇ = "\identifier{fcond_{\supseteq}}"
+%format fusion-conversion-⊆ = "\identifier{fusion\text-conversion_{\subseteq}}"
+%format fusion-conversion-⊇ = "\identifier{fusion\text-conversion_{\supseteq}}"
+%format upg-⊆ = "\identifier{upg_{\subseteq}}"
+%format upg-⊇ = "\identifier{upg_{\supseteq}}"
 %format BVec = "\constructor{BVec}"
 %format foldl-alg = "\identifier{foldl\text-alg}"
 
@@ -305,7 +323,7 @@
 %format Nat-elim  = "\constructor{Nat\text-elim}"
 %format _+_ = _ "{+}\kern-\underscorespace" _
 %format _+'_ = _ "{+^\prime}\kern-\underscorespace" _
-%format ≤N = "\!\mathrel{\leq_\constructor{N}}\!"
+%format ≤N = "\rel{\leq_\constructor{N}}"
 %format _≤N_ = _ "{\leq_\constructor{N}}" _
 %format ≤N-elim = "\constructor{{≤}_\constructor{N}\text-elim}"
 %format ≤-trans = "\identifier{{" ≤ "}\text-trans}"
@@ -332,17 +350,19 @@
 %format insert-ordered = "\identifier{insert\text-ordered}"
 %format insert-EO = "\identifier{insert}_\identifier{EO}"
 %format insert-EOV = "\identifier{insert}_\identifier{EOV}"
+%format insert-O = "\identifier{insert}_\identifier{O}"
 %format insert-V = "\identifier{insert}_\identifier{V}"
+%format insert-V-coherence = "\identifier{insert}_\identifier{V}\text-coherence"
+%format insert-OV = "\identifier{insert}_\identifier{OV}"
 %format Vec-iso = "\identifier{Vec\text-iso}"
 %format Length = "\constructor{Length}"
 %format Length-FSwap = "\identifier{Length\text-FSwap}"
 %format Vec' = Vec "^\prime"
 %format Square = "\constructor{Square}"
 %format OrdList = "\constructor{OrdList}"
-%format ≤A = "{\leq}_A\kern-\underscorespace"
-%format _≤A_ = _ ≤A _
 %format Ordered = "\constructor{Ordered}"
 %format OrdVec = "\constructor{OrdVec}"
+%format OrdVec-FSwap = "\identifier{OrdVec\text-FSwap}"
 %format OrderedLength = "\constructor{OrderedLength}"
 %format Dec = "\constructor{Dec}"
 %format yes = "\constructor{yes}"
@@ -378,6 +398,7 @@
 %format Heap' = "\constructor{Heap}^\prime"
 %format b'≤b = "\identifier{" b' "\kern-\underscorespace{" ≤ "}b}"
 %format ITree = "\constructor{ITree}"
+%format preorder-IT = "\identifier{preorder}_\constructor{IT}"
 %format ITreeD-HeapD = "\identifier{ITreeD\text-HeapD}"
 %format LHeap = "\constructor{LHeap}"
 %format WLTree = "\constructor{WLTree}"

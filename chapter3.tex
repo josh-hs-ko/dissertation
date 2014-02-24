@@ -1,47 +1,65 @@
 \chapter{Refinements and ornaments}
 \label{chap:refinements-and-ornaments}
 
-This chapter begins our exploration of the interconnection between internalism and externalism by looking at \key{the analytic direction}, i.e., the decomposition of sophisticated types into basic types and predicates on them.
-More specifically, we assume that the more sophisticated type and the basic type are known and there is straightforward evidence that they are related, and derive from the evidence an externalist predicate and a conversion isomorphism.
+This chapter begins our exploration of the interconnection between internalism and externalism by looking at \key{the analytic direction}, i.e., the decomposition of a sophisticated datatype into a basic datatype and a predicate on the basic datatype.
+More specifically, we assume that the sophisticated datatype \emph{and the basic datatype} are known and their descriptions~(\autoref{sec:Desc}) are straightforwardly related by an \key{ornament}~(\autoref{sec:ornaments}), and derive from the ornament an externalist predicate and an indexed family of conversion isomorphisms.
 As discussed in \autoref{sec:externalism-and-internalism}, one purpose of such decomposition is for internalist datatypes and operations to take a round trip to the externalist world so as to harvest composability there.
-The abstractions and constructions facilitating externalist composition of internalist datatypes and operations are developed in this chapter as follows:
+The task can be broken into two parts:
 \begin{itemize}
-\item Conversion isomorphisms between internalist and externalist datatypes are axiomatised as \key{refinements} (\autoref{sec:refinements}).
-\item Refinements are coordinated by \key{upgrades} (\autoref{sec:upgrades}) to enable switching from externalist function types to internalist ones, so simply typed operations satisfying suitable properties can be upgraded to have more sophisticated types.
-\item A class of refinements can be mechanically derived (\autoref{sec:refinement-semantics}) by marking differences between datatype descriptions with an adapted version of \varcitet{McBride-ornaments}{'s \key{ornaments}} (\autoref{sec:ornaments}), which relate datatype descriptions that are vertically the same but horizontally different. (For example, the datatypes of vectors and lists can be related by an ornament.)
-\item Ornaments can be composed in parallel (\autoref{sec:parallel-composition}), producing new composite internalist datatypes which correspond to pointwise conjunction of externalist predicates (\autoref{sec:predicate-swapping}). (For example, ordered vectors can be produced by composing the ornament from lists to ordered lists and the ornament from lists to vectors in parallel.)
+\item coordination of relevant conversion isomorphisms for upgrading basic operations satisfying suitable properties to have more sophisticated (function) types, and
+\item manufacture of conversion isomorphisms between the datatypes involved.
 \end{itemize}
+\key{Refinements}~(\autoref{sec:refinements}), which axiomatise conversion isomorphisms between internalist and externalist datatypes, are the abstraction we introduce for bridging the two parts.
+The first part is then formalised with \key{upgrades}~(\autoref{sec:upgrades}) which use refinements as their components, and the second part is done by translating ornaments to refinements~(\autoref{sec:refinement-semantics}).
+To actually harvest externalist composability, we need conversion isomorphisms in which the externalist predicates involved are pointwise conjunctions (as in the case of externalist ordered vectors in \autoref{sec:externalism-and-internalism}).
+Such conversion isomorphisms come from \key{parallel composition} of ornaments~(\autoref{sec:parallel-composition}), which not only gives rise to pointwise conjunctive predicates on the externalist side~(\autoref{sec:predicate-swapping}) but also produces composite datatypes on the internalist side (e.g., the internalist datatype of ordered vectors incorporating both ordering and length information).
+The above framework of ornaments, refinements, and upgrades are illustrated with several examples in \autoref{sec:ornament-refinement-examples}, followed by some discussion (including related work) in \autoref{sec:ornament-refinement-discussion}.
 
 
 \section{Refinements}
 \label{sec:refinements}
 
+We first abstract away from the detail of the construction of conversion isomorphisms and simply axiomatise their existence as \key{refinements} from basic types to more sophisticated types.
+There are two versions of refinements:
+\begin{itemize}
+\item the non-indexed version between individual types~(\autoref{sec:individual-refinements}), and
+\item the indexed version between two families of types --- called \key{refinement families}~(\autoref{sec:refinement-families}) --- which collect refinements between specified pairs of individual types in the two families.
+\end{itemize}
+\autoref{sec:upgrades} then explains how refinements between individual types can be coordinated to perform function upgrading, and the actual construction of a class of refinement families is described in \autoref{sec:refinement-semantics} after the introduction of ornaments~(\autoref{sec:ornaments}).
+
 \subsection{Refinements between individual types}
 \label{sec:individual-refinements}
 
-A \key{refinement} from a basic type~|X| to a more informative type~|Y| is a \key{promotion predicate} |P : X → Set| and a \key{conversion isomorphism} |i : Y ≅ Σ X P|.
+A \key{refinement} from a basic type~|A| to a more informative type~|B| is a \key{promotion predicate} |P : A → Set| and a \key{conversion isomorphism} |i : B ≅ Σ A P|.
+As an \Agda\ record datatype:
 \begin{code}
-record Refinement (X Y : Set) : Set₁ where
+record Refinement (A B : Set) : Set₁ where
   field
-    P  :  X → Set
-    i  :  Y ≅ Σ X P
-  forget : Y → X
+    P  :  A → Set
+    i  :  B ≅ Σ A P
+  forget : B → A  -- explained after the two examples below
   forget = proj₁ ∘ Iso.to i
 \end{code}
 Refinements are not guaranteed to be interesting in general.
-For example, |Y|~can be chosen to be |Σ X P| and the conversion isomorphism simply the identity.
-Most of the time, however, we will only be interested in refinements from basic types to their more informative --- often internalist --- variants.
-The conversion isomorphism tells us that the inhabitants of~|Y| exactly correspond to the inhabitants of~|X| bundled with more information, i.e., proofs that the promotion predicate~|P| is satisfied.
-Computationally, any inhabitant of~|Y| can be decomposed (by |Iso.to i|\kern1pt) into an underlying value |x : X| and a proof that |x|~satisfies the promotion predicate~|P| (which we will call a \key{promotion proof} for~|x|), and conversely, if |x : X| satisfies~|P|, then it can be promoted (by |Iso.from i|\kern1pt) to an inhabitant of~|Y|.
+For example, |B|~can be chosen to be |Σ A P| and the conversion isomorphism simply the identity.
+Most of the time, however, we are only interested in refinements from basic types to their more informative --- often internalist --- variants.
+The conversion isomorphism tells us that the inhabitants of~|B| exactly correspond to the inhabitants of~|A| bundled with more information, i.e., proofs that the promotion predicate~|P| is satisfied.
+Computationally, any inhabitant of~|B| can be decomposed (by |Iso.to i|\kern1pt) into an underlying value |a : A| and a proof that |a|~satisfies the promotion predicate~|P| (which we will call a \key{promotion proof} for~|a|), and conversely, if an inhabitant of~|A| satisfies~|P|, then it can be promoted (by |Iso.from i|\kern1pt) to an inhabitant of~|B|.
 
-\block{Example}{refinement from lists to ordered lists}{Suppose |A : Set| is equipped with an ordering~|_≤A_|\,.
-Fixing |b : A|, there is a refinement from |List A| to |OrdList A _≤A_ b| whose promotion predicate is |Ordered A _≤A_ b|, since we have an isomorphism of type
+\block{Example}{refinement from lists to ordered lists}{Consider the internalist datatype of ordered lists (indexed by a lower bound; the type |Val| and associated operations are postulated in \autoref{sec:with}):
 \begin{code}
-OrdList A _≤A_ b ≅ Σ (List A) (Ordered A _≤A_ b)
-\end{code}\todo{XD}\
-An ordered list of type |OrdList A _≤A_ b| can be decomposed into a list |as : List A| and a proof of type |Ordered A _≤A_ b as| that the list |as|~is ordered and bounded below by~|b|; conversely, a list satisfying |Ordered A _≤A_ b| can be promoted to an ordered list of type |OrdList A _≤A_ b|.}
+indexfirst data OrdList : Val → Set where
+  OrdList b  offers  nil
+             or      cons (x : Val) (leq : b ≤ x) (xs : OrdList x)
+\end{code}
+Fixing |b : Val|, there is a refinement from |List Val| to |OrdList b| whose promotion predicate is |Ordered b|, since we have an isomorphism of type
+\begin{code}
+OrdList b ≅ Σ (List Val) (Ordered b)
+\end{code}
+which, from left to right, decomposes an ordered list into the underlying list and a proof that the underlying list is ordered (and bounded below).
+Conversely, a list satisfying |Ordered b| can be promoted to an ordered list of type |OrdList b| by the right-to-left direction of the isomorphism.}
 
-\block{Example}{refinement from natural numbers to lists}{Let |A : Set|.
+\block{Example}{refinement from natural numbers to lists}{Let |A : Set| (which we will directly refer to in subsequent text and code as if it is a local module parameter).
 We have a refinement from |Nat| to |List A|
 \begin{code}
 Nat-List A : Refinement Nat (List A)
@@ -53,78 +71,78 @@ List A ≅ Σ Nat (Vec A)
 whose decomposing direction computes from a list its length and a vector containing the same elements.
 We might say that a natural number |n : Nat| is an incomplete list --- the list elements are missing from the successor nodes of~|n|.
 To promote~|n| to a |List A|, we need to supply a vector of type |Vec A n|, i.e., |n|~elements of type~|A|.
-This example helps to emphasise that the notion of refinements is \key{proof-relevant}:
-An underlying value can have more than one promotion proofs, and consequently the more informative type in a refinement can have more elements than the basic type does.
+This example helps to emphasise that the notion of refinements is \key{proof-relevant}: an underlying value can have more than one promotion proofs, and consequently the more informative type in a refinement can have more inhabitants than the basic type does.
 Thus it is more helpful to think that a type is more refined in the sense of being more informative rather than being a subset.}
 
-In a refinement~|r|, we denote the forgetful computation of underlying values --- i.e., |proj₁ ∘ Iso.to (Refinement.i r)| --- as |Refinement.forget r|.
-The forgetful function is actually the core of a refinement, which is justified by the following facts:
+Given a refinement~|r|, we denote the forgetful computation of underlying values --- i.e., |proj₁ ∘ Iso.to (Refinement.i r)| --- as |Refinement.forget r|.
+\sidenote{This is done by defining an extra projection function |forget| in the record definition of |Refinement|.}
+The forgetful function is actually the core of a refinement, as justified by the following facts:
 \begin{itemize}
 \item The forgetful function determines a refinement extensionally --- if the forgetful functions of two refinements are extensionally equal, then their promotion predicates are pointwise isomorphic:
 \begin{code}
-forget-iso :  {X Y : Set} (r s : Refinement X Y) →
+forget-iso :  {A B : Set} (r s : Refinement A B) →
               (Refinement.forget r ≐ Refinement.forget s) →
-              (x : X) → Refinement.P r x ≅ Refinement.P s x
+              (a : A) → Refinement.P r a ≅ Refinement.P s a
 \end{code}
 \item From any function~|f|, we can construct a \key{canonical refinement} which uses a simplistic promotion predicate and has~|f| as its forgetful function:
 \begin{code}
-canonRef : {X Y : Set} → (Y → X) → Refinement X Y
-canonRef {X} {Y} f = record
-  case  P  =  (lambda(x)) (Σ'(y ∶ Y)) f y ≡ x
-  sep   i  =  record  case  to    =  f ▵ (id ▵ ((lambda(y)) refl))
-                      sep   from  =  proj₁ ∘ proj₂
-                      sep   proofs-of-laws endcase endcase
+canonRef : {A B : Set} → (B → A) → Refinement A B
+canonRef {A} {B} f = record
+  case  P  =  (lambda(a)) (Σ'(b ∶ B)) f b ≡ a
+  sep   i  =  record
+                case  to    =  f ▵ (id ▵ ((lambda(b)) refl))  -- |(g ▵ h) x = (g x , h x)|
+                sep   from  =  proj₁ ∘ proj₂
+                sep   proofs-of-laws endcase endcase  -- proofs of inverse properties omitted
 \end{code}
-We call |(lambda(x)) (Σ'(y ∶ Y)) f y ≡ x| the \key{canonical promotion predicate}, which says that, to promote |x : X| to type~|Y|, we are required to supply a complete |y : Y| and prove that its underlying value is~|x|.
-\item For any refinement |r : Refinement X Y|, its forgetful function is exactly that of |canonRef (Refinement.forget r)|, so from |forget-iso| we can prove that a promotion predicate is always pointwise isomorphic to the canonical promotion predicate:
+We call |(lambda(a)) (Σ'(b ∶ B)) f b ≡ a| the \key{canonical promotion predicate}, which says that, to promote |a : A| to type~|B|, we are required to supply a complete |b : B| and prove that its underlying value is~|a|.
+\item For any refinement |r : Refinement A B|, its forgetful function is definitionally that of |canonRef (Refinement.forget r)|, so from |forget-iso| we can prove that a promotion predicate is always pointwise isomorphic to the canonical promotion predicate:
 \begin{code}
-coherence :  {X Y : Set} (r : Refinement X Y) →
-             (x : X) →  Refinement.P r x
-                          ≅ (Σ'(y ∶ Y)) Refinement.forget r y ≡ x
-coherence r x = forget-iso r (canonRef (Refinement.forget r)) ((lambda(y)) refl)
+coherence :
+  {A B : Set} (r : Refinement A B) →
+  (a : A) → Refinement.P r a ≅ (Σ'(b ∶ B)) Refinement.forget r b ≡ a
+coherence r a = forget-iso r (canonRef (Refinement.forget r)) ((lambda(b)) refl)
 \end{code}
 This is closely related to an alternative ``coherence-based'' definition of refinements, which will shortly be discussed.
 \end{itemize}
-The refinement mechanism's purpose of being is thus to express intensional (representational) optimisations of the canonical promotion predicate, such that it is possible work on just the residual information of the more refined type that is not present in the basic type.
+The refinement mechanism's purpose of being is thus to express intensional (representational) optimisations of the canonical promotion predicate, such that it is possible to work on just the residual information of the more refined type that is not present in the basic type.
 
 \block{Example}{promoting lists to ordered lists}{Consider the refinement from lists to ordered lists using |Ordered| as its promotion predicate.
-A promotion proof of type |Ordered A _≤A_ b as| for the list~|as| consists of only the inequality proofs necessary for ensuring that |as|~is ordered and bounded below by~|b|.
+A promotion proof of type |Ordered b xs| for the list~|xs| consists of only the inequality proofs necessary for ensuring that |xs|~is ordered and bounded below by~|b|.
 Thus, to promote a list to an ordered list, we only need to supply the inequality proofs without providing the list elements again.}
 
 \subsubsection{Coherence-based definition of refinements}
 
 There is an alternative definition of refinements which, instead of the conversion isomorphism, postulates the forgetful computation and characterises the promotion predicate in term of it:
 \begin{code}
-record Refinement' (X Y : Set) : Set₁ where
+record Refinement' (A B : Set) : Set₁ where
   field
-    P       :  X → Set
-    forget  :  Y → X
-    p       :  (x : X) → P x ≅ (Σ'(y ∶ Y)) forget y ≡ x
+    P       :  A → Set
+    forget  :  B → A
+    p       :  (a : A) → P a ≅ (Σ'(b ∶ B)) forget b ≡ a
 \end{code}
-We say that |x : X| and |y : Y| are \key{in coherence} when |forget y ≡ x|, i.e., when |x|~underlies~|y|.
+We say that |a : A| and |b : B| are \key{in coherence} when |forget b ≡ a|, i.e., when |a|~underlies~|b|.
 The two definitions of refinements are equivalent.
 Of particular importance is the direction from |Refinement| to |Refinement'|:
 \begin{code}
-toRefinement' : {X Y : Set} → Refinement X Y → Refinement' X Y
+toRefinement' : {A B : Set} → Refinement A B → Refinement' A B
 toRefinement' r = record  case  P       =  Refinement.P r
                           sep   forget  =  Refinement.forget r
                           sep   p       =  coherence r endcase
 \end{code}
 We prefer the definition of refinements in terms of conversion isomorphisms because it is more concise and directly applicable to function upgrading.
-The coherence-based definition, however, is easier to generalise for function types, as we will see below.
+The coherence-based definition, however, can be more easily generalised for function types, as we will see below.
 
 \subsection{Upgrades}
 \label{sec:upgrades}
 
-Refinements are less useful when we move on to function types: the requirement that a conversion isomorphism exists between related function types is too strong, even when we have extensional equality for functions so isomorphisms between function types make more sense.
-For example, it is not --- and should not be --- possible to have a refinement from the function type |Nat → Nat| to the function type |List Nat → List Nat|, despite that the component types |Nat| and |List Nat| are related by a refinement:
-If such a refinement existed, we would be able to extract from any function |f : List Nat → List Nat| an ``underlying'' function of type |Nat → Nat| which has roughly the same behaviour as~|f|.
+Refinements are less useful when we move on to function types: the requirement that a conversion isomorphism exists between related function types is too strong (even when we use extensional equality for functions so isomorphisms between function types make more sense).
+For example, it is not --- and should not be --- possible to have a refinement from the function type |Nat → Nat| to the function type |List Nat → List Nat|, despite that the component types |Nat| and |List Nat| are related by a refinement: if such a refinement existed, we would be able to extract from any function |f : List Nat → List Nat| an ``underlying'' function of type |Nat → Nat| which ``has roughly the same behaviour'' as~|f|.
 However, the behaviour of a function taking a list may depend essentially on the list elements, which is not available to a function taking only a natural number.
 For example, a function of type |List Nat → List Nat| might compute the sum~|s| of the input list and emit a list of length~|s| whose elements are all |zero|.
 We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.
 
 It is only the decomposing direction of refinements that causes problem in the case of function types, however; the promoting direction is perfectly valid for function types.
-For example, to promote the function
+For example, to promote the function doubling a natural number
 \begin{code}
 double : Nat → Nat
 double zero     =  zero
@@ -132,22 +150,24 @@ double (suc n)  =  suc (suc (double n))
 \end{code}
 to a function of type |List A → List A| for some fixed |A : Set|, we can use
 \begin{code}
-Q = (lambda(f)) (n : Nat) → Vec A n → Vec A (double n)
+Q = (lambda(f)) (n : Nat) → Vec A n → Vec A (f n)
 \end{code}
 as the promotion predicate:
-Consider the refinement from |Nat| to |List A|.\todo{Explain the meaning of this (scoping).}\ 
+Consider the refinement from |Nat| to |List A|.
 Given a promotion proof of type |Q double|, say
 \begin{code}
 duplicate' : (n : Nat) → Vec A n → Vec A (double n)
 duplicate' zero     []        =  []
 duplicate' (suc n)  (x ∷ xs)  =  x ∷ x ∷ duplicate' n xs
 \end{code}
-we can synthesise a function |duplicate : List A → List A| by\todo{definition of~$*$}
+we can synthesise a function |duplicate : List A → List A| by
 \begin{code}
+duplicate : List A → List A
 duplicate = Iso.from i ∘ (double * duplicate' _) ∘ Iso.to i
 \end{code}
-i.e., we decompose the input list into the underlying natural number and a vector of elements, process the two parts separately with |double| and |duplicate'|, and finally combine the results back to a list.
-The relationship between the promoted function |duplicate| and the underlying function |double| is characterised by the coherence property~\citep{Dagand-functional-ornaments}\todo{definition of pointwise equality}
+That is, we decompose the input list into the underlying natural number (i.e., its length) and a vector of elements, process the two parts separately with |double| and |duplicate'|, and finally combine the results back to a list.
+(This is what we did for |insert-V| in \autoref{sec:externalism-and-internalism}.)
+The relationship between the promoted function |duplicate| and the underlying function |double| is characterised by the \key{coherence property}
 \begin{code}
 double ∘ length ≐ length ∘ duplicate
 \end{code}
@@ -162,17 +182,24 @@ or as a commutative diagram:
 (m-1-1) edge node[left]{|length|} (m-2-1)
 (m-1-2) edge node[right]{|length|} (m-2-2);
 \end{tikzpicture} \]
-which states that |duplicate| preserves length as computed by |double|, or in more generic terms, processes the recursive structure (i.e., nil and cons nodes) of its input in the same way as |double| does.
+which states that |duplicate| preserves length as computed by |double|, or in more generic terms, processes the recursive structure (i.e., nil and cons nodes) of its input in the same way as |double|.
 
 We thus define \key{upgrades} to capture the promoting direction and the coherence property abstractly.
-An upgrade from |X : Set| to |Y : Set| is a promotion predicate |P : X → Set|, a coherence property |C : X → Y → Set| relating basic elements of type~|X| and promoted elements of type~|Y|, an upgrading (promoting) operation |u : (x : X) → P x → Y|, and a coherence proof |c : (x : X) (p : P x) → C x (u x p)| saying that the result of promoting a basic element |x : X| must be in coherence with~|x|.
+An upgrade from |A : Set| to |B : Set| is
+\begin{itemize}
+\item a promotion predicate |P : A → Set|,
+\item a coherence property |C : A → B → Set| relating inhabitants of the basic type~|A| and inhabitants of the more informative type~|B|,
+\item an upgrading (promoting) operation |u : (a : A) → P a → B|, and
+\item a coherence proof |c : (a : A) (p : P a) → C a (u a p)| saying that the result of promoting |a : A| must be in coherence with~|a|.
+\end{itemize}
+As an \Agda\ record datatype:
 \begin{code}
-record Upgrade (X Y : Set) : Set₁ where
+record Upgrade (A B : Set) : Set₁ where
   field
-    P  :  X → Set
-    C  :  X → Y → Set
-    u  :  (x : X) → P x → Y
-    c  :  (x : X) (p : P x) → C x (u x p)
+    P  :  A → Set
+    C  :  A → B → Set
+    u  :  (a : A) → P a → B
+    c  :  (a : A) (p : P a) → C a (u a p)
 \end{code}
 Like refinements, arbitrary upgrades are not guaranteed to be interesting, but we will only use the upgrades synthesised by the combinators we define below specifically for deriving coherence properties and upgrading operations for function types from refinements between component types.
 
@@ -180,157 +207,124 @@ Like refinements, arbitrary upgrades are not guaranteed to be interesting, but w
 
 As we said, upgrades amount to only the promoting direction of refinements.
 This is most obvious when we look at the coherence-based refinements, of which upgrades are a direct generalisation: we get from |Refinement'| to |Upgrade| by abstracting the notion of coherence and weakening the isomorphism to only the left-to-right computation.
-Any coherence-based refinement can thus be weakened to an upgrade,
+Any coherence-based refinement can thus be weakened to an upgrade:
 \begin{code}
-toUpgrade' : {X Y : Set} → Refinement' X Y → Upgrade X Y
+toUpgrade' : {A B : Set} → Refinement' A B → Upgrade A B
 toUpgrade' r = record  case  P  =  Refinement'.P r
-                       sep   C  =  (lambda(x y)) Refinement'.forget r y ≡ x
-                       sep   u  =  (lambda(x)) proj₁  ∘ Iso.to (Refinement'.p r x)
-                       sep   c  =  (lambda(x)) proj₂  ∘ Iso.to (Refinement'.p r x) endcase
+                       sep   C  =  (lambda(a b)) Refinement'.forget r b ≡ a
+                       sep   u  =  (lambda(a)) proj₁  ∘ Iso.to (Refinement'.p r a)
+                       sep   c  =  (lambda(a)) proj₂  ∘ Iso.to (Refinement'.p r a) endcase
 \end{code}
-and consequently any refinement gives rise to an upgrade.
+and consequently any refinement gives rise to an upgrade:
 \begin{code}
-toUpgrade : {X Y : Set} → Refinement X Y → Upgrade X Y
+toUpgrade : {A B : Set} → Refinement A B → Upgrade A B
 toUpgrade = toUpgrade' ∘ toRefinement'
 \end{code}
 
 \subsubsection{Composition of upgrades}
 The most representative combinator for upgrades is the following one for synthesising upgrades between function types:
 \begin{code}
-_⇀_ :  {X Y Z W : Set} →
-       Refinement X Y → Upgrade Z W → Upgrade (X → Z) (Y → W)
+_⇀_ :  {A A' B B' : Set} →
+       Refinement A A' → Upgrade B B' → Upgrade (A → B) (A' → B')
 \end{code}
-Note that there should be a refinement between the source types |X|~and~|Y|, rather than just an upgrade.
+Note that there should be a refinement between the source types |A|~and~|A'|, rather than just an upgrade.
 (As a consequence, we can produce upgrades between curried multi-argument function types but not between higher-order function types.)
-This is because, as we see in the |double|--|duplicate| example, we need the ability to decompose the source type~|Y|.
+This is because, as we see in the |double|--|duplicate| example, we need to be able to decompose the source type~|A'|.
 
-Let |r : Refinement X Y| and |s : Upgrade Z W|.
-The upgrading operation takes a function |f : X → Z| and combines it with a promotion proof to get a function |g : Y → W|, which should transform underlying values in coherence with~|f|.
-That is, as |g|~takes |y : Y| to |g y : W| at the more informative level, correspondingly at the underlying level the value |Refinement.forget r y : X| underlying~|y| should be taken by~|f| to a value in coherence with~|g y|.
-We thus define the statement ``|g|~is in coherence with~|f|'' as
+Let |r : Refinement A A'| and |s : Upgrade B B'|.
+The upgrading operation takes a function |f : A → B| and combines it with a promotion proof to get a function |f' : A' → B'|, which should transform underlying values in a way that is in coherence with~|f|.
+That is, as |f'|~takes |a' : A'| to |f' a' : B'| at the more informative level, correspondingly at the underlying level, the value underlying~|a'|, i.e., |Refinement.forget r a' : A|, should be taken by~|f| to a value in coherence with~|f' a'|.
+We thus define the statement ``|f'|~is in coherence with~|f|'' as
 \begin{code}
-(x :X) (y : Y) → Refinement.forget r y ≡ x → Upgrade.C s (f x) (g y)
+(a : A) (a' : A') → Refinement.forget r a' ≡ a → Upgrade.C s (f a) (f' a')
 \end{code}
-As for the type of promotion proofs, since we already know that the underlying values are transformed by~|f|, the missing information is only how the residual parts are transformed --- that is, we need to know for any |x : X| how a promotion proof for~|x| is transformed to a promotion proof for~|f x|.
+As for the type of promotion proofs, since we already know that the underlying values are transformed by~|f|, the missing information is only how the residual parts are transformed --- that is, we need to know for any |a : A| how a promotion proof for~|a| is transformed to a promotion proof for~|f a|.
 The type of promotion proofs for~|f| is thus
 \begin{code}
-(x : X) → Refinement.P r x → Upgrade.P s (f x)
+(a : A) → Refinement.P r a → Upgrade.P s (f a)
 \end{code}
 Having determined the coherence property and the promotion predicate, it is then easy to construct the upgrading operation and the coherence proof.
-In particular, following the |double|--|duplicate| example, the upgrading operation breaks an input |y : Y| into its underlying value |x = Refinement.forget r y : X| and a promotion proof for~|x|, computes a promotion proof~|q| for |f x : Z| using the given promotion proof for~|f|, and upgrades |f x| to an inhabitant of type~|W| using~|q|.
-To sum up, the complete definition of |_⇀_| is
+In particular, the upgrading operation
+\begin{itemize}
+\item breaks an input |a' : A'| into its underlying value |a = Refinement.forget r a' : A| and a promotion proof for~|a|,
+\item computes a promotion proof~|q| for |f a : B| using the given promotion proof for~|f|, and
+\item promotes |f a| to an inhabitant of type~|B'| using~|q|.
+\end{itemize}
+which is an abstract version of what we did in the |double|--|duplicate| example.
+The complete definition of |_⇀_| is
 \begin{code}
-_⇀_ :  {X Y Z W : Set} →
-       Refinement X Y → Upgrade Z W → Upgrade (X → Z) (Y → W)
+_⇀_ :  {A A' B B' : Set} →
+       Refinement A A' → Upgrade B B' → Upgrade (A → B) (A' → B')
 r ⇀ s = record
-  case   P  = (lambda(f)) (x : X) → Refinement.P r x → Upgrade.P s (f x)
-  sep    C  = (lambda(f g))  (x : X) (y : Y) →
-                             Refinement.forget r y ≡ x → Upgrade.C s (f x) (g y)
+  case   P  = (lambda(f)) (a : A) → Refinement.P r a → Upgrade.P s (f a)
+  sep    C  = (lambda(f f'))  (a : A) (a' : A') →
+                              Refinement.forget r a' ≡ a → Upgrade.C s (f a) (f' a')
   sep    u  = (lambda(f h)) Upgrade.u s _ ∘ uncurry h ∘ Iso.to (Refinement.i r)
-  sep    c  = λ case f h inferred y refl mapsto  let  (x , p) = Iso.to (Refinement.i r) y
-                                                 in   Upgrade.c s (f x) (h x p) endcase endcase
+  sep    c  = λ case f h INF _ a' refl mapsto  let  (a , p) = Iso.to (Refinement.i r) a'
+                                               in   Upgrade.c s (f a) (h a p) endcase endcase
 \end{code}
-
-\begin{figure}
-\codefigure\small
-\vskip-1.5\parskip
-\begin{code}
--- the upgraded function type has an extra argument
-new :  {X : Set} (I : Set) {Y : I → Set} →
-       (∀ i → Upgrade X (Y i)) → Upgrade X ((i : I) → Y i)
-new I u = record  case  P  =  (lambda(x)) ∀ i → Upgrade.P (u i) x
-                  sep   C  =  (lambda(x y)) ∀ i → Upgrade.C (u i) x (y i)
-                  sep   u  =  (lambda(x p i)) Upgrade.u  (u i) x (p i)
-                  sep   c  =  (lambda(x p i)) Upgrade.c  (u i) x (p i) endcase
-
-syntax new I ((lambda(i)) u) = (newforall(i ∶ I)) u
-
--- implicit version of |new|
-new' :  {X : Set} (I : Set) {Y : I → Set} →
-        (∀ i → Upgrade X (Y i)) → Upgrade X ({i : I} → Y i)
-new' I u = record  case  P  =  (lambda(x)) ∀ {i} → Upgrade.P (u i) x
-                   sep   C  =  (lambda(x y)) ∀ {i} → Upgrade.C (u i) x (y {i})
-                   sep   u  =  (lambda(x p {i})) Upgrade.u  (u i) x (p {i})
-                   sep   c  =  (lambda(x p {i})) Upgrade.c  (u i) x (p {i}) endcase
-
-syntax new' I ((lambda(i)) u) = (newforall'(i ∶ I)) u
-
--- the underlying and the upgraded function types have a common argument
-fixed :  (I : Set) {X : I → Set} {Y : I → Set} →
-         (∀ i → Upgrade (X i) (Y i)) → Upgrade ((i : I) → X i) ((i : I) → Y i)
-fixed I u = record  case  P  =  (lambda(f)) ∀ i → Upgrade.P (u i) (f i)
-                    sep   C  =  (lambda(f g)) ∀ i → Upgrade.C (u i) (f i) (g i)
-                    sep   u  =  (lambda(f h i)) Upgrade.u  (u i) (f i) (h i)
-                    sep   c  =  (lambda(f h i)) Upgrade.c  (u i) (f i) (h i) endcase
-
-syntax fixed I ((lambda(i)) u) = (fixedforall(i ∶ I)) u
-
--- implicit version of |fixed|
-fixed' :  (I : Set) {X : I → Set} {Y : I → Set} →
-          (∀ i → Upgrade (X i) (Y i)) → Upgrade ({i : I} → X i) ({i : I} → Y i)
-fixed' I u = record  case  P     =  (lambda(f)) ∀ {i} → Upgrade.P (u i) (f {i})
-                     sep   C     =  (lambda(f g)) ∀ {i} → Upgrade.C (u i) (f {i}) (g {i})
-                     sep   u     =  (lambda(f h {i})) Upgrade.u  (u i) (f {i}) (h {i}) 
-                     sep   c     =  (lambda(f h {i})) Upgrade.c  (u i) (f {i}) (h {i}) endcase
-
-syntax fixed' I ((lambda(i)) u) = (fixedforall'(i ∶ I)) u
-\end{code}
-\vskip-2.5\parskip
-\caption{More combinators for upgrades.}
-\label{fig:upgrade-combinators}
-\end{figure}
 
 \block{Example}{upgrade from |Nat → Nat| to |List A → List A|}{Using the |_⇀_| combinator on the refinement
 \begin{code}
 r = Nat-List A : Refinement Nat (List A)
 \end{code}
-and the upgrade derived from~|r|, we get an upgrade
+and the upgrade derived from~|r| by |toUpgrade|, we get an upgrade
 \begin{code}
 u = r ⇀ toUpgrade r : Upgrade (Nat → Nat) (List A → List A)
 \end{code}
 The type |Upgrade.P u double| is exactly the type of |duplicate'|, and the type |Upgrade.C u double duplicate| is exactly the coherence property satisfied by |double| and |duplicate|.}
 
-\block{Comparison}{functional ornaments}{\todo[inline]{\citet{Dagand-functional-ornaments}, origin of coherence property, no need to construct a universe (open for easy extension)}
-We can define more combinators for upgrades, like the ones in \autoref{fig:upgrade-combinators}.}
+A further example on upgrades (about insertion into a binomial heap) is given in \autoref{sec:binomial-heaps}.
 
 \subsection{Refinement families}
+\label{sec:refinement-families}
 
 When we move on to consider refinements between indexed families of types, refinement relationship exists not only between the member types but also between the index sets: a type family |X : I → Set| is refined by another type family |Y : J → Set| when
 \begin{itemize}
 \item at the index level, there is a refinement~|r| from~|I| to~|J|, and
 \item at the member type level, there is a refinement from~|X i| to~|Y j| whenever |i : I| underlies |j : J|, i.e., |Refinement.forget r j ≡ i|.
 \end{itemize}
-In short, each type~|X i| is refined by a collection of types in~|Y|, the underlying values of their indices all being~|i|.
+In short, each type~|X i| is refined by a particular collection of types in~|Y|, the underlying value of their indices all being~|i|.
 We will not exploit the full refinement structure on indices, though, so in the actual definition of \key{refinement families} below, the index-level refinement degenerates into just the forgetful function.
 \begin{code}
 FRefinement : {I J : Set} (e : J → I) (X : I → Set) (Y : J → Set) → Set₁
 FRefinement {I} e X Y = {i : I} (j : e ⁻¹ i) → Refinement (X i) (Y (und j))
 \end{code}
+The inverse image type~|_⁻¹_| is defined by
+\begin{code}
+data _⁻¹_ (e : J → I) (i : I) : Set where
+  ok : (j : J) → e ⁻¹ (e j)
+\end{code}
+That is, |e ⁻¹ i| is isomorphic to |(Σ'(j ∶ J)) e j ≡ i|, the subset of~|J| mapped to~|i| by~|e|.
+An underlying |J|-value is extracted by
+\begin{code}
+und : {I J : Set} {e : J → I} {i : I} → e ⁻¹ i → J
+und (ok j) = j
+\end{code}
+Introducing this type will offer some slight notational advantage when, e.g., writing ornamental descriptions~(\autoref{sec:ornamental-descriptions}).
+We also define an alternative name |InvImage = _⁻¹_| to make partial application look better.
 
-\block{Example}{refinement family from ordered lists to ordered vectors}{The datatype |OrdList A _≤A_ : A → Set| is a family of types into which ordered lists are classified according to their lower bound.
-For each type of ordered lists having a particular lower bound, we can further classify them by their length, yielding |OrdVec A _≤A_ : A → Nat → Set|.
+\block{Example}{refinement family from ordered lists to ordered vectors}{The datatype |OrdList : Val → Set| is a family of types into which ordered lists are classified according to their lower bound.
+For each type of ordered lists having a particular lower bound, we can further classify them by their length, yielding the datatype of ordered vectors |OrdVec : Val → Nat → Set|:
+\begin{code}
+indexfirst data OrdVec : Val → Nat → Set where
+  OrdVec b zero     offers nil
+  OrdVec b (suc n)  offers cons (x : Val) (leq : b ≤ x) (xs : OrdVec x n)
+\end{code}
 This further classification is captured as a refinement family of type
 \begin{code}
-FRefinement proj₁ (OrdList A _≤A_) (uncurry (OrdVec A _≤A_))
+FRefinement proj₁ OrdList (uncurry OrdVec)
 \end{code}
-which consists of refinements from |OrdList A _≤A_ b| to |OrdVec A _≤A_ b n| for all |b : A| and |n : Nat|.}
+which consists of refinements from |OrdList b| to |OrdVec b n| for all |b : Val| and |n : Nat|.}
 
-\todo[inline]{relationship with ornaments}
-
-%\subsubsection{The need for a universe}
-%
-%All we have done so far is merely identify the essential ingredients for modular function upgrading and axiomatise them as refinements.
-%Refinements still have to be prepared individually and manually, which requires considerable effort.
-%Moreover, although it is possible to define some sort of refinement composition directly, this approach would not go very far.
-%In \autoref{introduction}, we get externalist modularity for the internalist datatype |SVec| because the promotion predicate from lists to sorted vectors is the pointwise conjunction of the promotion predicates from lists to vectors and sorted lists.
-%In general, given two refinements |r : Refinement X Y| and |s : Refinement X Z|, we wish to construct a new type family~|W| and a refinement of type |Refinement X W| whose promotion predicate is the pointwise product of the promotion predicates of |r|~and~|s|.
-%Without knowing the internal structure of |Y|~and~|Z|, all one can do is, roughly speaking, take |W| to be the pullback of the two maps from |Y| and |Z| to~|X|.
-%But this is a very inefficient representation.
-%For example, let |X|, |Y|, and~|Z| be |const (List Val)|, |Vec Val|, and |SList|, respectively.
-%Then an object of type |W k| for some~|k| would be a pair of a vector and a sorted list with the same elements, meaning that the recursive structure and the elements are duplicated.
-%To avoid such duplication, we need to somehow extract the parts that encode length and ordering information in |Vec Val| and |SList| and bake them into a single datatype, but this cannot be done if we work solely with refinements.
-%Hence in the rest of the paper we seek to exploit the structure of datatypes to induce nontrivial refinements systematically --- in particular, refinements whose promotion predicate is the pointwise product of the promotion predicates of some other refinements.
-%Such structure can be exposed by \key{ornaments}, which provide a datatype-generic framework for talking about the relationship between structurally similar datatypes.
+Refinement families are the vehicle we use to express conversion relationship between inductive families.
+For now, however, they have to be prepared manually, which requires considerable effort.
+Also, when it comes to acquiring externalist composability for internalist datatypes, we need to be able to compose refinements such that the promotion predicate of the resulting refinement is the pointwise conjunction of existing promotion predicates, so we get conversion isomorphisms of the right form.
+For example, we should be able to compose the two refinements from lists to ordered lists and vectors to get a refinement from lists to ordered vectors whose promotion predicate is the pointwise conjunction of the promotion predicates of the two refinements.
+This is easy for the externalist side of the refinement, but for the internalist side, we need to derive the datatype of ordered vectors from the datatypes of ordered lists and vectors, which is not possible unless we can tap more deeply into the structure of datatypes and manipulate such structure --- that is, we need to do \key{datatype-generic programming}~(\autoref{sec:universes}).
+Hence enter ornaments.
+With ornaments, we can express intensional relationship between datatype \emph{declarations}, which can be exploited for deriving composite datatypes like ordered vectors.
+This intensional relationship is easy to establish and induces refinement families~(\autoref{sec:refinement-semantics}), so the difficulty of preparing refinement families is also dramatically reduced.
 
 \section{Ornaments}
 \label{sec:ornaments}
@@ -350,9 +344,10 @@ The transformation can then be lifted to work on the least fixed points.
 length : {A : Set} → μ (ListD A) ⇉ μ NatD
 length {A} = fold (con ∘ erase {A} {μ NatD})
 \end{code}
+\sidenote{Implicit arguments can be explicitly supplied in curly braces.}
 Our goal in this section is to construct a universe for such horizontal natural transformations between the base functors arising as decodings of descriptions.
 The inhabitants of this universe are called \key{ornaments}.
-By encoding the relationship between datatype descriptions as a universe, whose inhabitants are analysable syntactic objects, we will not only be able to derive conversion functions between datatypes, but even compute new datatypes that are related to old ones in prescribed ways, which is something we cannot achieve if we simply write the conversion functions directly.
+By encoding the relationship between datatype descriptions as a universe, whose inhabitants are analysable syntactic objects, we will not only be able to derive conversion functions between datatypes, but even compute new datatypes that are related to old ones in prescribed ways (e.g., by parallel composition in \autoref{sec:parallel-composition}), which is something we cannot achieve if we simply write the conversion functions directly.
 
 \subsection{Universe construction}
 
@@ -362,36 +357,39 @@ We have an upper-level datatype |Orn| of ornaments
 Orn : {I J : Set} (e : J → I) (D : Desc I) (E : Desc J) → Set₁
 Orn e D E = {i : I} (j : e ⁻¹ i) → ROrn e (D i) (E (und j))
 \end{code}
-which is defined in terms of a lower-level datatype |ROrn| of \key{response ornaments}, while |ROrn| contains the actual encoding of horizontal transformations and is decoded by the function |erase|:
+which is defined in terms of a lower-level datatype |ROrn| of \key{response ornaments}.
+|ROrn| contains the actual encoding of horizontal transformations and is decoded by the function |erase|:
 \begin{code}
 data ROrn {I J : Set} (e : J → I) : RDesc I → RDesc J → Set₁
            
 erase :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
          ROrn e D E → {X : I → Set} → ⟦ E ⟧ (X ∘ e) → ⟦ D ⟧ X
 \end{code}
-The datatype |Orn| is parametrised by an erasure function |e : J → I| on the index sets and relates two datatype descriptions |D : Desc I| and |E : Desc J| such that from any ornament |O : Orn e D E| we can derive a forgetful map:
+The datatype |Orn| is parametrised by an erasure function |e : J → I| on the index sets and relates a basic description |D : Desc I| with a more informative description |E : Desc J|.
+(We sometimes refer to |μ E| (e.g., lists) as an \key{ornamentation} of |μ D| (e.g., natural numbers).)
+As a consequence, from any ornament |O : Orn e D E| we can derive a forgetful map:
 \begin{spec}
-forget O : μ E ⇉ μ D ∘ e
+forget O : μ E ⇉ (μ D ∘ e)
 \end{spec}
 By design, this forgetful map necessarily preserves the recursive structure of its input.
-In terms of the two-dimensional metaphor mentioned towards the end of \autoref{sec:Desc}, an ornament describes only how the horizontal shapes change, and the forgetful map --- which is a |fold| --- simply applies the changes to each vertical level; it never alters the vertical structure.
+In terms of the two-dimensional metaphor mentioned towards the end of \autoref{sec:Desc}, an ornament describes only how the horizontal shapes change, and the forgetful map --- which is a |fold| --- simply applies the changes to each vertical level --- it never alters the vertical structure.
 For example, the |length| function discards elements associated with cons nodes, shrinking the list horizontally to a natural number, but keeps the vertical structure (i.e., the |con| nodes) intact.
 Look more closely:
 Given |y : μ E j|, we should transform it into an inhabitant of type |μ D (e j)|.
 Deconstructing~|y| into |con ys| where |ys : ⟦ E j ⟧ (μ E)| and assuming that the |(μ E)|--inhabitants at the recursive positions of~|ys| have been inductively transformed into |(μ D ∘ e)|--inhabitants, we horizontally modify the resulting structure of type |⟦ E j ⟧ (μ D ∘ e)| to one of type |⟦ D (e j) ⟧ (μ D)|, which can then be wrapped by |con| to an inhabitant of type |μ D (e j)|.
 The above steps are performed by the \key{ornamental algebra} induced by~|O|:
 \begin{code}
-ornAlg :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J}
-          (O : Orn e D E) → Ḟ E (μ D ∘ e) ⇉ μ D ∘ e
+ornAlg O : Ḟ E (μ D ∘ e) ⇉ (μ D ∘ e)
 ornAlg O {j} = con ∘ erase (O (ok j))
 \end{code}
-where the horizontal modification --- a transformation from |⟦ E j ⟧ (X ∘ e)| to |⟦ D (e j) ⟧ X|, natural in~|X| --- is decoded by |erase| from a response ornament relating |D (e j)| and |E j|.
+where the horizontal modification --- a transformation from |⟦ E j ⟧ (X ∘ e)| to |⟦ D (e j) ⟧ X| parametric in~|X| --- is decoded by |erase| from a response ornament relating |D (e j)| and |E j|.
 The forgetful function is then defined by
 \begin{code}
+forget O : μ E ⇉ (μ D ∘ e)
 forget O = fold (ornAlg O)
 \end{code}
-Hence an ornament of type |Orn e D E| contains, for each index request~|j|, a response ornament of type |ROrn e (D (e j)) (E j)| to cope with all possible horizontal structures that can occur in a |(μ E)|--inhabitant.\todo{connection to refinement families}\
-The definition of |Orn| given above is a restatement of this in an intensionally more flexible form.
+Hence an ornament of type |Orn e D E| contains, for each index request~|j|, a response ornament of type |ROrn e (D (e j)) (E j)| to cope with all possible horizontal structures that can occur in a |(μ E)|--inhabitant.
+The definition of |Orn| given above is a restatement of this in an intensionally more flexible form (whose indexing style corresponds to that of refinement families).
 
 Now we look at the definitions of |ROrn| and |erase|, followed by explanations of the four cases.
 \begin{code}
@@ -417,7 +415,7 @@ The first two cases |ṿ|~and~|σ| of |ROrn| relate response descriptions that h
 \item The |ṿ|~case of |ROrn| states that a response description |ṿ js| refines another response description |ṿ is|, i.e., when |⟦ ṿ js ⟧ (X ∘ e)| can be transformed into |⟦ ṿ is ⟧ X|.
 The source type |⟦ ṿ js ⟧ (X ∘ e)| expands to a product of types of the form |X (e j)| for some |j : J| and the target type |⟦ ṿ is ⟧ X| to a product of types of the form~|X i| for some |i : I|.
 There are no horizontal contents and thus no horizontal modifications to make, and the input values should be preserved.
-We thus demand that |js|~and~|is| have the same number of elements and the corresponding pairs of indices |e j|~and~|i| are equal; that is, we demand a proof of |map e js ≡ is| (where |map| is the usual functorial mapping on lists).
+We thus demand that |js|~and~|is| have the same number of elements and the corresponding pairs of indices |e j|~and~|i| are equal; that is, we demand a proof of |map e js ≡ is| (where |map| is the usual functorial map on lists).
 To make it easier to analyse a proof of |map e js ≡ is| in the |ṿ|~case of |erase|, we instead define the proposition inductively as |Ė e js is|, where the datatype~|Ė| is defined by
 \begin{code}
 data Ė {I J : Set} (e : J → I) : List J → List I → Set where
@@ -447,8 +445,9 @@ NatD-ListD A : Orn ! NatD (ListD A)
 NatD-ListD A (ok tt) = σ ListTag λ  case  `nil   mapsto ṿ []
                                     sep   `cons  mapsto (Δ'(_ ∶ A)) ṿ (refl ∷ []) endcase
 \end{code}
+where the erasure function~`|!|' is |(lambda(_)) tt|.
 There is only one response ornament in |NatD-ListD A| since the datatype of lists is trivially indexed.
-The constructor tag is preserved (|σ ListTag|), and, in the cons case, the list element field is marked as additional by~|Δ|.
+The constructor tag is preserved (|σ ListTag|), and in the cons case, the list element field is marked as additional by~|Δ|.
 Consequently, the forgetful function
 \begin{code}
 forget (NatD-ListD A) {tt} : List A → Nat
@@ -470,7 +469,7 @@ forget (ListD-VecD A) : {n : Nat} → Vec A n → List A
 \end{code}
 computes the underlying list of a vector.}
 
-\block{Remark}{vertical invariance of ornamental relationship}{It is worth emphasising again that ornaments encode only horizontal transformations, so datatypes related by ornaments necessarily have the same recursion patterns (as enforced by the |ṿ|~constructor) --- ornamental relationship exists between list-like datatypes but not between lists and binary trees, for example.}
+It is worth emphasising again that ornaments encode only horizontal transformations, so datatypes related by ornaments necessarily have the same recursion patterns (as enforced by the |ṿ|~constructor) --- ornamental relationship exists between list-like datatypes but not between lists and binary trees, for example.
 
 \subsection{Ornamental descriptions}
 \label{sec:ornamental-descriptions}
@@ -521,11 +520,12 @@ OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
 \end{figure}
 
 There is apparent similarity between, e.g., the description |ListD A| and the ornament |NatD-ListD A|, which is typical:
-frequently we define a new description (e.g. |ListD A|), intending it to be a more refined version of an existing one (e.g., |NatD|), and then immediately write an ornament from the latter to the former (e.g., |NatD-ListD A|).
+frequently we define a new description (e.g., |ListD A|), intending it to be a more refined version of an existing one (e.g., |NatD|), and then immediately write an ornament from the latter to the former (e.g., |NatD-ListD A|).
 The syntactic structures of the new description and of the ornament are essentially the same, however, so the effort is duplicated.
 It would be more efficient if we could use the existing description as a template and just write a ``relative description'' specifying how to ``patch'' the template, and afterwards from this ``relative description'' extract a new description and an ornament from the template to the new description.
 
-\key{Ornamental descriptions} are designed for this purpose; the definitions are shown in \autoref{fig:ornamental-descriptions} and closely follow the definitions for ornaments, having a upper-level type |OrnDesc| of ornamental descriptions which refers to a lower-level datatype |ROrnDesc| of response ornamental descriptions.
+\key{Ornamental descriptions} are designed for this purpose.
+The related definitions are shown in \autoref{fig:ornamental-descriptions} and closely follow the definitions for ornaments, having a upper-level type |OrnDesc| of ornamental descriptions which refers to a lower-level datatype |ROrnDesc| of response ornamental descriptions.
 An ornamental description looks like an annotated description, on which we can use a greater variety of constructors to mark differences from the template description.
 We think of an ornamental description
 \begin{code}
@@ -540,42 +540,38 @@ and the ornament is
 ⌈ OD ⌉ : Orn e D ⌊ OD ⌋
 \end{code}
 
-\block{Example}{ordered lists as an ornamentation of lists}{Given |A : Set| with an ordering relation |_≤A_ : A → A → Set|, we can define ordered lists on~|A| by an ornamental description, using the description of lists as the template:
+\block{Example}{ordered lists as an ornamentation of lists}{We can define ordered lists by an ornamental description, using the description of lists as the template:
 \begin{code}
-OrdListOD A _≤A_ : OrnDesc A ! (ListD A)
-OrdListOD A _≤A_ (ok b) =
+OrdListOD : OrnDesc Val ! (ListD Val)
+OrdListOD (ok b) =
   σ ListTag λ  case  `nil   mapsto ṿ tt
-               sep   `cons  mapsto (σ'(a ∶ A)) (Δ'(leq ∶ b ≤A a)) ṿ (a , tt) endcase
-
-indexfirst data OrdList A _≤A_ : A → Set where
-  OrdList A _≤A_ b  offers  nil
-                    or      cons (a : A) (leq : b ≤A a) (as : OrdList A _≤A_ a)
+               sep   `cons  mapsto (σ'(x ∶ Val)) (Δ'(leq ∶ b ≤ x)) ṿ (x , tt) endcase
 \end{code}
-If we read |OrdListOD A _≤A_| as an annotated description, we can think of the |leq| field as being marked as additional (relative to the description of lists) by using~|Δ| rather than~|σ|.
-To decode |OrdListOD A _≤A_| to an ordinary description of ordered lists, we write
+If we read |OrdListOD| as an annotated description, we can think of the |leq| field as being marked as additional (relative to the description of lists) by using~|Δ| rather than~|σ|.
+We write
 \begin{code}
-⌊ OrdListOD A _≤A_ ⌋ : Desc A
+⌊ OrdListOD ⌋ : Desc Val
 \end{code}
-and
+to decode |OrdListOD| to an ordinary description of ordered lists (in particular, turning the~|Δ| into a~|σ|) and
 \begin{code}
-⌈ OrdListOD A _≤A_ ⌉ : Orn ! (ListD A) ⌊ OrdListOD A _≤A_ ⌋
+⌈ OrdListOD ⌉ : Orn ! (ListD Val) ⌊ OrdListOD ⌋
 \end{code}
-is an ornament from lists to ordered lists.}
+to get an ornament from lists to ordered lists.}
 
 \block{Example}{singleton ornamentation}{Consider the following \key{singleton datatype} for lists:
 \begin{code}
 indexfirst data ListS A : List A → Set where
   ListS A []        offers  nil
-  ListS A (x ∷ xs)  offers  cons (s : ListS A xs)
+  ListS A (a ∷ as)  offers  cons (s : ListS A as)
 \end{code}
-For each type |ListS A xs|, there is exactly one (canonical) inhabitant (hence the name ``singleton datatype''~\citep{Monnier-singleton-types}), which has the same vertical structure as~|xs| and is devoid of any horizontal contents.
+For each type |ListS A as|, there is exactly one (canonical) inhabitant (hence the name ``singleton datatype''~\citep{Monnier-singleton-types}), which is devoid of any horizontal content and whose vertical structure is exactly that of~|as|.
 We can encode the datatype as an ornamental description relative to |ListD A|:
 \begin{code}
 ListSOD : (A : Set) → OrnDesc (List A) ! (ListD A)
 ListSOD A (ok []        ) = (∇'(`nil)) ṿ tt
-ListSOD A (ok (x ∷ xs)  ) = (∇'(`cons)) (∇'(x)) ṿ (ok xs , tt)
+ListSOD A (ok (a ∷ as)  ) = (∇'(`cons)) (∇'(a)) ṿ (ok as , tt)
 \end{code}
-which does pattern matching on the index request, in each case restricts the constructor choice to the one matched against, and in the cons case deletes the element field and sets the index of the recursive position to be the value of the tail in the pattern.
+which does pattern matching on the index request, in each case restricts the constructor choice to the one matched against, and in the cons case deletes the element field and sets the index of the recursive position to be the value of the tail.
 In general, we can define a parametrised ornamental description
 \begin{code}
 singletonOD : {I : Set} (D : Desc I) → OrnDesc (Σ I (μ D)) proj₁ D
@@ -598,78 +594,53 @@ where
 Ṗ-map f []        tt        = tt
 Ṗ-map f (i ∷ is)  (x , xs)  = f x , Ṗ-map f is xs
 \end{code}
-Note that |erode| deletes all fields (i.e., horizontal contents), drawing default values from the index request, and retains only the vertical structure.
+Note that |erode| deletes all fields (i.e., horizontal content), drawing default values from the index request, and retains only the vertical structure.
 We will see in \autoref{sec:refinement-semantics} that singleton ornamentation plays a key role in the ornament--refinement framework.}
 
-%\block{Remark}{index-first universes}{The datatype of response ornamental descriptions is a good candidate for receiving an index-first reformulation.
-%Since the structure of a response ornamental description is guided the template response description, |ROrnDesc| is much clearly presented in the index-first style:
-%\begin{code}
-%indexfirst data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁
-%  where
-%  ROrnDesc J e (ṿ is)   offers  ṿ (js : Ṗ is (InvImage e))
-%  ROrnDesc J e (σ S D)  offers  σ (OD : (s : S) → ROrnDesc J e (D s))
-%                        or      ∇ (s : S) (OD : ROrnDesc J e (D s))
-%  ROrnDesc J e D        offers  Δ (T : Set) (OD : T → ROrnDesc J e D)
-%\end{code}
-%If the template response description is~|ṿ is|, then we can specify a list of indices refining~|is| (by~|ṿ|); if it is |σ S D|, then we can either copy~(|σ|) or delete~(|∇|) the field; finally, whatever the template is, we can always choose to create~(|Δ|) a new field.
-%This thesis maintains a separation between Agda datatypes, which are used to define the universes, and index-first datatypes, which are more readable presentations of datatype descriptions, but it is conceivable that ornaments and ornamental descriptions can be incorporated into a type theory with self-encoding universes like the one presented by \citet{Chapman-levitation}.}
-
-\block{Remark}{ornaments as relations}{We define ornaments as relations between descriptions (indexed with an erasure function), whereas the original ornaments \citep{McBride-ornaments, Dagand-functional-ornaments} are rebranded as ornamental descriptions.
-One obvious advantage of relational ornaments is that they can arise between existing descriptions, whereas ornamental descriptions always produce (definitionally) new descriptions at the more informative end.
-A consequence is that there can be multiple ornaments between a pair of descriptions.
-For example, consider the following description of a datatype consisting of two fields of the same type:
+\block{Remark}{index-first universes}{The datatype of response ornamental descriptions is a good candidate for receiving an index-first reformulation.
+Since the structure of a response ornamental description is guided by the template response description, |ROrnDesc| is much more clearly presented in the index-first style:
 \begin{code}
-SquareD : (A : Set) → Desc ⊤
-SquareD A tt = (σ'(_ ∶ A)) (σ'(_ ∶ A)) ṿ []
+indexfirst data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁
+  where
+  ROrnDesc J e (ṿ is)   offers  ṿ (js : Ṗ is (InvImage e))
+  ROrnDesc J e (σ S D)  offers  σ (OD : (s : S) → ROrnDesc J e (D s))
+                        or      ∇ (s : S) (OD : ROrnDesc J e (D s))
+  ROrnDesc J e D        offers  Δ (T : Set) (OD : T → ROrnDesc J e D)
 \end{code}
-Between |SquareD A| and itself, we have the identity ornament
-\begin{code}
-λ case tt mapsto (σ'(_ ∶ A)) (σ'(_ : A)) ṿ [] endcase
-\end{code}
-and the ``swapping'' ornament
-\begin{code}
-λ case tt mapsto (Δ'(x ∶ A)) (Δ'(y ∶ A)) (∇'(y)) (∇'(x)) ṿ [] endcase
-\end{code}
-whose forgetful function swaps the two fields.
-
-The other advantage of relational ornaments is that they allow new datatypes to arise at the less informative end.
-For example, \key{coproduct of signatures} as used in, e.g., data types à~la carte~\citep{Swierstra-data-types-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
-In more detail: Consider (a simplistic version of) \key{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
-A tagged description with index set |I : Set| thus consists of a family of types |C : I → Set|, where each |C i| is the set of constructor tags for the index request |i : I|, and a family of subsequent response descriptions for each constructor tag.
-\begin{code}
-TDesc : Set → Set₁
-TDesc I = (Σ'(C ∶ I → Set)) ((i : I) → C i → RDesc I)
-\end{code}
-Tagged descriptions are decoded to ordinary descriptions by
-\begin{code}
-⌊_⌋T : {I : Set} → TDesc I → Desc I
-⌊ C , D ⌋T i = σ (C i) (D i)
-\end{code}
-We can then define binary coproduct of tagged descriptions, which sums the corresponding constructor fields, as follows:\todo{coproduct-related definitions}
-\begin{code}
-_⊕_ : {I : Set} → TDesc I → TDesc I → TDesc I
-(C , D) ⊕ (C' , D') = ((lambda(i)) C i + C' i) , ((lambda(i)) D i ▿ D' i)
-\end{code}
-Now given two tagged descriptions |tD = (C , D)| and |tD' = (C' , D')| of type |TDesc I|, there are two ornaments from |⌊ tD ⊕ tD' ⌋T| to |⌊ tD ⌋T| and |⌊ tD' ⌋T|
-\begin{code}
-inlOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD ⌋T
-inlOrn   (ok i) = (Δ'(c   ∶ C i))   (∇'(inj₁  c   ))  idOrn (D i c)
-
-inrOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD' ⌋T
-inrOrn   (ok i) = (Δ'(c'  ∶ C' i))  (∇'(inj₂  c'  ))  idOrn (D' i c')
-\end{code}
-whose forgetful functions perform suitable injection of constructor tags.
-Note that the synthesised new description |⌊ tD ⊕ tD' ⌋T| is at the less informative end of |inlOrn| and |inrOrn|.
-(This, of course, is not a complete implementation of data types à la carte and requires more engineering for practical use.)}
+If the template response description is~|ṿ is|, then we can specify a list of indices refining~|is| (by~|ṿ|); if it is |σ S D|, then we can either copy~(|σ|) or delete~(|∇|) the field; finally, whatever the template is, we can always choose to create~(|Δ|) a new field.
+This thesis maintains a separation between \Agda\ datatypes and index-first datatypes, in particular using the former to construct a universe for the latter, but it is conceivable that ornaments and ornamental descriptions can be incorporated into a type theory with self-encoding index-first universes like the one presented by \citet{Chapman-levitation}.}
 
 \subsection{Parallel composition of ornaments}
 \label{sec:parallel-composition}
 
-\todo[inline]{intro --- analysis for composability}
-%From ornaments, we can compute not only conversion functions but also new descriptions and ornaments.
-%A particularly powerful construction is \key{parallel composition} of ornaments, which plays a central role in this thesis.
-The generic scenario is illustrated below:\todo{\autoref{chap:categorical}}\
-\[ \begin{tikzpicture}[scale=2.5, baseline=(C)]
+\begin{figure}
+\codefigure
+\begin{code}
+record _⋈_ {I J K : Set} (e : J → I) (f : K → I) : Set where
+  constructor pair
+  field
+    {i}  :  I  -- implicit field
+    j    :  e ⁻¹ i
+    k    :  f ⁻¹ i
+
+pull : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → I
+pull = _⋈_.i
+
+π₁ : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → J
+π₁ = und ∘ _⋈_.j
+
+π₂ : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → K
+π₂ = und ∘ _⋈_.k
+\end{code}
+\caption{Definitions for set-theoretic pullbacks.}
+\label{fig:set-theoretic-pullbacks}
+\end{figure}
+
+Recall that our purpose of introducing ornaments is to be able to compute composite datatypes like ordered vectors.
+This can be achieved by composing two ornaments from the same description \key{in parallel}.
+The generic scenario is as follows (think of the direction of an ornamental arrow as following its forgetful function):
+\begin{center}
+\begin{tikzpicture}[scale=2.5, baseline=(C)]
 \node(C) at ( 0,  0) [coordinate] {};
 \node(I) at ( 0, -1) {|I|};
 \node(J) at (-1,  0) {|J|};
@@ -694,13 +665,14 @@ The generic scenario is illustrated below:\todo{\autoref{chap:categorical}}\
 (D) edge[<-] node[label on arrow]{|⌈ O ⊗ P ⌉|\kern1.8pt} (P)
 (E) edge[<-] node[xshift=-1.5em, label on arrow]{|diffOrn-l O P|} (P)
 (F) edge[<-] node[xshift=1.5em, label on arrow]{|diffOrn-r O P|} (P);
-\end{tikzpicture} \]
+\end{tikzpicture}
+\end{center}
 Given three descriptions |D : Desc I|, |E : Desc J|, and |F : Desc K| and two ornaments |O : Orn e D E| and |P : Orn e D F| independently specifying how |D|~is refined to |E|~and~|F|, we can compute an ornamental description
 \begin{code}
 O ⊗ P : OrnDesc (e ⋈ f) pull D
 \end{code}
+where |e ⋈ f| is the set-theoretic pullback of |e : J → I| and |f : K → I|, i.e., it is isomorphic to |(Σ'(jk ∶ J × K)) e (proj₁ jk) ≡ f (proj₂ jk)|; related definitions are shown in \autoref{fig:set-theoretic-pullbacks}.
 Intuitively, since both |O|~and~|P| encode modifications to the same base description~|D|, we can commit all modifications encoded by |O|~and~|P| to~|D| to get a new description |⌊ O ⊗ P ⌋|, and encode all these modifications in one ornament |⌈ O ⊗ P ⌉|.
-(This merging of two sets of modifications is best characterised by a category-theoretic pullback, which we defer until \autoref{chap:categorical}.)
 The forgetful function of the ornament |⌈ O ⊗ P ⌉| removes all modifications, taking |μ ⌊ O ⊗ P ⌋| all the way back to the base datatype |μ D|; there are also two \key{difference ornaments}
 \begin{code}
 diffOrn-l  O P : Orn π₁  E  ⌊ O ⊗ P ⌋  -- left difference ornament
@@ -717,25 +689,28 @@ and
 forget P  ∘ forget (diffOrn-r  O P)
 \end{code}
 are extensionally equal to |forget ⌈ O ⊗ P ⌉|.
+(The diagrams foreshadow our characterisation of parallel composition as a category-theoretic pullback in \autoref{chap:categorical}; we will make their meanings precise there.)
 
-\block{Example}{ordered vectors}{Consider the two ornaments |⌈ OrdListOD A _≤A_ ⌉| from lists to ordered lists and |ListD-VecD A| from lists to vectors.
-Composing them in parallel gives us an ornamental description from which we can decode \,(i)~a new datatype of ordered vectors
+\block{Example}{ordered vectors}{Consider the two ornaments |⌈ OrdListOD ⌉| from lists to ordered lists and |ListD-VecD Val| from lists to vectors.
+Composing them in parallel gives us an ornamental description
 \begin{code}
-OrdVec A _≤A_ : A → Nat → Set
-OrdVec A _≤A_ b n =
-  μ ⌊ ⌈ OrdListOD A _≤A_ ⌉ ⊗ ListD-VecD A ⌋ (ok (ok b , ok n))
-
-indexfirst data OrdVec A _≤A_ : A → Nat → Set where
-  OrdVec A _≤A_ b zero     offers  nil
-  OrdVec A _≤A_ b (suc n)  offers  cons  (a : A) (leq : b ≤A a)
-                                         (as : OrdVec A _≤A_ a n)
+OrdVecOD : OrnDesc (! ⋈ !) pull (ListD Val)
+OrdVecOD = ⌈ OrdListOD ⌉ ⊗ ListD-VecD Val
 \end{code}
-and \,(ii)~an ornament whose forgetful function converts ordered vectors to plain lists, retaining the list elements.
+from which we can decode a new datatype of ordered vectors by
+\begin{code}
+OrdVec : Val → Nat → Set
+OrdVec b n = μ ⌊ OrdVecOD ⌋ (ok (ok b , ok n))
+\end{code}
+and an ornament |⌈ OrdVecOD ⌉| whose forgetful function converts ordered vectors to plain lists, retaining the list elements.
 The forgetful functions of the difference ornaments convert ordered vectors to ordered lists and vectors, removing only length and ordering information respectively.}
 
 \begin{figure}
-\codefigure
+\codefigure\small\vskip-1\baselineskip
 \begin{code}
+fromEq : {I J : Set} (e : J → I) {j : J} {i : I} → e j ≡ i → e ⁻¹ i
+fromEq e {j} refl = ok j
+
 pc-Ė :  {I J K : Set} {e : J → I} {f : K → I} →
         {is : List I} {js : List J} {ks : List K} →
         Ė e js is → Ė f ks is → Ṗ is (InvImage pull)
@@ -799,6 +774,7 @@ and then |pcROD-double∇| puts the deletion into the resulting response ornamen
 \begin{code}
 pcROD-double∇ {s := s} O P refl = (∇'(s)) pcROD O P
 \end{code}
+\sidenote{The implicit argument |{s := s}| is the one named~|s| in the type of |pcROD-double∇| --- the~`|s|' to the left of `|:=|' is the name of the argument, while the~`|s|' to the right is a pattern variable. This syntax allows us to skip the nine implicit arguments before this one.}
 It might seem bizarre that two deletions results in a new field (and a deletion), but consider this informally described scenario:
 A field |σ S| in the base response description is refined by two independent response ornaments
 \savecolumns
@@ -818,20 +794,24 @@ Composing the two response ornaments in parallel, we get
 where the added equality field completes the construction of a set-theoretic pullback of |g| and~|h|.
 Here indeed we need a pullback:
 When we have an actual value for the field |σ S|, which gets refined to values of types |T| and~|U|, the generic way to mix the two refining values is to store them both, as a product. If we wish to retrieve the underlying value of type~|S|, we can either extract the value of type~|T| and apply~|g| to it or extract the value of type~|U| and apply~|h| to it, and through either path we should get the same underlying value.
-So the product should really be a pullback to ensure this.\todo{\autoref{chap:categorical}}\
+So the product should really be a pullback to ensure this.
 \end{itemize}
 
-\block{Example}{ornamental description of ordered vectors}{Composing the ornaments |⌈ OrdListOD A _≤A_ ⌉| and |ListD-VecD A| in parallel yields the following ornamental description relative to |ListD A|:
+\block{Example}{ornamental description of ordered vectors}{Composing the ornaments |⌈ OrdListOD ⌉| and |ListD-VecD Val| in parallel yields the following ornamental description relative to |ListD Val|:
 \begin{code}
 λ  case  (ok (ok b , ok zero     ))  mapsto  (Highlight(∇''(`nil))) ṿ tt
-   sep   (ok (ok b , ok (suc n)  ))  mapsto  (Highlight(∇''(`cons))) (σ''(a ∶ A))
-                                               (highlight(Δ''(_ ∶ b ≤A a))) ṿ (ok ((highlight(ok a)) , (Highlight(ok n))) , tt) endcase
+   sep   (ok (ok b , ok (suc n)  ))  mapsto  (Highlight(∇''(`cons))) (σ''(x ∶ Val))
+                                               (highlight(Δ''(leq ∶ b ≤ x))) ṿ (ok ((highlight(ok x)) , (Highlight(ok n))) , tt) endcase
 \end{code}
-where \highlight{\text{lighter box}} indicates modifications from |⌈ OrdListOD A _≤A_ ⌉| and \Highlight{\text{darker box}} from |ListD-VecD A|.}
+where \highlight{\text{lighter box}} indicates modifications from |⌈ OrdListOD ⌉| and \Highlight{\text{darker box}} from |ListD-VecD Val|.}
 
 \begin{figure}
-\codefigure\small
+\codefigure\small\vskip-\baselineskip
 \begin{code}
+und-fromEq :
+  {I J : Set} (e : J → I) {j : J} {I : I} (eq : e j ≡ i) → und (fromEq e eq) ≡ j
+und-fromEq e refl = refl
+
 diff-Ė-l :  {I J K : Set} {e : J → I} {f : K → I} →
             {is : List I} {js : List J} {ks : List K} →
             (eeqs : Ė e js is) (feqs : Ė f ks is) → Ė π₁ (und-Ṗ is (pc-Ė eeqs feqs)) js
@@ -866,6 +846,7 @@ diffOrn-l :  {I J K : Set} {e : J → I} {f : K → I} →
              (O : Orn e D E) (P : Orn f D F) → Orn π₁ E ⌊ O ⊗ P ⌋
 diffOrn-l O P (ok (j , k)) = diffROrn-l (O j) (P k)
 \end{code}
+\vskip-.2\baselineskip
 \caption{Definitions for left difference ornament.}
 \label{fig:left-difference-ornament}
 \end{figure}
@@ -891,27 +872,29 @@ Right difference ornament is defined analogously and is omitted from the present
 \section{Refinement semantics of ornaments}
 \label{sec:refinement-semantics}
 
+We now know how to do function upgrading with refinements~(\autoref{sec:refinements}) and how to relate datatypes and manufacture composite datatypes with ornaments~(\autoref{sec:ornaments}), and there is only one link missing: translation of ornaments to refinements.
 Every ornament |O : Orn e D E| induces a refinement family from |μ D| to |μ E|.
-That is, we can construct a function
+That is, we can construct
 \begin{code}
 RSem' :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
          Orn e D E → FRefinement e (μ D) (μ E)
 \end{code}
-which is called the \key{refinement semantics} of ornaments.
-%We construct in \autoref{sec:optimised-predicates} an \key{optimised predicate} for every ornament, which is crafted to allow promotion proofs to have efficient representations, and prove that the associated conversion isomorphism holds.
+which is called the \key{refinement semantics} of ornaments~(\autoref{sec:optimised-predicates}).
+The construction of |RSem'| begins in \autoref{sec:optimised-predicates} and continues into \autoref{chap:categorical} (where we introduce a lightweight categorical organisation).
+Another important aspect of the translation is from parallel composition of ornaments to refinements whose promotion predicate is pointwise conjunctive.
+This begins in \autoref{sec:predicate-swapping} and also continues into \autoref{chap:categorical}.
 
-\todo[inline]{intro}
 
 \subsection{Optimised predicates}
 \label{sec:optimised-predicates}
 
-Our most important task for now is to construct a promotion predicate
+Our task in this section is to construct a promotion predicate
 \begin{spec}
 OptP :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
         (O : Orn e D E) {i : I} (j : e ⁻¹ i) (x : μ D i) → Set
 \end{spec}
-which is called the \key{optimised predicate} for the ornament~|O|.\todo{Optimised in what sense?}\
-Given |x : μ D i|, a proof of type |OptP O j x| contains the necessary information for complementing~|x| and forming an inhabitant~|y| of type |μ E (und j)| with the same recursive structure --- the proof is the ``horizontal'' difference between |y|~and~|x|, speaking in terms of the two-dimensional metaphor.
+which is called the \key{optimised predicate} for the ornament~|O|.
+Given |x : μ D i|, a proof of type |OptP O j x| contains information for complementing~|x| and forming an inhabitant~|y| of type |μ E (und j)| with the same recursive structure --- the proof is the ``horizontal'' difference between |y|~and~|x|, speaking in terms of the two-dimensional metaphor.
 Such a proof should have the same vertical structure as~|x|, and, at each recursive node, store horizontally only those data marked as modified by the ornament.
 For example, if we are promoting the natural number
 \begin{code}
@@ -927,7 +910,7 @@ p =  con (a   ,
      con (
        tt) , tt) , tt) : OptP (NatD-ListD A) (ok tt) two
 \end{code}
-where |a|~and~|a'| are some elements of type~|A|, so we get a list by zipping together |two| and~|r| node by node:
+where |a|~and~|a'| are some elements of type~|A|, so we get a list by zipping together |two| and~|p| node by node:
 \begin{code}
 con (`cons  , a   ,
 con (`cons  , a'  ,
@@ -937,7 +920,7 @@ con (`nil   ,
 Note that |p|~contains only values of the field marked as additional by~|Δ| in the ornament |NatD-ListD A|.
 The constructor tags are essential for determining the recursive structure of~|p|, but instead of being stored in~|p|, they are derived from |two|, which is part of the index of the type of~|p|.
 In general, here is how we compute an ornamental description for such proofs, using~|D| as the template:
-we incorporate the modifications made by~|O|, and delete the fields that already exist in~|D|, whose default values are derived in the index-first fashion from the inhabitant being promoted, which appears in the index of the type of a proof.
+we incorporate the modifications made by~|O|, and delete the fields that already exist in~|D|, whose default values are derived, in the index-first manner, from the inhabitant being promoted, which appears in the index of the type of a proof.
 The deletion is independent of~|O| and can be performed by the singleton ornament for~|D| (\autoref{sec:ornamental-descriptions}), so the desired ornamental description is produced by the parallel composition of |O|~and |⌈ singletonOD D ⌉|:
 \begin{code}
 OptPOD :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
@@ -949,7 +932,7 @@ The optimised predicate, then, is the least fixed point of the description.
 \begin{code}
 OptP :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
         (O : Orn e D E) {i : I} (j : e ⁻¹ i) (x : μ D i) → Set
-OptP O {i} j d = μ ⌊ OptPOD O ⌋ (j , (ok (i , d)))
+OptP O {i} j x = μ ⌊ OptPOD O ⌋ (j , (ok (i , x)))
 \end{code}
 
 \block{Example}{index-first vectors as an optimised predicate}{The optimised predicate for the ornament |NatD-ListD A| from natural numbers to lists is the datatype of index-first vectors.
@@ -959,21 +942,16 @@ Expanding the definition of the ornamental description |OptPOD (NatD-ListD A)| r
    sep   (ok (ok tt , ok (tt , suc n  ))) mapsto  (Highlight(∇''(`cons))) (highlight(Δ''(_ ∶ A)))
                                                     ṿ (ok ((highlight(ok tt)), (Highlight(ok (tt , n)))) , tt) endcase
 \end{code}
-where \highlight{\text{lighter box}} indicates contributions from the ornament |NatD-ListD A| and \Highlight{\text{darker box}} from the singleton ornament |⌈ singletonOD NatD ⌉|, we see that the ornamental description indeed yields the datatype of index-first vectors (albeit indexed by a more heavily packaged datatype of natural numbers).}
+where \highlight{\text{lighter box}} indicates contributions from the ornament |NatD-ListD A| and \Highlight{\text{darker box}} from the singleton ornament |⌈ singletonOD NatD ⌉|, we see that the ornamental description indeed yields the datatype of index-first vectors (modulo the fact that it is indexed by a heavily packaged datatype of natural numbers).}
 
-\block{Example}{predicate characterising ordered lists}{The optimised predicate for the ornament |⌈ OrdListOD A _≤A_ ⌉| from lists to ordered lists is given by the ornamental description |OptPOD ⌈ OrdListOD A _≤A_ ⌉| relative to |ListD A|, which expands to
+\block{Example}{predicate characterising ordered lists}{The optimised predicate for the ornament |⌈ OrdListOD ⌉| from lists to ordered lists is given by the ornamental description |OptPOD ⌈ OrdListOD ⌉| relative to |ListD Val|, which expands to
 \begin{code}
 λ  case  (ok (ok b , ok (tt , []      )))  mapsto  (Highlight(∇''(`nil))) ṿ tt
-   sep   (ok (ok b , ok (tt , a ∷ as  )))  mapsto  (Highlight(∇''(`cons))) (Highlight(∇''(a))) (highlight(Δ''(leq ∶ b ≤A a)))
-                                                     ṿ (ok ((highlight(ok a)) , (Highlight(ok (tt , as)))) , tt) endcase
+   sep   (ok (ok b , ok (tt , x ∷ xs  )))  mapsto  (Highlight(∇''(`cons))) (Highlight(∇''(x))) (highlight(Δ''(leq ∶ b ≤ x)))
+                                                     ṿ (ok ((highlight(ok x)) , (Highlight(ok (tt , xs)))) , tt) endcase
 \end{code}
-where \highlight{\text{lighter box}} indicates contributions from |⌈ OrdListOD A _≤A_ ⌉| and \Highlight{\text{darker box}} from |⌈ singletonOD (ListD A) ⌉|.
-\begin{code}
-indexfirst data Ordered A _≤A_ : A → List A → Set where
-  Ordered A _≤A_ b []        offers  nil
-  Ordered A _≤A_ b (a ∷ as)  offers  cons (leq : b ≤A a) (o : Ordered A _≤A_ a as)
-\end{code}
-Since a proof of |Ordered A _≤A_ b as| consists of exactly the inequality proofs necessary for ensuring that |as|~is ordered and bounded below by~|b|, its representation is optimised, justifying the name ``optimised predicate''.}
+where \highlight{\text{lighter box}} indicates contributions from |⌈ OrdListOD ⌉| and \Highlight{\text{darker box}} from |⌈ singletonOD (ListD Val) ⌉|.
+Since a proof of |Ordered b xs| consists of exactly the inequality proofs necessary for ensuring that |xs|~is ordered and bounded below by~|b|, its representation is optimised, justifying the name ``optimised predicate''.}
 
 \block{Example}{inductive length predicate on lists}{The optimised predicate for the ornament |ListD-VecD A| from lists to vectors is produced by the ornamental description |OptPOD (ListD-VecD A)| relative to |ListD A|:
 \begin{code}
@@ -991,11 +969,11 @@ Both ornaments perform pattern matching and accordingly restrict constructor cho
 \end{itemize}
 Thus, in effect, the ornamental description produces the following inductive length predicate on lists:
 \begin{code}
-indexfirst data Length A : Nat → List A → Set where
-  Length A zero     []        offers  nil
-  Length A zero     (a ∷ as)  noffers
-  Length A (suc n)  []        noffers
-  Length A (suc n)  (a ∷ as)  offers  cons (l : Length A n as)
+indexfirst data Length : Nat → List A → Set where
+  Length zero     []        offers  nil
+  Length zero     (a ∷ as)  noffers
+  Length (suc n)  []        noffers
+  Length (suc n)  (a ∷ as)  offers  cons (l : Length n as)
 \end{code}
 where |noffers| indicates that a case is uninhabited.}
 
@@ -1012,7 +990,7 @@ ornConvIso :
   {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} (O : Orn e D E) →
   {i : I} (j : e ⁻¹ i) → μ E (und j) ≅ (Σ'(x : μ D i)) OptP O j x
 \end{code}
-The construction of |ornConvIso| will be deferred until \autoref{chap:categorical}.
+The construction of |ornConvIso| is deferred to \autoref{chap:categorical}.
 
 \subsection{Predicate swapping for parallel composition}
 \label{sec:predicate-swapping}
@@ -1028,48 +1006,48 @@ OptP ⌈ O ⊗ P ⌉ (ok (j , k)) x ≅ OptP O j x × OptP P k x
 \end{code}
 for all |i : I|, |j : e ⁻¹ i|, |k : f ⁻¹ i|, and |x : μ D i|.
 
-\block{Example}{promotion predicate from lists to ordered vectors}{The optimised predicate for the ornament |⌈ ⌈ OrdListOD A _≤A_ ⌉ ⊗ ListD-VecD A ⌉| from lists to ordered vectors is
+\block{Example}{promotion predicate from lists to ordered vectors}{The optimised predicate for the ornament |⌈ ⌈ OrdListOD ⌉ ⊗ ListD-VecD Val ⌉| from lists to ordered vectors is
 \begin{code}
-indexfirst data OrderedLength A _≤A_ : A → Nat → List A → Set where
-  OrderedLength A _≤A_ b zero     []        offers  nil
-  OrderedLength A _≤A_ b zero     (a ∷ as)  noffers
-  OrderedLength A _≤A_ b (suc n)  []        noffers
-  OrderedLength A _≤A_ b (suc n)  (a ∷ as)
-    offers cons (leq : b ≤A a) (ol : OrderedLength A _≤A_ a n as)
+indexfirst data OrderedLength : Val → Nat → List Val → Set where
+  OrderedLength b zero     []        offers  nil
+  OrderedLength b zero     (x ∷ xs)  noffers
+  OrderedLength b (suc n)  []        noffers
+  OrderedLength b (suc n)  (x ∷ xs)  offers  cons  (leq : b ≤ x)
+                                                   (ol : OrderedLength x n xs)
 \end{code}
 which is monolithic and inflexible.
-We can avoid using this predicate directly by exploiting the modularity isomorphisms
+We can avoid using this predicate by exploiting the modularity isomorphisms
 \begin{code}
-OrderedLength A _≤A_ b n as ≅ Ordered A _≤A_ b as × Length A n as
+OrderedLength b n xs ≅ Ordered b xs × Length n xs
 \end{code}
-for all |b : A|, |n : Nat|, and |as : List A| --- to promote a list to an ordered vector, we can prove that it satisfies |Ordered| and |Length| instead of |OrderedLength|.
+for all |b : Val|, |n : Nat|, and |xs : List Val| --- to promote a list to an ordered vector, we can prove that it satisfies |Ordered| and |Length| instead of |OrderedLength|.
 Promotion proofs from lists to ordered vectors can thus be divided into ordering and length aspects and carried out separately.}
 
-Along with the ornamental conversion isomorphisms, the construction of the modularity isomorphisms will be deferred until \autoref{chap:categorical}.
+Along with the ornamental conversion isomorphisms, the construction of the modularity isomorphisms is deferred to \autoref{chap:categorical}.
 Here we deal with a practical issue regarding composition of modularity isomorphisms:
 for example, to get pointwise isomorphisms between the optimised predicate for |⌈ O ⊗ ⌈ P ⊗ Q ⌉ ⌉| and the pointwise conjunction of the optimised predicates for |O|, |P|, and~|Q|, we need to instantiate the modularity isomorphisms twice and compose the results appropriately, a procedure which quickly becomes tedious.
 What we need is an auxiliary mechanism that helps with organising computation of composite predicates and isomorphisms following the parallel compositional structure of ornaments, in the same spirit as the upgrade mechanism (\autoref{sec:upgrades}) helping with organising computation of coherence properties and proofs following the syntactic structure of function types.
 
 We thus define the following auxiliary datatype |Swap|, parametrised with a refinement whose promotion predicate is to be swapped for a new one:
 \begin{code}
-record Swap {X Y : Set} (r : Refinement X Y) : Set₁ where
+record Swap {A B : Set} (r : Refinement A B) : Set₁ where
   field
-    Q  : X → Set
-    i  : (x : X) → Refinement.P r x ≅ Q x
+    P  : A → Set
+    i  : (a : A) → Refinement.P r a ≅ P a
 \end{code}
 An inhabitant of |Swap r| consists of a new promotion predicate for~|r| and a proof that the new predicate is pointwise isomorphic to the original one in~|r|.
 The actual swapping is done by the function
 \begin{code}
-toRefinement : {X Y : Set} {r : Refinement X Y} → Swap r → Refinement X Y
-toRefinement s = record  case  P  = Swap.Q s
+toRefinement : {A B : Set} {r : Refinement A B} → Swap r → Refinement A B
+toRefinement s = record  case  P  = Swap.P s
                          sep   i  = (goal()(0)) endcase
 \end{code}
 where Goal~0 is the new conversion isomorphism
 \begin{code}
-Y ≅ Σ X (Refinement.P r) ≅ Σ X (Swap.Q s)
+B ≅ Σ A (Refinement.P r) ≅ Σ A (Swap.P s)
 \end{code}
 constructed by using transitivity and product of isomorphisms to compose |Refinement.i r| and |Swap.i s|.
-We can then define the datatype |FSwap| of ``swap families'' in the usual way:
+We can then define the datatype |FSwap| of \key{swap families} in the usual way:
 \begin{code}
 FSwap :  {I J : Set} {e : J → I} {X : I → Set} {Y : J → Set} →
          (rs : FRefinement e X Y) → Set₁
@@ -1081,14 +1059,14 @@ and provide the following combinator on swap families, which says that if there 
            {D : Desc I} {E : Desc J} {F : Desc K} →
            (O : Orn e D E) (P : Orn f D F) →
            FSwap (RSem' O) → FSwap (RSem' P) → FSwap (RSem' ⌈ O ⊗ P ⌉)
-⊗-FSwap O P ss ts (ok (j , k)) =
-  record  case  Q  = (lambda(x)) Swap.Q (ss j) x × Swap.Q (ts k) x
-          sep   i  = (lambda(x)) (goal()(1)) endcase
+⊗-FSwap O P ss ts (ok (j , k)) = record
+  case  P   = (lambda(x)) Swap.P (ss j) x × Swap.P (ts k) x
+  sep   i   = (lambda(x)) (goal()(1)) endcase
 \end{code}
 Goal~1 is straightforwardly discharged by composing the modularity isomorphisms and the isomorphisms in |ss|~and~|ts|:
 \begin{code}
 OptP ⌈ O ⊗ P ⌉ (ok (j , k)) x  ≅ OptP O j x       × OptP P k x
-                               ≅ Swap.Q (ss j) x  × Swap.Q (ts k) x
+                               ≅ Swap.P (ss j) x  × Swap.P (ts k) x
 \end{code}
 
 \block{Example}{modular promotion predicate for the parallel composition of three ornaments}{To use the pointwise conjunction of the optimised predicates for ornaments |O|, |P|, and~|Q| as an alternative promotion predicate for |⌈ O ⊗ ⌈ P ⊗ Q ⌉ ⌉|, we use the swap family
@@ -1103,33 +1081,153 @@ simply retains the original promotion predicate in~|rs|.
 }
 
 \block{Example}{swapping the promotion predicate from lists to ordered vectors}{
-The swap family
+From the swap family
 \begin{code}
-⊗-FSwap ⌈ OrdListOD A _≤A_ ⌉ (ListD-VecD A) id-FSwap (Length-FSwap A)
+OrdVec-FSwap : FSwap (RSem' ⌈ OrdVecOD ⌉)
+OrdVec-FSwap =
+  ⊗-FSwap ⌈ OrdListOD ⌉ (ListD-VecD Val) id-FSwap (Length-FSwap Val)
 \end{code}
-yields a refinement family from lists to ordered vectors using
+we can extract a refinement family from lists to ordered vectors using
 \begin{code}
-(lambda(b n as)) Ordered A _≤A_ b as × length as ≡ n
+(lambda(b n xs)) Ordered b xs × length xs ≡ n
 \end{code}
 as the promotion predicate, where
 \begin{code}
 Length-FSwap A : FSwap (RSem' (ListD-VecD A))
 \end{code}
-swaps |Length A| for |(lambda(n as)) length as ≡ n|.}
+swaps |Length| for |(lambda(n xs)) length xs ≡ n|.}
 
 \section{Examples}
+\label{sec:ornament-refinement-examples}
 
-To demonstrate the use of the ornament--refinement framework, we first resolve the library structuring problem about insertion into a list and then look at two dependently typed heap data structures adapted from \varcitet{Okasaki-data-structures}{'s work on purely functional data structures}.
+To demonstrate the use of the ornament--refinement framework, in \autoref{sec:insertion} we first conclude the example about insertion into a list introduced in \autoref{sec:externalism-and-internalism}, and then we look at two dependently typed heap data structures adapted from \varcitet{Okasaki-data-structures}{'s work on purely functional data structures}.
 Of the latter two examples,
 \begin{itemize}
-\item the first one about \key{binomial heaps} shows that \citeauthor{Okasaki-data-structures}'s idea of \key{numerical representations} can be elegantly captured by ornaments and the coherence properties computed with upgrades, and
-\item the second one about \key{leftist heaps} demonstrates the power of parallel composition of ornaments by treating heap ordering and leftist balancing properties modularly.\todo[inline]{Postulate operations on~|Val| like |_≤?_|, |≤-refl|, |≤-trans|, and |≰-invert| in Chapter~2.}
+\item the first one about \key{binomial heaps}~(\autoref{sec:binomial-heaps}) shows that \citeauthor{Okasaki-data-structures}'s idea of \key{numerical representations} can be elegantly captured by ornaments and the coherence properties computed with upgrades, and
+\item the second one about \key{leftist heaps}~(\autoref{sec:leftist-heaps}) demonstrates the power of parallel composition of ornaments by treating heap ordering and leftist balancing properties modularly.
 \end{itemize}
 
 \subsection{Insertion into a list}
 \label{sec:insertion}
 
+\begin{figure}
+\codefigure\small\vskip-\baselineskip
+\begin{code}
+-- the upgraded function type has an extra argument
+new :  {A : Set} (I : Set) {X : I → Set} →
+       ((i : I) → Upgrade A (X i)) → Upgrade A ((i : I) → X i)
+new I u = record  case  P  =  (lambda(a)) (i : I) → Upgrade.P (u i) a
+                  sep   C  =  (lambda(a x)) (i : I) → Upgrade.C (u i) a (x i)
+                  sep   u  =  (lambda(a p i)) Upgrade.u  (u i) a (p i)
+                  sep   c  =  (lambda(a p i)) Upgrade.c  (u i) a (p i) endcase
+
+syntax new I ((lambda(i)) u) = (newforall(i ∶ I)) u
+
+-- implicit version of |new|
+new' :  {A : Set} (I : Set) {X : I → Set} →
+        ((i : I) → Upgrade A (X i)) → Upgrade A ({i : I} → X i)
+new' I u = record  case  P  =  (lambda(a)) {i : I} → Upgrade.P (u i) a
+                   sep   C  =  (lambda(a x)) {i : I} → Upgrade.C (u i) a (x {i})
+                   sep   u  =  (lambda(a p {i})) Upgrade.u  (u i) a (p {i})
+                   sep   c  =  (lambda(a p {i})) Upgrade.c  (u i) a (p {i}) endcase
+
+syntax new' I ((lambda(i)) u) = (newforall'(i ∶ I)) u
+
+-- the underlying and the upgraded function types have a common argument
+fixed :  (I : Set) {X : I → Set} {Y : I → Set} →
+         ((i : I) → Upgrade (X i) (Y i)) → Upgrade ((i : I) → X i) ((i : I) → Y i)
+fixed I u = record  case  P  =  (lambda(f)) (i : I) → Upgrade.P (u i) (f i)
+                    sep   C  =  (lambda(f g)) (i : I) → Upgrade.C (u i) (f i) (g i)
+                    sep   u  =  (lambda(f h i)) Upgrade.u  (u i) (f i) (h i)
+                    sep   c  =  (lambda(f h i)) Upgrade.c  (u i) (f i) (h i) endcase
+
+syntax fixed I ((lambda(i)) u) = (fixedforall(i ∶ I)) u
+
+-- implicit version of |fixed|
+fixed' :  (I : Set) {X : I → Set} {Y : I → Set} →
+          ((i : I) → Upgrade (X i) (Y i)) → Upgrade ({i : I} → X i) ({i : I} → Y i)
+fixed' I u = record  case  P     =  (lambda(f)) {i : I} → Upgrade.P (u i) (f {i})
+                     sep   C     =  (lambda(f g)) {i : I} → Upgrade.C (u i) (f {i}) (g {i})
+                     sep   u     =  (lambda(f h {i})) Upgrade.u  (u i) (f {i}) (h {i}) 
+                     sep   c     =  (lambda(f h {i})) Upgrade.c  (u i) (f {i}) (h {i}) endcase
+
+syntax fixed' I ((lambda(i)) u) = (fixedforall'(i ∶ I)) u
+\end{code}
+\vskip-.8\baselineskip
+\caption{More combinators on upgrades.}
+\label{fig:upgrade-combinators}
+\end{figure}
+
+To recap: we have an externalist library for lists which supports one operation
+\begin{code}
+insert : Val → List Val → List Val
+\end{code}
+and has two modules about length and ordering, respectively containing the following two proofs about |insert|:
+\begin{code}
+insert-length   :  (y : Val) {n : Nat} (xs : List Val) →
+                   length xs ≡ n → length (insert y xs) ≡ suc n
+                 
+insert-ordered  :  (y : Val) {b : Val} (xs : List Val) → Ordered b xs →
+                   {b' : Val} → b' ≤ y → b' ≤ b → Ordered b' (insert y xs)
+\end{code}
+To upgrade the library to also work as an internalist one, all we have to do is add to the two modules the descriptions of vectors and ordered lists and the ornaments from lists to vectors and ordered lists (or equivalently and more simply, just the ornamental descriptions).
+Now we can manufacture
+\begin{code}
+insert-V :  Val → {n : Nat} → Vec Val n → Vec Val (suc n)
+\end{code}
+starting with writing the following upgrade, which marks how the types of |insert| and |insert-V| are related:
+\begin{code}
+upg : Upgrade  (Val →              List  Val    → List  Val          )
+               (Val → {n : Nat} →  Vec   Val n  → Vec   Val (suc n)  )
+upg = (fixedforall(_ ∶ Val)) (newforall'(n ∶ Nat)) r n ⇀ toUpgrade (r (suc n))
+  where  r : (n : Nat) → Refinement (List Val) (Vec Val n)
+         r n = toRefinement (Length-FSwap Val (ok n))
+\end{code}
+That is, the type of |insert-V| has a common first argument with the type of |insert| and a new implicit argument |n : Nat|, and refines the two occurrences of |List Val| in the type of |insert| to |Vec Val n| and |Vec Val (suc n)|.
+The function |insert-V| is then simply defined by
+\begin{code}
+insert-V :  Val → {n : Nat} → Vec Val n → Vec Val (suc n)
+insert-V = Upgrade.u upg insert insert-length
+\end{code}
+which satisfies the coherence property
+\begin{code}
+insert-V-coherence :
+  (y : Val) {n : Nat} (xs : List Val) (xs' : Vec Val n) →
+  forget (ListD-VecD Val) xs' ≡ xs →
+  forget (ListD-VecD Val) (insert-V y xs') ≡ insert y xs
+insert-V-coherence = Upgrade.c upg insert insert-length
+\end{code}
+That is, |insert-V| manipulates the underlying list of the input vector in the same way as |insert|.
+Similarly we can manufacture |insert-O| for ordered lists by using an appropriate upgrade that accepts |insert-ordered| as a promotion proof for |insert|.
+For ordered vectors, the datatype is manufactured by parallel composition, and the operation
+\begin{code}
+insert-OV :  (y : Val) {b : Val} {n : Nat} → OrdVec b n →
+             {b' : Val} → b' ≤ y → b' ≤ b → OrdVec b' (suc n)
+\end{code}
+is manufactured with the help of the upgrade
+\begin{code}
+(fixedforall(y ∶ Val)) (newforall'(b ∶ Val)) (newforall'(n ∶ Nat)) r b n ⇀
+(newforall'(b' ∶ Val)) (newforall(_ ∶ b' ≤ y)) (newforall(_ ∶ b' ≤ b)) toUpgrade (r b' (suc n))
+where
+  r : (b : Val) (n : Nat) → Refinement (List Val) (OrdVec b n)
+  r b n = toRefinement (OrdVec-FSwap (ok (ok b , ok n)))
+\end{code}
+The type of promotion proofs for |insert| specified by this upgrade is
+\begin{code}
+(y : Val) {b : Val} {n : Nat} (xs : List Val) →
+  Ordered b xs × length xs ≡ n →
+{b' : Val} → b' ≤ y → b' ≤ b →
+  Ordered b' (insert y xs) × length (insert y xs) ≡ suc n
+\end{code}
+and is inhabited by
+\begin{code}
+λ case y xs (ord , len) b'≤y b'≤b mapsto  insert-ordered  y xs ord b'≤y b'≤b ,
+                                          insert-length   y xs len endcase
+\end{code}
+which is strikingly similar to |insert-EOV| in \autoref{sec:externalism-and-internalism}.
+
 \subsection{Binomial heaps}
+\label{sec:binomial-heaps}
 
 \begin{figure}
 \hskip8pt
@@ -1171,7 +1269,7 @@ Of the latter two examples,
       (Rx) -- (Rz)
       (Rz) -- (Rw);
 \end{tikzpicture}
-\caption{\key{Left:} a binomial heap of size 3 consisting of two binomial trees storing elements $x$,~$y$, and~$z$.\quad\key{Right:} the result of inserting an element~$w$ into the heap.\\(Note that the digits of the underlying binary numbers are ordered with the least significant digit first.)}
+\caption{\key{Left:} a binomial heap of size 3 consisting of two binomial trees storing elements $x$,~$y$, and~$z$.\quad\key{Right:} a possible result of inserting an element~$w$ into the heap.\quad(Note that the digits of the underlying binary numbers are ordered with the least significant digit first.)}
 \label{fig:binomial-heap}
 \end{figure}
 
@@ -1222,7 +1320,7 @@ We use insertion into a binomial heap as an example, which is presented in detai
 
 \draw (r) -- (l);
 \end{tikzpicture}
-\hskip40pt
+\hskip60pt
 \begin{tikzpicture}[x=1pt, y=1pt, treenode/.style={circle, draw, minimum size=16pt}, baseline=(current bounding box.north)]
 \node(1) {$1$};
 \node(1-0) [treenode, below=8 of 1] {};
@@ -1324,7 +1422,10 @@ This is a crucial assumption in binomial heaps (which is not essential to our de
 \subsubsection{From binary numbers to binomial heaps}
 The datatype |Bin : Set| of binary numbers is just a specialised datatype of lists of binary digits:
 \begin{code}
-data BinTag : Set where `nil `zero `one : BinTag
+data BinTag : Set where
+  `nil   : BinTag
+  `zero  : BinTag
+  `one   : BinTag
 
 BinD : Desc ⊤
 BinD tt = σ BinTag λ  case  `nil   mapsto  ṿ []
@@ -1387,11 +1488,11 @@ It is apparent that the program structure of |insT| strongly resembles that of |
 But can we characterise the resemblance semantically?
 It turns out that the coherence property of the following upgrade from the type of |incr| to that of |insT| is an appropriate answer:
 \begin{code}
-upg : Upgrade (Bin → Bin) ({r : Nat} → BTree r → BHeap r → BHeap r)
-upg =  (newforall'(r ∶ Nat)) (newforall(_ ∶ BTree r))
-         let  ref : Refinement Bin (BHeap r)
-              ref = RSem' ⌈ BHeapOD ⌉ (ok r)
-         in   ref ⇀ toUpgrade ref
+upg : Upgrade  (                       Bin      → Bin      )
+               ({r : Nat} → BTree r →  BHeap r  → BHeap r  )
+upg = (newforall'(r ∶ Nat)) (newforall(_ ∶ BTree r)) ref r ⇀ toUpgrade (ref r)
+  where  ref : (r : Nat) → Refinement Bin (BHeap r)
+         ref r = RSem' ⌈ BHeapOD ⌉ (ok r)
 \end{code}
 The upgrade |upg| says that, compared to the type of |incr|, the type of |insT| has two new arguments --- the implicit argument |r : Nat| and the explicit argument of type |BTree r| --- and that the two occurrences of |BHeap r| in the type of |insT| refine the corresponding occurrences of |Bin| in the type of |incr| using the refinement semantics of the ornament |⌈ BHeapOD ⌉ (ok r)| from |Bin| to |BHeap r|.
 The type |Upgrade.C upg incr insT| (which states that |incr| and |insT| are in coherence with respect to |upg|) expands to
@@ -1405,7 +1506,7 @@ toBin : {r : Nat} → BHeap r → Bin
 toBin = forget ⌈ BHeapOD ⌉
 \end{code}
 That is, given a binomial heap |h : BHeap r| whose underlying binary number is |b : Bin|, after inserting a binomial tree into~|h| by |insT|, the underlying binary number of the result is |incr b|.
-This says exactly that |insT| manipulates the underlying binary number in the same way as |incr| does.
+This says exactly that |insT| manipulates the underlying binary number in the same way as |incr|.
 
 We have seen that the coherence property of |upg| is appropriate for characterising the resemblance of |incr| and |insT|; proving that it holds for |incr| and |insT| is a separate matter, though.
 We can, however, avoid doing the implementation of insertion and the coherence proof separately:
@@ -1428,7 +1529,7 @@ The type |Upgrade.P upg incr| of promotion proofs for |incr| then expands to
 \begin{code}
 {r : Nat} → BTree r → (b : Bin) → BHeap' r b → BHeap' r (incr b)
 \end{code}
-A function of this type is explicitly required to transform the underlying binary number structure of its input in the same way as |incr| does.
+A function of this type is explicitly required to transform the underlying binary number structure of its input in the same way as |incr|.
 Insertion can now be implemented as
 \begin{code}
 insT' : {r : Nat} → BTree r → (b : Bin) → BHeap' r b → BHeap' r (incr b)
@@ -1465,9 +1566,10 @@ We define |Bin|, |incr|, and then |BHeap| as an ornamentation of |Bin|, describe
 We can then derive |insT|, the coherence property of |insT| with respect to |incr|, and its proof, all automatically by |upg|.
 Compared to \citeauthor{Okasaki-data-structures}'s implementation, besides rank-indexing, which elegantly transfers the management of rank-related invariants to the type system, the extra work is only the straightforward markings of the differences between |Bin| and |BHeap| (in |BHeapOD|) and between the type of |incr| and that of |insT| (in |upg|).
 The reward is huge in comparison: we get a coherence property that precisely characterises the structural behaviour of insertion with respect to increment, and an enriched function type that guides the implementation of insertion such that the coherence property is satisfied by construction.
-From straightforward markings to nontrivial types and programs --- this clearly demonstrates the power of the ornament--refinement framework.
+This example is thus a nice demonstration of using the ornament--refinement framework to derive nontrivial types and programs from straightforward markings.
 
 \subsection{Leftist heaps}
+\label{sec:leftist-heaps}
 
 \begin{figure}
 \begin{center}
@@ -1496,10 +1598,10 @@ From straightforward markings to nontrivial types and programs --- this clearly 
 \label{fig:leftist-heap-datatypes}
 \end{figure}
 
-Our second example is about treating the ordering and balancing properties of \key{leftist heaps} modularly.
+Our last example is about treating the ordering and balancing properties of \key{leftist heaps} modularly.
 In \citeauthor{Okasaki-data-structures}'s words:
 \begin{quoting}\relax
-Leftist heaps [\ldots$\!$] are heap-ordered binary trees that satisfy the \key{leftist property}: the rank of any left child is at least as large as the rank of its right sibling. The rank of a node is defined to be the length of its \key{right spine} (i.e., the rightmost path from the node in question to an empty node).
+Leftist heaps \omission\ are heap-ordered binary trees that satisfy the \key{leftist property}: the rank of any left child is at least as large as the rank of its right sibling. The rank of a node is defined to be the length of its \key{right spine} (i.e., the rightmost path from the node in question to an empty node).
 \end{quoting}
 From this passage we can immediately analyse the concept of leftist heaps into three: leftist heaps \,(i)~are binary trees that \,(ii)~are heap-ordered and \,(iii)~satisfy the leftist property.
 This suggests that there is a basic datatype of binary trees together with two ornamentations, one expressing heap ordering and the other the leftist property.
@@ -1510,7 +1612,9 @@ All the datatypes about leftist heaps and their ornamental relationships are sho
 
 The basic datatype |Tree : Set| of ``skeletal'' binary trees, which consist of empty nodes and internal nodes not storing any elements, is defined by
 \begin{code}
-data TreeTag : Set where `nil `node : TreeTag
+data TreeTag : Set where
+  `nil   : TreeTag
+  `node  : TreeTag
 
 TreeD : Desc ⊤
 TreeD tt = σ TreeTag λ  case  `nil   mapsto  ṿ []
@@ -1523,6 +1627,7 @@ indexfirst data Tree : Set where
 \key{Leftist trees} --- skeletal binary trees satisfying the leftist property --- are then an ornamented version of |Tree|.
 The datatype |LTree : Nat → Set| of leftist trees is indexed with the rank of the root of the trees.
 The constructor choices can be determined from the rank: the only node that can have rank |zero| is the empty node |nil|; otherwise, when the rank of a node is non-zero, it must be an internal node constructed by the |node| constructor, which enforces the leftist property.
+(Below we overload~|_≤_| to also denote the decidable total ordering on |Nat|.)
 \begin{code}
 LTreeOD : OrnDesc Nat ! TreeD
 LTreeOD (ok zero     )   =  (∇'(`nil)) ṿ tt
@@ -1579,23 +1684,26 @@ relax b'≤b {node _ _  }  (node x b≤x t u)  =  node x (≤-trans b'≤b b≤x
 Since the identity function on |LTree| can also be seen as an upgraded version of the identity function on |Tree|, we can combine |relax| and the predicate form of the identity function on |LTree| to get bound-relaxing on leftist heaps, which modifies only the heap-ordering portion of a leftist heap:
 \begin{code}
 lhrelax : {b b' : Val} → b' ≤ b → {r : Nat} → LHeap b r → LHeap b' r
-lhrelax {b} {b'} b'≤b {r} = Upgrade.u upg id ((lambda(_)) relax b'≤b * id)
+lhrelax = Upgrade.u upg id ((lambda(b'≤b t)) relax b'≤b * id)
   where
-    ref : (b'' : Val) → Refinement Tree (LHeap b'' r)
-    ref b'' =  toRefinement
+    ref : (b : Val) (r : Nat) → Refinement Tree (LHeap b r)
+    ref b r =  toRefinement
                  (  ⊗-FSwap ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉ id-FSwap id-FSwap
-                      (ok (ok b'' , ok r)))
-    upg : Upgrade (Tree → Tree) (LHeap b r → LHeap b' r)
-    upg = ref b ⇀ toUpgrade (ref b')
+                      (ok (ok b , ok r)))
+    upg :  Upgrade
+             (                                     Tree       → Tree        )
+             ({b b' : Val} → b' ≤ b → {r : Nat} →  LHeap b r  → LHeap b' r  )
+    upg =   (newforall'(b ∶ Val)) (newforall'(b' ∶ Val)) (newforall(_ ∶ b' ≤ b))
+              (newforall'(r ∶ Nat)) ref b r ⇀ toUpgrade (ref b' r)
 \end{code}
 In general, non-modifying heap operations do not depend on the leftist property and can be implemented for heap-ordered trees and later lifted to work with leftist heaps, relieving us of the unnecessary work of dealing with the leftist property when it is simply to be ignored.
-For another example, converting a leftist heap to a list of its elements has nothing to do with the leftist property.
+For another example, converting a leftist heap to a list of its elements by preorder traversal has nothing to do with the leftist property.
 In fact, it even has nothing to do with heap ordering, but only with the internal labelling.
-Hence we can define the \key{internally labelled trees} as an ornamentation of skeletal binary trees:
+We hence define the \key{internally labelled trees} as an ornamentation of skeletal binary trees:
 \begin{code}
 ITreeOD : Set → OrnDesc ⊤ ! TreeD
 ITreeOD A tt = σ TreeTag  λ  case  `nil   mapsto  ṿ tt
-                             sep   `node  mapsto  (Δ'(_ ∶ A)) ṿ (ok tt, ok tt, tt) endcase
+                             sep   `node  mapsto  (Δ'(_ ∶ A)) ṿ (ok tt , ok tt , tt) endcase
 
 indexfirst data ITree (A : Set) : Set where
   ITree A  offers  nil
@@ -1603,23 +1711,37 @@ indexfirst data ITree (A : Set) : Set where
 \end{code}
 on which we can do preorder traversal:
 \begin{code}
-preorder : {A : Set} → ITree A → List A
-preorder nil           =  []
-preorder (node x t u)  =  x ∷ preorder t ++ preorder u
+preorder-IT : {A : Set} → ITree A → List A
+preorder-IT nil           =  []
+preorder-IT (node x t u)  =  x ∷ preorder-IT t ++ preorder-IT u
 \end{code}
-We have an ornament from internally labelled trees to heap-ordered trees:
+This operation can be upgraded to accept any argument whose type is more informative than |ITree A|.
+Thus we parametrise the upgraded operation |preorder| by an ornament:
+\begin{code}
+preorder :  {A I : Set} {D : Desc I} → Orn ! ⌊ ITreeOD A ⌋ D →
+            {i : I} → μ D i → List A
+preorder {A} {I} {D} O = Upgrade.u upg preorder-IT (λ t p → tt)
+  where  upg : Upgrade  (           ITree A  → List A)
+                        ({i : I} →  μ D i    → List A)
+         upg = ∀⁺[[ i ∶ I ]] RSem' O (ok i) ⇀ toUpgrade idRef
+\end{code}
+where |idRef| is the identity refinement:
+\begin{code}
+idRef : {A : Set} → Refinement A A
+idRef = record  case  P  = (lambda(_)) ⊤
+                sep   i  = record  case  to    = (lambda(a)) a , tt
+                                   sep   from  = (lambda(a , tt)) a
+                                   sep   proofs-of-laws endcase endcase
+\end{code}
+There is an ornament from |ITree| to |LHeap|, which can be written either directly or by \key{sequentially composing} the following ornament from |ITree| to |Heap| with the ornament |diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉| from |Heap| to |LHeap|:
 \begin{code}
 ITreeD-HeapD : Orn ! ⌊ ITreeOD Val ⌋ ⌊ HeapOD ⌋
 ITreeD-HeapD (ok b) =
   σ TreeTag λ  case  `nil   mapsto  ṿ []
                sep   `node  mapsto  (σ'(x ∶ Val)) (Δ'(_ ∶ b ≤ x)) ṿ (refl ∷ refl ∷ []) endcase
 \end{code}
-%(Of course, we could have defined the ornamentation from skeletal binary trees to heap-ordered trees as a sequential composition mediated by internally labelled trees.)
-So, to get a list of the elements of a leftist heap (whose first element is the minimum one), we convert the leftist heap to an internally labelled tree and then invoke |preorder|.\todo{use an ornament-parametrised upgrade}
-\begin{code}
-toList : {b : Val} {r : Nat} → LHeap b r → List Val
-toList = preorder ∘ forget (ITreeD-HeapD ⊙ diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉)
-\end{code}
+(Sequential composition of ornaments will be introduced in \autoref{chap:categorical}.)
+Specialising |preorder| by the ornament gives preorder traversal of a leftist heap.
 
 \begin{sidewaysfigure}
 \codefigure\small
@@ -1648,7 +1770,7 @@ mutual
   merge'  (node x₀ b₀≤x₀ r₀≤l₀ t₀ u₀)  {b₁} {suc r₁   } (node x₁ b₁≤x₁ r₁≤l₁ t₁ u₁)  b≤b₀ b≤b₁  | no   x₀≰x₁ =
     _ , (proofterm(lhrelax (≤-trans b≤b₁ b₁≤x₁))) (proj₂ (makeT x₁ t₁ (proj₂ (merge'  (node x₀ (proofterm((≰-invert x₀≰x₁))) r₀≤l₀ t₀ u₀) u₁ (proofterm(≤-refl)) (proofterm(≤-refl))))))
 \end{code}
-\caption{Merging two leftist heaps. Proof terms about ordering are coloured grey to aid comprehension (taking inspiration from --- but not really employing --- \varcitet{Bernardy-color}{'s type theory in colour}).}
+\caption{Merging two leftist heaps. Proof terms about ordering are coloured grey to aid comprehension (taking inspiration from --- but not really employing --- \varcitet{Bernardy-color}{'s ``type theory in color''}).}
 \label{fig:merge}
 \end{sidewaysfigure}
 
@@ -1710,8 +1832,96 @@ The implementation of |wmerge| is largely similar to |merge| and is omitted here
 For |wmerge|, however, the weight of a recursively computed sub-heap is known before the recursive merging is actually performed (so the weight index can be given explicitly in the result type of |wmerge|).
 The counterpart of |makeT| can thus determine before a recursive call whether to do the swapping or not, and the whole merging process requires only one top-down pass.
 
-\todo[inline]{Do we need a summary here?}
 
 \section{Discussion}
+\label{sec:ornament-refinement-discussion}
 
-\todo[inline]{summary of the three-level architecture of ornaments, refinements, and upgrades; bundle; why ornaments?; functor-level computation and recursion schemes; compare with \citet{Bernardy-color}}
+Ornaments were first proposed by \citet{McBride-ornaments}.
+This thesis defines ornaments as relations between descriptions (indexed with an erasure function), and rebrands \citeauthor{Dagand-functional-ornaments}'s ornaments as ornamental descriptions.
+One obvious advantage of relational ornaments is that they can arise between existing descriptions, whereas ornamental descriptions always produce new descriptions at the more informative end.
+This makes it possible to complete the commutative square of parallel composition with difference ornaments.
+Another consequence is that there can be multiple ornaments between a pair of descriptions.
+For example, consider the following description of a datatype consisting of two fields of the same type:
+\begin{code}
+TwinD : (A : Set) → Desc ⊤
+TwinD A tt = (σ'(_ ∶ A)) (σ'(_ ∶ A)) ṿ []
+\end{code}
+Between |TwinD A| and itself, we have the identity ornament
+\begin{code}
+λ case tt mapsto (σ'(_ ∶ A)) (σ'(_ : A)) ṿ [] endcase
+\end{code}
+and the ``swapping'' ornament
+\begin{code}
+λ case tt mapsto (Δ'(x ∶ A)) (Δ'(y ∶ A)) (∇'(y)) (∇'(x)) ṿ [] endcase
+\end{code}
+whose forgetful function swaps the two fields.
+The other advantage of relational ornaments is that they allow new datatypes to arise at the less informative end.
+For example, \key{coproduct of signatures} as used in, e.g., ``data types à~la carte''~\citep{Swierstra-data-types-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
+Below we sketch a simplistic implementation: Consider (a simplistic version of) \key{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
+A tagged description indexed by |I : Set| thus consists of a family of types |C : I → Set|, where each |C i| is the set of constructor tags for the index request |i : I|, and a family of subsequent response descriptions for each constructor tag.
+\begin{code}
+TDesc : Set → Set₁
+TDesc I = (Σ'(C ∶ I → Set)) ((i : I) → C i → RDesc I)
+\end{code}
+Tagged descriptions are decoded to ordinary descriptions by
+\begin{code}
+⌊_⌋T : {I : Set} → TDesc I → Desc I
+⌊ C , D ⌋T i = σ (C i) (D i)
+\end{code}
+We can then define binary coproduct of tagged descriptions, which sums the corresponding constructor fields, as follows:
+\begin{code}
+_⊕_ : {I : Set} → TDesc I → TDesc I → TDesc I
+(C , D) ⊕ (C' , D') = ((lambda(i)) C i + C' i) , ((lambda(i)) D i ▿ D' i)
+\end{code}
+where the coproduct type~|_+_| and the join operator~|_▿_| are defined as usual:
+\begin{code}
+data _+_ (A B : Set) : Set where
+  inj₁  : A → A + B
+  inj₂  : B → A + B
+
+_▿_ : {A B C : Set} (A → C) → (B → C) → A + B → C
+(f ▿ g) (inj₁  a  ) = f a
+(f ▿ g) (inj₂  b  ) = g b
+\end{code}
+Now given two tagged descriptions |tD = (C , D)| and |tD' = (C' , D')| of type |TDesc I|, there are two ornaments from |⌊ tD ⊕ tD' ⌋T| to |⌊ tD ⌋T| and |⌊ tD' ⌋T|:
+\begin{code}
+inlOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD ⌋T
+inlOrn   (ok i) = (Δ'(c   ∶ C i))   (∇'(inj₁  c   ))  idROrn (D i c)
+
+inrOrn  : Orn id ⌊ tD ⊕ tD' ⌋T ⌊ tD' ⌋T
+inrOrn   (ok i) = (Δ'(c'  ∶ C' i))  (∇'(inj₂  c'  ))  idROrn (D' i c')
+\end{code}
+(where |idROrn : {I : Set} (D : RDesc I) → ROrn id D D| is the identity response ornament) whose forgetful functions perform suitable injection of constructor tags.
+Note that the manufactured new description |⌊ tD ⊕ tD' ⌋T| is at the less informative end of |inlOrn| and |inrOrn|.
+It is thus actually biased to refer to the less informative end of an ornament as ``basic'', but the examples in this thesis are indeed biased in this sense, being influenced by \citeauthor{McBride-ornaments}'s original formulation.
+
+\citet{Dagand-functional-ornaments} later adapted the original ornaments to index-first datatypes, and also proposed ``reornaments'' as a more efficient representation of promotion predicates, taking full advantage of index-first datatypes.
+Reornaments are reimplemented in this thesis as optimised predicates using parallel composition, as a result of which we can derive properties about optimised predicates using pullback properties of parallel composition in \autoref{chap:categorical}.
+\citeauthor{Dagand-functional-ornaments} also extended the notion of ornaments to ``functional ornaments'', which we generalise to refinements and upgrades.
+The refinement--upgrade approach is logically clearer and more flexible as it allows us to decouple two constructions:
+\begin{itemize}
+\item ornamental relationship between inductive families, whose refinement semantics gives \emph{particular} conversion isomorphisms between corresponding types in the inductive families, and
+\item how conversion isomorphisms \emph{in general} enable function upgrading, as encoded by the upgrade combinators.
+\end{itemize}
+Also, compared to functional ornaments, which are formulated syntactically as a universe and then interpreted to types and operations, upgrades skip syntactic formulation and simply bundle relevant types and operations together, which are then composed semantically by the upgrade combinators.
+The upgrade mechanism can thus be more easily extended by defining new combinators (which we actually do in \autoref{chap:algebraic}).
+In contrast, had we defined upgrades as a universe, we would have had to employ more complex techniques like data types à~la carte~\citep{Swierstra-data-types-a-la-carte} to gain extensibility.
+The complexity would not have been justified, because constructing a universe for upgrades in their present form offers no benefit:
+A universe is helpful only when it is necessary to determine the range of syntactic forms, either for nontrivial computation on the syntactic forms or for facilitation of defining new interpretations of the syntactic forms.
+Neither is the case with upgrades: we do not need to manipulate the syntactic forms of upgrades, nor do we need to obtain semantic entities other than those captured by the fields of |Upgrade|.
+In contrast, ornaments do need a universe: we need to know all possible syntactic forms of ornaments in order to compose them in parallel, which cannot be done if all we have are the optimised predicates and ornamental conversion isomorphisms, i.e., the refinement semantics.
+Indeed, this was what prompted us to go from refinements to ornaments, right before \autoref{sec:ornaments}.
+The universe of ornaments might appear complex, but the complexity is justified by, in particular, the ability to compose ornaments in parallel.
+
+\todo[inline]{comparison with \citet{Bernardy-color} (erasure vs full computation power of ornaments); parametricity~\citep{Wadler-theorems-for-free, Bernardy-parametricity-and-dependent-types}}
+
+%The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, which refers to the realisability transformation defined for pure type systems by \citet{Bernardy-realizability-parametricity}.
+%The idea is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
+%For simple applications like the ones offered in \autoref{sec:ornament-refinement-examples}, type theory in color and ornamentation offer similar approaches, except that the former provides more native support for erasure and parametricity.
+%Ornaments, however, are fully computational due to the presence of deletion~(|∇|), and can specify relationship between datatypes beyond erasure.
+
+It is worth noting that the ornament--refinement framework is merely one small step towards an internalist library.
+Parallel composition provides logical support for manufacturing composite internalist datatypes, but eventually the central problem is about how properties of actual data structures can be dissected and presented modularly in a useful way.
+For example, we decomposed leftist heap-ordering into the leftist property and heap ordering for good reasons: there are operations meaningful for heap-ordered trees without the leftist property, and we can impose different leftist properties on these heap-ordered trees while reusing the operations previously defined for heap-ordered trees.
+In contrast, it is perfectly logical to analyse red-black trees as internally labelled trees satisfying the red and black properties, but the red or black property by itself is useless in practice, and hence it is pointless to develop modules separately for the red and black properties.
+Dependently typed programming is a new paradigm that grants data structural properties and their proofs the same status as programs, 
