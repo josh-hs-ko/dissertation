@@ -1729,8 +1729,8 @@ where |idRef| is the identity refinement:
 \begin{code}
 idRef : {A : Set} → Refinement A A
 idRef = record  case  P  = (lambda(_)) ⊤
-                sep   i  = record  case  to    = (lambda(a)) a , tt
-                                   sep   from  = (lambda(a , tt)) a
+                sep   i  = record  case  to    = (lambda(a)) (a , tt)
+                                   sep   from  = λ { (a , tt) mapsto a }
                                    sep   proofs-of-laws endcase endcase
 \end{code}
 There is an ornament from |ITree| to |LHeap|, which can be written either directly or by \key{sequentially composing} the following ornament from |ITree| to |Heap| with the ornament |diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉| from |Heap| to |LHeap|:
@@ -1837,7 +1837,7 @@ The counterpart of |makeT| can thus determine before a recursive call whether to
 \label{sec:ornament-refinement-discussion}
 
 Ornaments were first proposed by \citet{McBride-ornaments}.
-This thesis defines ornaments as relations between descriptions (indexed with an erasure function), and rebrands \citeauthor{Dagand-functional-ornaments}'s ornaments as ornamental descriptions.
+This thesis defines ornaments as relations between descriptions (indexed with an erasure function), and rebrands \citeauthor{McBride-ornaments}'s ornaments as ornamental descriptions.
 One obvious advantage of relational ornaments is that they can arise between existing descriptions, whereas ornamental descriptions always produce new descriptions at the more informative end.
 This makes it possible to complete the commutative square of parallel composition with difference ornaments.
 Another consequence is that there can be multiple ornaments between a pair of descriptions.
@@ -1856,7 +1856,7 @@ and the ``swapping'' ornament
 \end{code}
 whose forgetful function swaps the two fields.
 The other advantage of relational ornaments is that they allow new datatypes to arise at the less informative end.
-For example, \key{coproduct of signatures} as used in, e.g., ``data types à~la carte''~\citep{Swierstra-data-types-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
+For example, \key{coproduct of signatures} as used in, e.g., data types à~la carte~\citep{Swierstra-data-types-a-la-carte}, can be implemented naturally with relational ornaments but not with ornamental descriptions.
 Below we sketch a simplistic implementation: Consider (a simplistic version of) \key{tagged descriptions}~\citep{Chapman-levitation}, which are descriptions that, for any index request, always respond with a constructor field first.
 A tagged description indexed by |I : Set| thus consists of a family of types |C : I → Set|, where each |C i| is the set of constructor tags for the index request |i : I|, and a family of subsequent response descriptions for each constructor tag.
 \begin{code}
@@ -1895,7 +1895,7 @@ inrOrn   (ok i) = (Δ'(c'  ∶ C' i))  (∇'(inj₂  c'  ))  idROrn (D' i c')
 Note that the manufactured new description |⌊ tD ⊕ tD' ⌋T| is at the less informative end of |inlOrn| and |inrOrn|.
 It is thus actually biased to refer to the less informative end of an ornament as ``basic'', but the examples in this thesis are indeed biased in this sense, being influenced by \citeauthor{McBride-ornaments}'s original formulation.
 
-\citet{Dagand-functional-ornaments} later adapted the original ornaments to index-first datatypes, and also proposed ``reornaments'' as a more efficient representation of promotion predicates, taking full advantage of index-first datatypes.
+\citet{Dagand-functional-ornaments} later adapted \citeauthor{McBride-ornaments}'s original ornaments to index-first datatypes, and also proposed ``reornaments'' as a more efficient representation of promotion predicates, taking full advantage of index-first datatypes.
 Reornaments are reimplemented in this thesis as optimised predicates using parallel composition, as a result of which we can derive properties about optimised predicates using pullback properties of parallel composition in \autoref{chap:categorical}.
 \citeauthor{Dagand-functional-ornaments} also extended the notion of ornaments to ``functional ornaments'', which we generalise to refinements and upgrades.
 The refinement--upgrade approach is logically clearer and more flexible as it allows us to decouple two constructions:
@@ -1904,7 +1904,7 @@ The refinement--upgrade approach is logically clearer and more flexible as it al
 \item how conversion isomorphisms \emph{in general} enable function upgrading, as encoded by the upgrade combinators.
 \end{itemize}
 Also, compared to functional ornaments, which are formulated syntactically as a universe and then interpreted to types and operations, upgrades skip syntactic formulation and simply bundle relevant types and operations together, which are then composed semantically by the upgrade combinators.
-The upgrade mechanism can thus be more easily extended by defining new combinators (which we actually do in \autoref{chap:algebraic}).
+The upgrade mechanism can thus be more easily extended by defining new combinators (which we actually do in \autoref{sec:fold-fusion}).
 In contrast, had we defined upgrades as a universe, we would have had to employ more complex techniques like data types à~la carte~\citep{Swierstra-data-types-a-la-carte} to gain extensibility.
 The complexity would not have been justified, because constructing a universe for upgrades in their present form offers no benefit:
 A universe is helpful only when it is necessary to determine the range of syntactic forms, either for nontrivial computation on the syntactic forms or for facilitation of defining new interpretations of the syntactic forms.
@@ -1913,15 +1913,31 @@ In contrast, ornaments do need a universe: we need to know all possible syntacti
 Indeed, this was what prompted us to go from refinements to ornaments, right before \autoref{sec:ornaments}.
 The universe of ornaments might appear complex, but the complexity is justified by, in particular, the ability to compose ornaments in parallel.
 
-\todo[inline]{comparison with \citet{Bernardy-color} (erasure vs full computation power of ornaments); parametricity~\citep{Wadler-theorems-for-free, Bernardy-parametricity-and-dependent-types}}
+The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, which refers to the realizability transformation defined for pure type systems by \citet{Bernardy-realizability-parametricity}.
+The idea is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
+For simple applications like the ones offered in \autoref{sec:ornament-refinement-examples}, type theory in color and ornamentation offer similar approaches, with the former providing more native support for erasure of terms and derivation of promotion predicates.
+Ornaments, however, are fully computational due to the presence of deletion~(|∇|), which allows arbitrary computations, and can thus specify relationship between datatypes beyond erasure.
+(\autoref{chap:equivalence} will offer a clearer view on the computational power of ornaments.)
 
-%The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, which refers to the realisability transformation defined for pure type systems by \citet{Bernardy-realizability-parametricity}.
-%The idea is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
-%For simple applications like the ones offered in \autoref{sec:ornament-refinement-examples}, type theory in color and ornamentation offer similar approaches, except that the former provides more native support for erasure and parametricity.
-%Ornaments, however, are fully computational due to the presence of deletion~(|∇|), and can specify relationship between datatypes beyond erasure.
+It is worth noting that
+\begin{itemize}
+\item constructing functions in coherence with existing ones via upgrades and
+\item manufacturing internalist operations via externalist composition
+\end{itemize}
+are both achieved by \emph{extra indexing}.
+For the first case, an upgrade on function types is about constructing a function in coherence with a given one, where coherence is defined (in~|_⇀_|) as mapping related arguments to related results --- the coherence property of upgrades is thus comparable to free theorems~\citep{Wadler-theorems-for-free}, but the preserved relation we use in upgrades is the ``underlying'' relation derived from refinements.
+To guarantee that a function on more informative types (e.g., a function on lists) is in coherence with a given function on basic types (e.g., a function on natural numbers), we index the more informative types with the underlying value, the results of which are the promotion predicates (e.g., vectors).
+A promotion proof (e.g., a function on vectors) is then a disguise of the function we wish to implement in the first place, whose type now has extra indexing for enforcing coherence by construction.
+For the second case, suppose that we are asked to combine the internalist operations |insert-O| on ordered lists and |insert-V| on vectors to |insert-OV| on ordered vectors, which involves fusing the ordered list and vector computed by the two operations into an ordered vector as the final result.
+Not any ordered list and vector can be sensibly fused together, however --- they must share the same underlying list for the fusion to make sense.
+Our solution is to further index the two datatypes with the underlying list, and implement operations on these new datatypes, which are |insert-ordered| and |insert-length|.
+Now we can easily keep track of the underlying list: the types of the new operations guarantee that, when the input ordered list and vector share the same underlying list, so do the results.
+Thus the operations can be sensibly combined.
 
-It is worth noting that the ornament--refinement framework is merely one small step towards an internalist library.
-Parallel composition provides logical support for manufacturing composite internalist datatypes, but eventually the central problem is about how properties of actual data structures can be dissected and presented modularly in a useful way.
-For example, we decomposed leftist heap-ordering into the leftist property and heap ordering for good reasons: there are operations meaningful for heap-ordered trees without the leftist property, and we can impose different leftist properties on these heap-ordered trees while reusing the operations previously defined for heap-ordered trees.
-In contrast, it is perfectly logical to analyse red-black trees as internally labelled trees satisfying the red and black properties, but the red or black property by itself is useless in practice, and hence it is pointless to develop modules separately for the red and black properties.
-Dependently typed programming is a new paradigm that grants data structural properties and their proofs the same status as programs, 
+Parallel composition provides logical support for manufacturing composite internalist datatypes, but eventually the central problem is about when and how properties of and operations on actual data structures can be analysed and presented in a meaningful way.
+Decomposition of a property does not always make sense even when it is logically feasible, and when a decomposition does make sense, it is not the case that the resulting properties should always be treated separately.
+For example, while it is perfectly logical to analyse red-black trees as internally labelled trees satisfying the red and black properties, the red or black property by itself is useless in practice, and hence it is pointless to develop modules separately for the red and black properties.
+In contrast, we decomposed the leftist heap property into the leftist property and heap ordering for good reasons: there are operations meaningful for heap-ordered trees without the leftist property, and we can impose different leftist properties on these heap-ordered trees while reusing the operations previously defined for heap-ordered trees.
+Decomposition of the leftist heap property thus makes sense, but this does not mean that we can treat the leftist property and heap ordering separately all the time --- merging of leftist heaps, for example, should be done by considering the leftist property and heap ordering simultaneously, since both properties are essential to the correctness of the merging algorithm --- they are not ``separable concerns'' in this case, in Dijkstra's terminology.
+Parallel composition is thus merely one small step towards a modular internalist library, since all it provides is logical support of property decomposition, which does not necessarily align with meaningful separation of concerns.
+It requires further consideration to reorganise data structures and algorithms --- together with the various properties they satisfy, which are now first-class entities --- in a way that makes proper use of the new logical support.

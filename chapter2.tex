@@ -108,7 +108,7 @@ data Nat : Set where
   suc   : Nat → Nat
 \end{code}
 In type theory, computations on inductive datatypes are specified using eliminators like |Nat-elim|, whose style corresponds to \key{recursion schemes}~\citep{Meijer-bananas} in functional programming.
-One reason for making elimination as the only option is that programs in type theory are demanded to terminate --- a consequence of the requirement that an inhabitant should be \emph{effectively} recognisable as belonging to a set --- and using eliminators throughout is a straightforward way of enforcing termination.
+One reason for making elimination as the only option is that programs in type theory are demanded to terminate --- which is a consequence of the requirement that an inhabitant should be \emph{effectively} recognisable as belonging to a set, and results in decidable typechecking --- and using eliminators throughout is a straightforward way of enforcing termination.
 On the other hand, in functional programming, the \key{pattern matching} notation is widely used for defining programs on (inductive) datatypes (see, e.g., \citet[Section~5]{Hudak-history-of-Haskell}) in addition to recursion schemes.
 Pattern matching is vital to the clarity of functional programs because it not only allows a function to be intuitively defined by equations suggesting how the function computes, but also clearly conveys the programming strategy of splitting a problem into sub-problems by case analysis.
 
