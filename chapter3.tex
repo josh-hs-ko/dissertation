@@ -879,7 +879,7 @@ That is, we can construct
 RSem' :  {I J : Set} {e : J → I} {D : Desc I} {E : Desc J} →
          Orn e D E → FRefinement e (μ D) (μ E)
 \end{code}
-which is called the \key{refinement semantics} of ornaments~(\autoref{sec:optimised-predicates}).
+which is called the \key{refinement semantics} of ornaments.
 The construction of |RSem'| begins in \autoref{sec:optimised-predicates} and continues into \autoref{chap:categorical} (where we introduce a lightweight categorical organisation).
 Another important aspect of the translation is from parallel composition of ornaments to refinements whose promotion predicate is pointwise conjunctive.
 This begins in \autoref{sec:predicate-swapping} and also continues into \autoref{chap:categorical}.
@@ -1913,8 +1913,7 @@ In contrast, ornaments do need a universe: we need to know all possible syntacti
 Indeed, this was what prompted us to go from refinements to ornaments, right before \autoref{sec:ornaments}.
 The universe of ornaments might appear complex, but the complexity is justified by, in particular, the ability to compose ornaments in parallel.
 
-The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, which refers to the realizability transformation defined for pure type systems by \citet{Bernardy-realizability-parametricity}.
-The idea is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
+The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, and is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
 For simple applications like the ones offered in \autoref{sec:ornament-refinement-examples}, type theory in color and ornamentation offer similar approaches, with the former providing more native support for erasure of terms and derivation of promotion predicates.
 Ornaments, however, are fully computational due to the presence of deletion~(|∇|), which allows arbitrary computations, and can thus specify relationship between datatypes beyond erasure.
 (\autoref{chap:equivalence} will offer a clearer view on the computational power of ornaments.)

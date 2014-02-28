@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -7,6 +7,15 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+\bibitem[{Avigad et~al.(2007)Avigad, Donnelly, Gray, and
+  Raff}]{Avigad-prime-number-theorem}
+\bibfnamefont{Jeremy} \bibnamefont{Avigad}, \bibfnamefont{Kevin}
+  \bibnamefont{Donnelly}, \bibfnamefont{David} \bibnamefont{Gray}, and
+  \bibfnamefont{Paul} \bibnamefont{Raff} [2007].
+\newblock A formally verified proof of the prime number theorem.
+\newblock \emph{ACM Transactions on Computational Logic}, 9(1):2.
+\newblock \doi{10.1145/1297658.1297660}.
+
 \bibitem[{Barthe et~al.(2003)Barthe, Capretta, and Pons}]{Barthe-setoids}
 \bibfnamefont{Gilles} \bibnamefont{Barthe}, \bibfnamefont{Venanzio}
   \bibnamefont{Capretta}, and \bibfnamefont{Olivier} \bibnamefont{Pons} [2003].
@@ -14,12 +23,31 @@
 \newblock \emph{Journal of Functional Programming}, 13(2):261--293.
 \newblock \doi{10.1017/S0956796802004501}.
 
+\bibitem[{Dagand and McBride(2013)}]{Dagand-categorical-ornaments}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2013].
+\newblock A categorical treatment of ornaments.
+\newblock To appear in \textit{{L}ogic in {C}omputer {S}cience}.
+
+\bibitem[{Gambino and Kock(2010)}]{Gambino-polynomial-functors}
+\bibfnamefont{Nicola} \bibnamefont{Gambino} and \bibfnamefont{Joachim}
+  \bibnamefont{Kock} [2010].
+\newblock Polynomial functors and polynomial monads.
+\newblock \arXiv{0906.4931}.
+
 \bibitem[{Harper and Pollack(1991)}]{Harper-universes}
 \bibfnamefont{Robert} \bibnamefont{Harper} and \bibfnamefont{Robert}
   \bibnamefont{Pollack} [1991].
 \newblock Type checking with universes.
 \newblock \emph{Theoretical Computer Science}, 89(1):107--136.
 \newblock \doi{10.1016/0304-3975(90)90108-T}.
+
+\bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
+\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
+  \bibnamefont{Gibbons} [2013].
+\newblock Modularising inductive families.
+\newblock \emph{Progress in Informatics}, 10:65--88.
+\newblock \doi{10.2201/NiiPi.2013.10.5}.
 
 \bibitem[{Mac~Lane(1998)}]{MacLane-categories}
 \bibfnamefont{Saunders} \bibnamefont{Mac~Lane} [1998].

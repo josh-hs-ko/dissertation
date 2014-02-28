@@ -29,6 +29,7 @@
 %format IN = "\in"
 
 %format Set = "\constructor{Set}"
+%format Set₀ = "\constructor{Set_0}"
 %format Set₁ = "\constructor{Set_1}"
 %format Set₂ = "\constructor{Set_2}"
 
@@ -115,10 +116,12 @@
 %format Level = "\constructor{Level}"
 %format Graph = "\constructor{Graph}"
 %format Category = "\constructor{Category}"
+%format Category.Object = Category "\recordmember" Object
 %format ==> = "{\Rightarrow}"
 %format =C=> = "{\Rightarrow_C}"
 %format =D=> = "{\Rightarrow_D}"
 %format _==>_ = _ "{" ==> "}\kern-\underscorespace" _
+%format Category._==>_ = Category "\recordmember" _==>_
 %format · = "{\cdot}"
 %format _·_ = _ "\kern\underscorespace{" · "}" _
 %format ·C = "{\cdot_C}"
@@ -128,6 +131,7 @@
 %format cong-l = "\identifier{cong\text-l}"
 %format cong-r = "\identifier{cong\text-r}"
 %format Functor = "\constructor{Functor}"
+%format Functor.object = Functor "\recordmember" object
 %format equiv-preserving = "\identifier{equiv\text-preserving}"
 %format id-preserving = "\identifier{id\text-preserving}"
 %format comp-preserving = "\identifier{comp\text-preserving}"
@@ -153,6 +157,7 @@
 %format sliceMorphism = "\constructor{sliceMorphism}"
 %format SliceMorphism.m = SliceMorphism "\recordmember" m
 %format SliceMorphism.triangle = SliceMorphism "\recordmember" triangle
+%format Pullback-Preserving = "\identifier{Pullback\text-Preserving}"
 
 
 %%%%%%%%

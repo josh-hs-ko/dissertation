@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -19,15 +19,6 @@
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'13, pages 61--72. ACM.
 \newblock \doi{10.1145/2500365.2500577}.
-
-\bibitem[{Bernardy and Lasson(2011)}]{Bernardy-realizability-parametricity}
-\bibfnamefont{Jean-Philippe} \bibnamefont{Bernardy} and \bibfnamefont{Mark}
-  \bibnamefont{Lasson} [2011].
-\newblock Realizability and parametricity in pure type systems.
-\newblock In \emph{Foundations of Software Science and Computation Structures},
-  volume 6604 of \emph{Lecture Notes in Computer Science}, pages 108--122.
-  Springer-Verlag.
-\newblock \doi{10.1007/978-3-642-19805-2_8}.
 
 \bibitem[{Chapman et~al.(2010)Chapman, Dagand, McBride, and
   Morris}]{Chapman-levitation}
