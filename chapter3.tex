@@ -302,7 +302,7 @@ und : {I J : Set} {e : J → I} {i : I} → e ⁻¹ i → J
 und (ok j) = j
 \end{code}
 Introducing this type will offer some slight notational advantage when, e.g., writing ornamental descriptions~(\autoref{sec:ornamental-descriptions}).
-We also define an alternative name |InvImage = _⁻¹_| to make partial application look better.
+We also define an alternative name |Inv = _⁻¹_| to make partial application look better.
 
 \block{Example}{refinement family from ordered lists to ordered vectors}{The datatype |OrdList : Val → Set| is a family of types into which ordered lists are classified according to their lower bound.
 For each type of ordered lists having a particular lower bound, we can further classify them by their length, yielding the datatype of ordered vectors |OrdVec : Val → Nat → Set|:
@@ -475,17 +475,17 @@ It is worth emphasising again that ornaments encode only horizontal transformati
 \label{sec:ornamental-descriptions}
 
 \begin{figure}
-\codefigure\small
+\codefigure\small\vskip-\baselineskip
 \begin{code}
 data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁ where
-  ṿ   :  {is : List I} (js : Ṗ is (InvImage e)) → ROrnDesc J e (ṿ is)
+  ṿ   :  {is : List I} (js : Ṗ is (Inv e)) → ROrnDesc J e (ṿ is)
   σ   :  (S : Set) {D : S → RDesc I}
          (OD : (s : S) → ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
   Δ   :  (T : Set) {D : RDesc I} (OD : T → ROrnDesc J e D) → ROrnDesc J e D
   ∇   :  {S : Set} (s : S) {D : S → RDesc I}
          (OD : ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
 
-und-Ṗ : {I J : Set} {e : J → I} (is : List I) → Ṗ is (InvImage e) → List J
+und-Ṗ : {I J : Set} {e : J → I} (is : List I) → Ṗ is (Inv e) → List J
 und-Ṗ []        tt        = []
 und-Ṗ (i ∷ is)  (j , js)  = und j ∷ und-Ṗ is js
 
@@ -495,16 +495,19 @@ toRDesc (σ S OD)     = (σ'(s ∶ S)) toRDesc (OD s)
 toRDesc (Δ T OD)     = (σ'(t ∶ T)) toRDesc (OD t)
 toRDesc (∇ s OD)     = toRDesc OD
 
-toEq-Ṗ : {I J : Set} {e : J → I} (is : List I) (js : Ṗ is (InvImage e)) → Ė e (und-Ṗ is js) is
+toEq : {I J : Set} {e : J → I} (j : e ⁻¹ i) → e (und j) ≡ i
+toEq (ok j) = refl
+
+toEq-Ṗ :  {I J : Set} {e : J → I} (is : List I) (js : Ṗ is (Inv e)) → Ė e (und-Ṗ is js) is
 toEq-Ṗ []        tt        = []
 toEq-Ṗ (i ∷ is)  (j , js)  = toEq j ∷ toEq-Ṗ is js
 
-toROrn :  {I J : Set} {e : J → I} {D : RDesc I} →
-          (OD : ROrnDesc J e D) → ROrn e D (toRDesc OD)
-toROrn (ṿ js)      = ṿ (toEq-Ṗ _ js)
-toROrn (σ S OD)    = (σ'(s ∶ S)) toROrn (OD s)
-toROrn (Δ T OD)    = (Δ'(t ∶ T)) toROrn (OD t)
-toROrn (∇ s OD)    = (∇'(s)) (toROrn OD)
+toROrn :   {I J : Set} {e : J → I} {D : RDesc I}
+           (OD : ROrnDesc J e D) → ROrn e D (toRDesc OD)
+toROrn (ṿ {is} js)  = ṿ (toEq-Ṗ is js)
+toROrn (σ S OD)     = (σ'(s ∶ S)) toROrn (OD s)
+toROrn (Δ T OD)     = (Δ'(t ∶ T)) toROrn (OD t)
+toROrn (∇ s OD)     = (∇'(s)) (toROrn OD)
 
 OrnDesc : {I : Set} (J : Set) (e : J → I) (D : Desc I) → Set₁
 OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
@@ -514,7 +517,7 @@ OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
 
 ⌈_⌉ : {I J : Set} {e : J → I} {D : Desc I} (OD : OrnDesc J e D) → Orn e D ⌊ OD ⌋
 ⌈ OD ⌉ (ok j) = toROrn (OD (ok j))
-\end{code}
+\end{code}\vskip-\baselineskip
 \caption{Definitions for ornamental descriptions.}
 \label{fig:ornamental-descriptions}
 \end{figure}
@@ -602,7 +605,7 @@ Since the structure of a response ornamental description is guided by the templa
 \begin{code}
 indexfirst data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁
   where
-  ROrnDesc J e (ṿ is)   offers  ṿ (js : Ṗ is (InvImage e))
+  ROrnDesc J e (ṿ is)   offers  ṿ (js : Ṗ is (Inv e))
   ROrnDesc J e (σ S D)  offers  σ (OD : (s : S) → ROrnDesc J e (D s))
                         or      ∇ (s : S) (OD : ROrnDesc J e (D s))
   ROrnDesc J e D        offers  Δ (T : Set) (OD : T → ROrnDesc J e D)
@@ -713,7 +716,7 @@ fromEq e {j} refl = ok j
 
 pc-Ė :  {I J K : Set} {e : J → I} {f : K → I} →
         {is : List I} {js : List J} {ks : List K} →
-        Ė e js is → Ė f ks is → Ṗ is (InvImage pull)
+        Ė e js is → Ė f ks is → Ṗ is (Inv pull)
 pc-Ė               []            []            =  tt
 pc-Ė {e := e} {f}  (eeq ∷ eeqs)  (feq ∷ feqs)  =  ok (fromEq e eeq , fromEq f feq) ,
                                                   pc-Ė eeqs feqs
@@ -1913,7 +1916,7 @@ In contrast, ornaments do need a universe: we need to know all possible syntacti
 Indeed, this was what prompted us to go from refinements to ornaments, right before \autoref{sec:ornaments}.
 The universe of ornaments might appear complex, but the complexity is justified by, in particular, the ability to compose ornaments in parallel.
 
-The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, and is later generalised to ``type theory in color''~\citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
+The idea of viewing vectors as promotion predicates was first proposed by \citet[page~82]{Bernardy-thesis}, and is later generalised to ``type theory in color'' \citep{Bernardy-color}, which uses modalities inspired by colors in typing to manage relative irrelevance of terms and erasure of irrelevant terms.
 For simple applications like the ones offered in \autoref{sec:ornament-refinement-examples}, type theory in color and ornamentation offer similar approaches, with the former providing more native support for erasure of terms and derivation of promotion predicates.
 Ornaments, however, are fully computational due to the presence of deletion~(|∇|), which allows arbitrary computations, and can thus specify relationship between datatypes beyond erasure.
 (\autoref{chap:equivalence} will offer a clearer view on the computational power of ornaments.)

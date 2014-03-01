@@ -521,7 +521,7 @@ infixr 4 pair
 
 open Σ
 
-syntax Σ A (λ a → T) = (Σ'(a ∶ A)) T
+syntax Σ A ((lambda(a)) T) = (Σ'(a ∶ A)) T
 \end{code}
 An inhabitant of |Σ A X| is a pair where the type of the second component depends on the first component, and is written by listing values for the fields like
 \begin{code}

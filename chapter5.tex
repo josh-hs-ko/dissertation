@@ -397,13 +397,16 @@ We thus write the following upgrade
 upg-⊆ : Upgrade  ({i : I} → μ D i → μ D i)
                  (  {i : I} {x : X i} → μ ⌊ algOD D S ⌋ (i , x) →
                     {y : Y i} → R x y  → μ ⌊ algOD D T ⌋ (i , y))
-upg-⊆ =  (fixedforall'(i ∶ I)) (newforall'(x ∶ X i)) rS i x ⇀ 
-         (newforall'(y ∶ Y i)) (newforall(_ ∶ R x y)) toUpgrade (rT i y)
-  where
-    rS : (i : I) (x : X i) → Refinement (μ D i) (μ ⌊ algOD D S ⌋ (i , x))
-    rS i x = toRefinement (algOD-FSwap D S (ok (i , x)))
-    rT : (i : I) (y : Y i) → Refinement (μ D i) (μ ⌊ algOD D T ⌋ (i , y))
-    rT i y = toRefinement (algOD-FSwap D T (ok (i , y)))
+upg-⊆ =  (fixedforall'(i ∶ I)) (newforall'(x ∶ X i)) ref-S i x ⇀ 
+         (newforall'(y ∶ Y i)) (newforall(_ ∶ R x y)) toUpgrade (ref-T i y)
+\end{code}
+where the refinements are defined by
+\begin{code}
+ref-S  : (i : I) (x : X  i) → Refinement (μ D i) (μ ⌊ algOD D S  ⌋ (i , x  ))
+ref-S   i x  = toRefinement (algOD-FSwap D S  (ok (i , x  )))
+
+ref-T  : (i : I) (y : Y  i) → Refinement (μ D i) (μ ⌊ algOD D T  ⌋ (i , y  ))
+ref-T   i y  = toRefinement (algOD-FSwap D T  (ok (i , y  )))
 \end{code}
 and implement the conversion function by
 \begin{code}
@@ -421,7 +424,7 @@ The coherence property
 {y : Y i} → R x y →
   forget ⌈ algOD D T ⌉ (fusion-conversion-⊆ D R S T fcond-⊆ d') ≡ id d
 \end{code}
-then states that the conversion function transforms the underlying |(μ D)|-data in the same way as~|id|, i.e., it leaves the underlying data unchanged.
+then states that the conversion function transforms the underlying |(μ D)|--data in the same way as~|id|, i.e., it leaves the underlying data unchanged.
 Similarly for~(\ref{eq:fusion-supseteq}), assuming that we have
 \begin{code}
 fcond-⊇ : R • S ⊇ T • Ṙ D R
@@ -435,15 +438,10 @@ fusion-conversion-⊇ D R S T fcond-⊇ :
 as an upgraded version of the identity function with the upgrade
 \begin{code}
 upg-⊇ : Upgrade  ({i : I} → μ D i → μ D i)
-                 (  {i : I} {y : Y i} → μ ⌊ algOrn D T ⌋ (i , y) →
-                    (Σ'(x ∶ X i)) μ ⌊ algOrn D S ⌋ (i , x) × R x y)
-upg-⊇ =  (newforall'(i ∶ I)) (newforall'(y ∶ Y i)) rT i y ⇀
-         (newSigma(x ∶ X i)) toUpgrade (rS i x) ×⁺ R x y
-  where
-    rS : (i : I) (x : X i) → Refinement (μ D i) (μ ⌊ algOrn D S ⌋ (i , x))
-    rS i x = toRefinement (algOD-FSwap D S (ok (i , x)))
-    rT : (i : I) (y : Y i) → Refinement (μ D i) (μ ⌊ algOrn D T ⌋ (i , y))
-    rT i y = toRefinement (algOD-FSwap D T (ok (i , y)))
+                 (  {i : I} {y : Y i} → μ ⌊ algOD D T ⌋ (i , y) →
+                    (Σ'(x ∶ X i)) μ ⌊ algOD D S ⌋ (i , x) × R x y)
+upg-⊇ =  (newforall'(i ∶ I)) (newforall'(y ∶ Y i)) ref-T i y ⇀
+         (newSigma(x ∶ X i)) toUpgrade (ref-S i x) ×⁺ R x y
 \end{code}
 in which we need two new combinators to deal with upgrading to product types, which are defined in \autoref{fig:fusion-upgrade-combinators}.
 
@@ -1135,7 +1133,7 @@ At Goal~8, \Agda\ deduces that |n|~is |value d + n'| and demands that we prove |
 \section{Discussion}
 \label{sec:algebraic-discussion}
 
-\autoref{sec:relations} heavily borrows techniques from the \name{AoPA} (Algebra of Programming in \Agda) library~\citep{Mu-AoPA} and makes generalisations and adaptations:
+\autoref{sec:relations} heavily borrows techniques from the \name{AoPA} (Algebra of Programming in \Agda) library~\citep{Mu-AoPA} while making generalisations and adaptations:
 \name{AoPA} deals with non-dependently typed programs only, whereas to work with indexed datatypes we need to move to indexed families of relations; to work with the ornamental universe, we parametrise the relational fold with a description, making it fully datatype-generic, whereas \name{AoPA} has only specialised versions for lists and binary trees; we defined |min_•Λ_| as a single operator (which happens to be the ``shrinking'' operator proposed by \citet{Mu-Galois}) to avoid the struggle with predicativity that \name{AoPA} had.
 All of the above are not fundamental differences between the work presented in this chapter and \name{AoPA}, though --- the two differ essentially in methodology: in \name{AoPA}, dependent types merely provide a foundation on which relational program derivations can be expressed formally and checked by machines, but the programs remain non-dependently typed throughout the formalisation, whereas in this chapter, relational programming is a tool for obtaining nontrivial inductive families that effectively guide program development as advertised as the strength of internalist programming.
 In short, the focus of \name{AoPA} is on traditional relational program derivation (expressed in a dependently typed language), whereas our emphasis is on internalist programming (aided by relational programming).
