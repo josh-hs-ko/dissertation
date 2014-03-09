@@ -321,7 +321,7 @@ OrnEq-forget :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
                 (O : Orn e D E) (P : Orn f D E) → OrnEq O P →
                 (e ≐ f) × ((j : J) → forget O {j} ≊' forget P {j})
 \end{code}
-The actual definition of |OrnEq| is deferred to \autoref{chap:equivalence}.
+The actual definition of |OrnEq| is deferred to \autoref{sec:ornaments-and-horizontal-transformations}.
 
 \item Morphism composition is sequential composition~|_⊙_|\,, which merges two successive batches of modifications in a straightforward way.
 There is also a family of \key{identity ornaments}, which simply use |σ|~and~|ṿ| everywhere to express that a description is identical to itself, and can be proved to serve as identity of sequential composition.
@@ -670,7 +670,7 @@ pc-square O P = span  (slice (e ⋈ f , ⌊ O ⊗ P ⌋) (pull, ⌈ O ⊗ P ⌉)
 where Goal~0 has type |OrnEq (O ⊙ diffOrn-l O P) ⌈ O ⊗ P ⌉| and Goal~1 has type |OrnEq (P ⊙ diffOrn-r O P) ⌈ O ⊗ P ⌉|, both of which can be discharged.
 Comparing the commutative diagram~(\ref{eq:pc-square}) and the \Agda\ term |pc-square O P|, it should be obvious how concise the categorical language can be --- the commutative diagram expresses the structure of the \Agda\ term in a clean and visually intuitive way.
 Since terms like |pc-square O P| can be reconstructed from commutative diagrams and the categorical definitions, from now on we will present commutative diagrams as representations of the corresponding \Agda\ terms and omit the latter.
-A proof sketch of~(\ref{eq:pc-square}) is deferred to \autoref{chap:equivalence}.
+A proof sketch of~(\ref{eq:pc-square}) is deferred to \autoref{sec:ornaments-and-horizontal-transformations}.
 The pullback property~(\ref{eq:pc-square}) by itself is not too useful in this chapter, though: |Ōrn| is a quite restricted category, so a universal property established in |Ōrn| has limited applicability.
 Instead, we are more interested in the following two pullback properties: the image of~(\ref{eq:pc-square}) under |Ind| in |Fam|:
 \begin{equation}
@@ -932,7 +932,7 @@ The categorical organisation of the ornament--refinement framework effectively s
 For example, the functor |Ind| from |Ōrn| to |Fam| is itself a summary of the following:
 \begin{itemize}
 \item the least fixed-point operation on descriptions (the object part of the functor),
-\item the forgetful functions derived from ornaments (the morphism part of the functor),
+\item the ornamental forgetful functions (the morphism part of the functor),
 \item the equivalence on ornaments, which implies extensional equality on ornamental forgetful functions (since functors respect equivalence),
 \item the identity ornaments, whose forgetful functions are extensionally equal to identity functions (since functors preserve identity),
 \item sequential composition of ornaments, and the fact that the forgetful function for any sequentially composed ornament |O ⊙ P| is extensionally equal to the composition of the forgetful functions for |O|~and~|P| (since functors preserve composition).
@@ -954,8 +954,9 @@ Fortunately, ornaments exhibit a useful categorical structure, and we are able t
 The results of this chapter are completely formalised in \Agda.
 The setoid approach to managing morphism equivalence works reasonably well for this chapter, being able to express extensional equality (e.g., in |Fun| and |Fam|), proof irrelevance (e.g., in |SpanCategory| and |SliceCategory|), and layered definitions of equality (e.g., morphism equivalence in |SquareCategory| is ultimately defined in terms of morphism equivalence in the ambient category).
 We will see, however, that the approach works only because the formalised theory is still simple enough --- \autoref{chap:equivalence} deals with more complicated categorical notions, and the limitation of the approach will become clearer then.
-Even in this chapter, formalisation in general is already difficult due to \Agda's intensionality, and the reasoning presented cannot always be faithfully encoded: For the last two steps of the argument in \autoref{sec:ornamental-conversion-isomorphisms}, it is possible to formalise the lemma and the change of variables individually and chain them together, but the resulting isomorphisms would have a very complicated definition containing plenty of suspended |subst|s.
+For this chapter, while the purely categorical lemmas can be encoded by equational reasoning combinators with a reasonable amount of effort, formalisation in general is rather difficult due to \Agda's intensionality and lack of a tactic language for constructing proofs efficiently, which together result in the need to manually construct proof terms that require complicated handling of equalities.
+Also, not all the reasoning presented can be faithfully encoded: For the last two steps of the argument in \autoref{sec:ornamental-conversion-isomorphisms}, it is possible to formalise the lemma and the change of variables individually and chain them together, but the resulting isomorphisms would have a very complicated definition containing plenty of suspended |subst|s.
 If these isomorphisms are used to construct the refinement family in the morphism part of |RSem|, it would be terribly difficult to prove that the morphism part of |RSem| preserves equivalence.
 The actual formalisation circumvents the problem by fusing the lemma and the change of variables into one step to get a clean \Agda\ definition such that |RSem| preserves equivalence automatically.
-While this kind of change of arguments for formalisation seems to be the norm (see, e.g., \citet[Section~4.5]{Avigad-prime-number-theorem}), it can occur more frequently in dependently typed programming due to the requirement that the constructed terms have to be ``pretty'' if they are to be referred to in later types, so even a powerful tactic language for constructing proofs probably would not help much, since we cannot control the form of the resulting proofs.
+While this kind of change of arguments for formalisation seems to be the norm (see, e.g., \citet[Section~4.5]{Avigad-prime-number-theorem}), it could occur more frequently in dependently typed programming due to the requirement that the constructed terms had better be ``pretty'' if they are to be referred to in later types, so even a powerful tactic language probably would not help much, since it is hard to control the form of proofs constructed by tactics.
 More experience in tackling this kind of proof-relevant formalisation is needed.

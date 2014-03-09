@@ -1,4 +1,4 @@
-\begin{thebibliography}{75}
+\begin{thebibliography}{76}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -207,7 +207,8 @@
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
   \bibfnamefont{Conor} \bibnamefont{McBride} [2013].
 \newblock A categorical treatment of ornaments.
-\newblock To appear in \textit{{L}ogic in {C}omputer {S}cience}.
+\newblock In \emph{Logic in Computer Science}, LICS'13, pages 530--539. IEEE.
+\newblock \doi{10.1109/LICS.2013.60}.
 
 \bibitem[{Dummett(2000)}]{Dummett-intuitionism}
 \bibfnamefont{Michael} \bibnamefont{Dummett} [2000].
@@ -407,6 +408,11 @@
 \newblock In \emph{Programming Languages meets Program Verification}, PLPV'10,
   pages 1--8. ACM.
 \newblock \doi{10.1145/1707790.1707792}.
+
+\bibitem[{Morris(2007)}]{Morris-thesis}
+\bibfnamefont{Peter} \bibnamefont{Morris} [2007].
+\newblock \emph{Constructing Universes for Generic Programming}.
+\newblock Ph.D. thesis, University of Nottingham.
 
 \bibitem[{Mu et~al.(2009)Mu, Ko, and Jansson}]{Mu-AoPA}
 \bibfnamefont{Shin-Cheng} \bibnamefont{Mu}, \bibfnamefont{Hsiang-Shang}

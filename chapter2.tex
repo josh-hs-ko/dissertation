@@ -498,7 +498,7 @@ with decoding function
 Inhabitants of type |Desc I| will be called \key{datatype descriptions}, or \key{descriptions} for short.
 Actual datatypes are manufactured from descriptions by the least fixed point operator:
 \begin{code}
-data μ {I : Set} (D : Desc I) : I → Set where
+data μ' {I : Set} (D : Desc I) : I → Set where
   con : Ḟ D (μ D) ⇉ μ D
 \end{code}
 where |_⇉_| is defined by
@@ -611,12 +611,13 @@ List A = μ (ListD A) tt
 _∷_ : {A : Set} → A → List A → List A
 a ∷ as = con (`cons  , a , as ,  tt)
 \end{code}
-List append can then be rewritten in the usual form (assuming that the terms |[]|~and~|_∷_| can be used in pattern matching, which is not actually allowed in \Agda, though):
+List append can then be rewritten in the usual form:
 \begin{code}
 _++_ : List A → List A → List A
-[]        ++ bs = bs
-(a ∷ as)  ++ bs = a ∷ (as ++ bs)
+[]        ++ ys = ys
+(x ∷ xs)  ++ ys = x ∷ (xs ++ ys)
 \end{code}
+\sidenote{\Agda\ supports such definitions of higher-level terms by ``pattern synonyms'', which we do not explicit use in this thesis.}
 Later on, encoded datatypes are almost always accompanied by corresponding index-first datatype declarations, which are thought of as giving definitions of higher-level terms for type and data constructors --- the terms |List|, |[]|, and~|_∷_| above, for example, can be considered to be defined by the index-first declaration of lists given in \autoref{sec:index-first-datatypes}.
 Index-first declarations will only be regarded in this thesis as informal hints at how encoded datatypes are presented at a higher level; we do not give a formal treatment of the elaboration process from index-first declarations to corresponding descriptions and definitions of higher-level terms.
 (One such treatment was given by \citet{Dagand-elaboration}.)

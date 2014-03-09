@@ -2,19 +2,52 @@
 \label{chap:equivalence}
 
 Consider the |AlgList| datatype in \autoref{sec:algOD} again.
-The way it is refined relative to the plain list datatype looks canonical, in the sense that any variation of the list datatype can be programmed as a special case of |AlgList|:
-we can choose whatever index set we want by setting the carrier of the algebra~|R|; and by carefully programming~|R|, we can insert fields into the list datatype that add more information or put restriction on fields and indices.
-For example, if we want some new information in the nil case, we can program~|R| such that |R (nil-tag , tt) x| contains a field requesting that information; if, in the cons case, we need the targeted index~|x|, the head element~|a|, and the index~|x'| of the recursive position to be related in some way, we can program~|R| such that |R (cons-tag , a , x') x| expresses that relationship.
+The way it is refined relative to |List| looks canonical, in the sense that any variation of |List| can be programmed as a special case of |AlgList|:
+we can choose whatever index set we want by setting the carrier of the algebra~|R|, and by carefully programming~|R|, we can insert fields into the list datatype that add more information or put restriction on fields and indices.
+For example, if we want some new information in the nil case, we can program~|R| such that |R (`nil , tt) x| contains a field requesting that information; if, in the cons case, we need the targeted index~|x|, the head element~|a|, and the index~|x'| of the recursive position to be related in some way, we can program~|R| such that |R (`cons , a , x' , tt) x| expresses that relationship.
 
 The above observation leads to the following general theorem:
 Let |O : Orn e D E| be an ornament from |D : Desc I| to |E : Desc J|.
-There is a \emph{classifying algebra} for~|O|
-\begin{code}clsAlg O : Ḟ D (InvImage e) ↝ InvImage e
-\end{code}such that there are isomorphisms
-\[ |μ ⌊ algOrn D (clsAlg O) ⌋ (e j , ok j)| ~\cong~ |μ E j| \]
-for all |j : J|.
-That is, the algebraic ornamentation of~|D| using the classifying algebra derived from~|O| produces a datatype isomorphic to~|μ E|, so intuitively the algebraic ornament has the same content as~|O|.
-We may interpret this theorem as saying that algebraic ornaments are ``complete'' for the ornament language: any relationship between datatypes that can be described by an ornament can be described up to isomorphism by an algebraic ornament.
+Then there is a \key{classifying algebra} for~|O|
+\begin{code}
+clsAlg O : Ḟ D (Inv e) ↝ Inv e
+\end{code}
+such that there are isomorphisms
+\begin{code}
+(j : J) → μ ⌊ algOD D (clsAlg O) ⌋ (e j , ok j) ≅ μ E j
+\end{code}
+That is, the algebraic ornamentation of~|D| using the classifying algebra derived from~|O| produces a datatype isomorphic to~|μ E|, so intuitively the algebraic ornamentation has the same content as~|O|.
+We may interpret this theorem as saying that algebraic ornamentation is ``complete'' for the ornament language: any relationship between datatypes that can be described by an ornament can be described up to isomorphism by an algebraic ornamentation.
+The name ``classifying algebra'' is explained after the examples below.
+
+\block{Examples}{classifying algebras for two ornaments}{
+The following relational algebra~|R| serves as a classifying algebra for the ornament |⌈ OrdListOD ⌉| from lists to ordered lists:
+\begin{code}
+R : Ḟ (ListD Val) (Inv !) ↝ Inv !  -- |! : Val → ⊤|
+R (`nil   ,              tt) (ok b) = ⊤
+R (`cons  , x , ok b' ,  tt) (ok b) = (b ≤ x) × (b' ≡ x)
+\end{code}
+The nil case says that the empty list can be mapped to any |ok b| (since any |b : Val| is a lower bound of the empty list); for the cons case, where |x : Val| is the head element of a non-empty list and |ok b'| is a possible result of folding the tail (i.e., |b' : Val| is a lower bound of the tail), the list can be mapped to~|ok b| if |b : Val| is a lower bound of~|x| and |x|~is exactly~|b'|.
+The type of proofs that a list~|xs| folds to some |ok b| with~|R| is isomorphic to |Ordered b xs|, and hence
+\begin{code}
+AlgList Val R (ok b)  ≅ (Σ'(xs ∶ List Val)) (cata(R)) xs (ok b)  {-""-}
+                      ≅ (Σ'(xs ∶ List Val)) Ordered b xs         ≅ OrdList b
+\end{code}
+
+For another example, consider the ornament |NatD-ListD A|, for which we can use the following classifying algebra~|S|:
+\begin{code}
+S : Ḟ NatD (Inv !) ↝ Inv !  -- where |! : ⊤ → ⊤|
+S (`nil   ,          tt) (ok tt) = ⊤
+S (`cons  , ok tt ,  tt) (ok tt) = A
+\end{code}
+The result of folding a natural number~|n| with~|S| is uninteresting, as it can only be |ok tt|.
+The fold, however, requires an element of type~|A| for each successor node it encounters, so a proof that |n|~goes through the fold consists of |n|~elements of type~|A| and amounts to an inhabitant of |Vec A n|.
+Thus
+\begin{code}
+μ ⌊ algOD NatD S ⌋ (tt , ok tt)  ≅ (Σ'(n ∶ Nat)) (cata(S)) n (ok tt)  {-""-}
+                                 ≅ (Σ'(n ∶ Nat)) Vec A n              ≅ List A
+\end{code}
+This example helps to emphasise \emph{proof-relevance} of our relational language, deviating from \citet{Bird-AoP}, which (implicitly) adopts the traditional proof-irrelevant semantics of relations.}
 
 The completeness theorem brings up a nice algebraic intuition about inductive families.
 Consider the ornament from lists to vectors, for example.
@@ -26,51 +59,247 @@ But in general, classifications can be partial and nondeterministic.
 For example, promoting a list to an ordered list is classifying the list under an index that is a lower bound of the list.
 The classification process checks at each jump whether the list is still ordered; this check can fail, so an unordered list would ``disappear'' midway through the classification.
 Also there can be more than one lower bound for an ordered list, so the list can end up being classified under any one of them.
-Algebraic ornamentation in its original functional form can only capture part of this intuition about classification, namely those classifications that are total and deterministic.
-By generalising algebraic ornamentation to accept relational algebras, bringing in partiality and nondeterminacy, this idea about classification is captured in its entirety --- a classification is just a relational fold computing the index that classifies an element.
-All ornaments specify classifications, and thus can be transformed into algebraic ornaments.
+Compared with \varcitet{McBride-ornaments}{'s original functional algebraic ornamentation}, which can only capture part of this intuition about classification (namely those classifications that are total and deterministic), relational algebraic ornamentation allows partiality and nondeterminacy and thus captures the idea about classification in its entirety --- a classification is just a relational fold computing the index that classifies an inhabitant.
+All ornaments specify classifications, and thus can be transformed into algebraic ornamentations.
 
-For more examples, let us first look at the classifying algebra for the ornament from natural numbers to lists.
-The base functor for natural numbers is
+There is a dual to the completeness theorem: every relational algebra is isomorphic to the classifying algebra for the algebraic ornament using the algebra.
+More precisely: Let |D : Desc I| be a description and |R : Ḟ D X ↝ X| an algebra (where |X : I → Set|).
+There is a family of isomorphisms between |X i|~and |Inv proj₁ i| for every |i : I| (where |proj₁ : Σ I X → I|); call the forward direction of this family of isomorphisms |h : X ⇉ Inv proj₁|.
+Then we have
 \begin{code}
-Ḟ NatD : (⊤ → Set) → (⊤ → Set)
-Ḟ NatD X _ = Σ LTag (λ { nil-tag → ⊤;{-"\,"-} cons-tag → X tt })
+fun h • R ≃ clsAlg ⌈ algOD D R ⌉ • Ṙ D (fun h)
 \end{code}
-And the classifying algebra for the ornament |NatD-ListD A| is essentially
-\begin{code}clsAlg (NatD-ListD A) : Ḟ NatD (InvImage !) ↝ InvImage !
-clsAlg (NatD-ListD A)  (nil-tag   , _     )  (ok tt)  =  ⊤
-clsAlg (NatD-ListD A)  (cons-tag  , ok t  )  (ok tt)  =  A × (t ≡ tt)
-\end{code}The result of folding a natural number~|n| with this algebra is uninteresting, as it can only be |ok tt|.
-The fold, however, requires an element of~|A| for each successor node it encounters, so a proof that |n|~goes through the fold consists of |n|~elements of~|A|.
-Another example is the ornament |OL = ⌈ OrdListOD A _≤A_ ⌉| from lists to ordered lists, whose classifying algebra is essentially
-\begin{code}clsAlg OL : Ḟ (ListD A) (InvImage !) ↝ InvImage !
-clsAlg OL (nil-tag   , _          )  (ok b)  =  ⊤
-clsAlg OL (cons-tag  , a , ok b'  )  (ok b)  =  (b ≤A a) × (b' ≡ a)
-\end{code}In the nil case, the empty list can be mapped to any |ok b| because any |b : A| is a lower bound of the empty list; in the cons case, where |a : A| is the head and |ok b'| is a result of classifying the tail, i.e., |b' : A| is a lower bound of the tail, the list can be mapped to~|ok b| if |b : A| is a lower bound of~|a| and |a|~is exactly~|b'|.
+or diagrammatically:
+\[ \begin{tikzpicture}[x=13em,y=4em, text height=1.5ex, text depth=0ex]
+\node(FDX)                  {|Ḟ D X|};
+\node(X)   [right=1 of FDX] {|X|};
+\node(FDI) [below=1 of FDX] {|Ḟ D (Inv proj₁)|};
+\node(I)   [below=1 of X  ] {|Inv proj₁|};
+\draw[-> ] (FDX) edge node[above]{|R|} (X);
+\draw[-> ] (FDI) edge node[below, yshift=-2pt]{|clsAlg ⌈ algOD D R ⌉|} (I);
+\draw[<->] (FDX) edge node[left , yshift=-8pt]{|Ṙ D (fun h)|} node[label on arrow,yshift=8pt]{\raisebox{1.46ex}{\rotatebox{-90}{|≅|}}} (FDI);
+\draw[<->] (X)   edge node[right, yshift=-8pt]{|fun h|} node[label on arrow,yshift=8pt]{\raisebox{1.46ex}{\rotatebox{-90}{|≅|}}} (I);
+\end{tikzpicture} \]
+Together with the completeness theorem, we see that |algOD| and |clsAlg| are, in some sense, inverse to each other up to isomorphism.
+This suggests that we can seek to construct an \key{equivalence} between |SliceCategory Ōrn (I , D)| and a suitable category of |D|-algebras and homomorphisms by extending |algOD| and |clsAlg| to functors between the two categories and proving that the two functors are inverse up to (natural) isomorphism.
+This we do in \autoref{sec:ornaments-and-relational-algebras}, after we look at ornaments from a more semantic perspective in \autoref{sec:ornaments-and-horizontal-transformations}, where we also deal with some unresolved issues in \autoref{chap:categorical}.
+The equivalence shows that ornaments and relational algebras are essentially the same entities, which lets us associate some ornamental and relational algebraic constructions in \autoref{sec:equivalence-consequences}.
+\autoref{sec:equivalence-discussion} concludes with some discussion.
+
+\todo[inline]{see if the above can be revised to be slightly more specific}
+
+
+\section{Ornaments and horizontal transformations}
+\label{sec:ornaments-and-horizontal-transformations}
+
+In this section we aim to find a semantic perspective of ornaments so we can step away from the syntactic detail and handle ornaments more easily, in preparation for \autoref{sec:ornaments-and-relational-algebras}.
+Consider the equivalence on ornaments that was left undefined in \autoref{sec:concrete-categories}, whose type is
+\begin{code}
+OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
+         Orn e D E → Orn f D E → Set
+\end{code}
+Here we aim for an extensional equality --- for example, if the only difference between two ornaments is either
+\begin{itemize}
+\item that one uses~|σ S| and the other uses |(Δ''(s ∶ S)) (∇''(s))|, both expressing copying, or
+\item that one uses
+\begin{code}
+(Δ''(s ∶ S)) (Δ''(t ∶ T)) (∇''(f s)) (∇''(g t))
+\end{code}
+and the other uses
+\begin{code}
+(Δ''(s ∶ S)) (∇''(f s)) (Δ''(t ∶ T)) (∇''(g t))
+\end{code}
+the latter swapping the order of the two independent markings |(Δ''(t ∶ T))| and |(∇''(f s))|,
+\end{itemize}
+then it seems pointless to distinguish the two ornaments.
+Since the direct semantics of ornaments is decoded componentwise by |erase|, we might define |OrnEq| as pointwise equality of |erase|, which requires a rather tricky type to express.
+However, it turns out that we can focus on only one aspect of |erase|: fixing two response descriptions related by at least one response ornament, the two response descriptions necessarily have the same pattern of recursive positions and |erase| always copies the values at the positions, so the only behaviour of |erase| that can vary with response ornaments is how the values of the \emph{fields} are transformed.
+This suggests that, in an inhabitant of |⟦ D ⟧ X| where |D : RDesc I| and |X : I → Set|, we can separate the values of the fields from the values at the recursive positions, and focus on how |erase| acts on the first part.
+
+Here \key{indexed containers}~\citep[Chapter~8]{Morris-thesis} can provide a helpful perspective:
+An |I|-indexed container is a set~|S| of \key{shapes}, a shape-indexed family of sets |P : S → Set| of \key{positions}, and a function |next : (s : S) → P s → I| associating each position with an index of type~|I|.
+(The terminology slightly deviates from that of \citeauthor{Morris-thesis}, whose indexed containers refer to indexed families of the above indexed containers, directly comparable with the two-level structure of descriptions.)
+The container is interpreted as the type
+\begin{code}
+(lambda(X)) (Σ'(s ∶ S)) ((p : P s) → X (next s p)) : (I → Set) → Set
+\end{code}
+That is, given a type family |X : I → Set|, an inhabitant of the container type starts with a specific shape, from which we derive a set of positions and associated indices, and contains an element of type~|X i| for each of the positions where |i|~is the index associated with the position.
+(For example, take~|S| to be the set of natural numbers, and let the set of positions derived from a natural number~|n| be a finite set of size~|n|, enumerable in a fixed order.
+The container type is then isomorphic to the type of lists, whose elements are indexed in accordance with the |next| function.)
+Response descriptions can be regarded as a special case of indexed containers: values of fields constitute a shape, and sets of positions are restricted to finite sets; consequently, |next s : P s → I| for any |s : S| can be represented by a |List I|, and there is no longer need to specify~|P|.
+We thus define the set of shapes derived from a response description by
+\begin{code}
+Ṡ : {I : Set} → RDesc I → Set
+Ṡ (ṿ is)   = ⊤
+Ṡ (σ S D)  = (Σ'(s ∶ S)) Ṡ (D s)
+\end{code}
+and the function |next| by
+\begin{code}
+next : {I : Set} (D : RDesc I) → Ṡ D → List I
+next (ṿ is)   tt        = is
+next (σ S D)  (s , ss)  = next (D s) ss
+\end{code}
+We can then express that a piece of horizontal data of type |⟦ D ⟧ X| can be separated into a shape and a series of contained elements via the following isomorphism, whose implementation is straightforward:
+\begin{code}
+horizontal-iso :  {I : Set} (D : RDesc I) (X : I → Set) →
+                  ⟦ D ⟧ X ≅ Σ (Ṡ D) (flip Ṗ X ∘ next D)
+\end{code}
+
+Back to the semantic equivalence of ornaments.
+Define a specialised version of |erase| on shapes:
+\begin{code}
+erase-Ṡ :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J}
+           (O : ROrn e D E) → Ṡ E → Ṡ D
+erase-Ṡ (ṿ eqs)  tt        = tt
+erase-Ṡ (σ S O)  (s , ss)  = s ,  erase-Ṡ (O s)  ss
+erase-Ṡ (Δ T O)  (t , ss)  =      erase-Ṡ (O t)  ss
+erase-Ṡ (∇ s O)  ss        = s ,  erase-Ṡ O      ss
+\end{code}
+This is the aspect of |erase| that we are interested in, and we can now define equivalence of ornaments as
+\begin{code}
+OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
+         Orn e D E → Orn f D E → Set
+OrnEq {I} {J} {e} {f} O P =
+  (e ≐ f) × ((j : J) → erase-Ṡ (O (ok j)) ≊' erase-Ṡ (P (ok j)))
+\end{code}
+which can be proved to imply pointwise equality of |forget O| and |forget P| by (datatype-generic) induction on their input:
+With the help of |horizontal-iso|, the general |erase| can be seen as first separating a piece of horizontal data into a shape and a series of recursive values, processing the shape by |erase-Ṡ|, and combining the resulting shape with the recursive values.
+Since the real work is done by |erase-Ṡ|, requiring extensional equality of |erase-Ṡ| is sufficient.
+This argument is then extended vertically by induction.
+
+We have seen that response ornaments induce shape transformations (by |erase-Ṡ|).
+Conversely, can we derive response ornaments from shape transformations?
+More specifically: Let |D : RDesc I|, |E : RDesc J|, and |t : Ṡ E → Ṡ D|, and we wish to construct a response ornament from~|D| to~|E|.
+The shape transformation~|t| expects a complete |Ṡ E| as its argument, which, in the response ornament, can be assembled by first marking all fields of~|E| as additional by~|Δ|.
+We then apply~|t| to the assembled shape |ss : Ṡ E|, resulting in a shape |t ss : Ṡ D|, and fill out all fields of~|D| using values in this shape by~|∇|.
+Finally, we have to use~|ṿ| to end the response ornament, which requires an index coherence proof of type |Ė e (next E ss) (next D (t ss))| for some |e : J → I| --- this is the extra condition that we need to impose on the shape transformation for deriving a response ornament.
+We thus define \key{horizontal transformations} as
+\begin{code}
+record HTrans {I J : Set} (e : J → I) (D : RDesc I) (E : RDesc J) : Set
+  where
+    constructor pair
+    field
+      t  : Ṡ E → Ṡ D
+      c  : (ss : Ṡ E) → Ė e (next E ss) (next D (t ss))
+\end{code}
+The response ornaments derived by the above process are called \key{normal response ornaments}, which are defined by
+\begin{code}
+normROrn-∇ :  {I J : Set} {e : J → I} {D : RDesc I} {js : List J} →
+              (ss ∶ Ṡ D) → Ė e js (next D ss) → ROrn e D (ṿ js)
+normROrn-∇ {D := ṿ is   } tt        eqs = ṿ eqs
+normROrn-∇ {D := σ S D  } (s , ss)  eqs = (∇'(s)) normROrn-∇ {D := D s} ss eqs
+
+normROrn :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
+            HTrans e D E → ROrn e D E
+normROrn {E := ṿ js   } tr = normROrn-∇ (HTrans.t tr tt) (HTrans.c tr tt)
+normROrn {E := σ S E  } tr =
+  (Δ'(s ∶ S)) normROrn {E := E s} (curry (HTrans.t tr) s , curry (HTrans.c tr) s)
+\end{code}
+The top-level function |normROrn| exhausts all fields of~|E| by~|Δ|, partially applying the transformation along the way, and then |normROrn-∇| takes over and inserts values obtained from the result of the transformation into fields of~|D| by~|∇|, ending with the placement of the index coherence proof.
+
+We can now easily arrange a category |ḞHTrans| of descriptions and horizontal transformations, which is isomorphic to |Ōrn|.
+Its objects are of type |Σ Set Desc| as in |Ōrn|, and its sets of morphisms are
+\begin{code}
+λ case (J , E) (I , D) mapsto (Σ'(e : J → I)) FHTrans e D E endcase
+\end{code}
+where |FHTrans| is the type of \key{families of horizontal transformations}, defined in the usual way:
+\begin{code}
+FHTrans : {I J : Set} → (J → I) → Desc I → Desc J → Set
+FHTrans {I} {J} e D E = {i : I} (j : e ⁻¹ i) → HTrans e (D i) (E (und j))
+\end{code}
+Morphism equivalence is defined to be pointwise equality of the shape transformations extracted by |HTrans.t|, and identities and composition are defined in terms of functional identities and composition.
+We then have two functors |Erase : Functor Ōrn ḞHTrans| and |Normal : Functor ḞHTrans Ōrn| back and forth between the two categories: the object parts of both functors are identities, and for the morphism parts, |Erase| maps ornaments to componentwise |erase-Ṡ| (with suitable coherence proofs) and |Normal| maps families of horizontal transformations to normal ornaments (i.e., componentwise normal response ornaments).
+For any |tr : HTrans e D E|, we can prove that
+\begin{code}
+erase-Ṡ (normROrn tr) ≐ HTrans.t tr
+\end{code}
+which guarantees that the morphism parts of |Erase| and |Normal| are inverse to each other.
+
+Knowing that |Ōrn| and |ḞHTrans| are isomorphic means that, extensionally, we can regard ornaments and horizontal transformations as the same entities and freely switch between the two notions.
+For example, in \autoref{sec:parallel-composition-pullback}, where we did not have the notion of horizontal transformations yet, it was hard to establish the pullback property of parallel composition in |Ōrn|~(\ref{eq:pc-square}) by reasoning in terms of ornaments.
+By switching to |ḞHTrans|, however, the proof becomes conceptually much tidier:
+Due to the isomorphism between |Ōrn| and |ḞHTrans|, it suffices to prove that the image of the square~(\ref{eq:pc-square}) under |Erase| in |ḞHTrans| is a pullback.
+We have the following functor from |ḞHTrans| to |Fam| which maps descriptions to indexed sets of shapes and discards index coherence proofs in horizontal transformations:
+\begin{code}
+Shape : Functor ḞHTrans Fam
+Shape = record
+  case  object    = λ case (I , D   ) mapsto I  , (lambda(i)) Ṡ (D i)                 endcase
+  sep   morphism  = λ case (e , ts  ) mapsto e  , (lambda({j})) HTrans.t (ts (ok j))  endcase
+  sep   proofs-of-laws endcase
+\end{code}
+The functor |Shape| can be proved to be \key{pullback-reflecting}: if the image of a square in |ḞHTrans| under |Shape| is a pullback in |Fam|, then the square itself is a pullback in |ḞHTrans|.
+(The proof proceeds by manipulating shape transformations in |Fam| and then constructing the missing index coherence proof.)
+The problem is thus reduced to proving that the square~(\ref{eq:pc-square}) mapped into |Fam| by |Erase| and then |Shape| is a pullback, which boils down to the isomorphism
+\begin{code}
+pcROD-iso O P :  Ṡ (toRDesc (pcROD O P))
+                   ≅ (Σ'(p ∶ Ṡ E × Ṡ F)) erase-Ṡ O (proj₁ p) ≡ erase-Ṡ P (proj₂ p)
+\end{code}
+and the two equations
+\begin{code}
+erase-Ṡ (diffROrn-l  O P) ≐ proj₁  ∘ proj₁ ∘ Iso.to (pcROD-iso O P)
+erase-Ṡ (diffROrn-r  O P) ≐ proj₂  ∘ proj₁ ∘ Iso.to (pcROD-iso O P)
+\end{code}
+for any |O : ROrn e D E| and |P : ROrn f D F|, all provable by induction on |O|~and~|P|.
+(The isomorphism and equations allow us to prove that the derived square in |Fam| is isomorphic to the componentwise set-theoretic pullback, and thus the square itself is also a pullback.)
+
+\section{Ornaments and relational algebras}
+\label{sec:ornaments-and-relational-algebras}
+
+\begin{code}
+algROD-iso :  {I : Set} (D : RDesc I) (X : I → Set) (P : ℘ (⟦ D ⟧ X)) →
+              Ṡ (toRDesc (algROD D P)) ≅ Σ (⟦ D ⟧ X) P
+
+algROD-decomp : {I : Set} (D : RDesc I) (X : I → Set) (P : ℘ (⟦ D ⟧ X)) → Ṡ (toRDesc (algROD D P)) → Σ (⟦ D ⟧ X) P
+algROD-decomp (ṿ is)   X P (xs , p , tt)  = xs , p
+algROD-decomp (σ S D)  X P (s , hs)       = (pair s * id) (algROD-decomp (D s) X (curry P s) hs)
+
+algROD-comp : {I : Set} (D : RDesc I) (X : I → Set) (P : ℘ (⟦ D ⟧ X)) → (xs : ⟦ D ⟧ X) → P xs → Ṡ (toRDesc (algROD D P))
+algROD-comp (ṿ is)   X P xs       p  = xs , p , tt
+algROD-comp (σ S D)  X P (s , xs) p  = s , algROD-comp (D s) X (curry P s) xs p
+\end{code}
+
+\section{Consequences}
+\label{sec:equivalence-consequences}
+
+\subsection{Ornamental algebraic ornamentation}
+\label{sec:OAO}
+
+\begin{code}
+Iso (RAlg E)  ((μ D ∘ e) , fun (ornAlg O))
+              (((lambda(j)) (Σ'(p ∶ e ⋈ proj₁)) π₁ p ≡ j) , clsAlg (diffOrn-l O ⌈ singletonOD D ⌉))
+\end{code}
+
+\begin{code}
+Iso Ōrn  (Σ J (μ D ∘ e) , ⌊ algOD D (fun (ornAlg O)) ⌋)
+         (((Σ'(j ∶ J)) (Σ'(p ∶ e ⋈ proj₁)) π₁ p ≡ j), ⌊ algOD D (clsAlg (diffOrn-l O ⌈ singletonOD D ⌉) ⌋))
+\end{code}
+
+\begin{code}
+Iso Ōrn  (Σ J (μ D ∘ e) , ⌊ algOD D (fun (ornAlg O)) ⌋)
+         (e ⋈ proj₁ , ⌊ O ⊗ ⌈ singletonOD D ⌉ ⌋)
+\end{code}
+
+\begin{code}
+Iso Fam  (Σ J (μ D ∘ e) , μ ⌊ algOD D (fun (ornAlg O)) ⌋)
+         (e ⋈ proj₁ , μ ⌊ OptPOD O ⌋)
+\end{code}
+
+\subsection{Parallel composition and the banana-split law}
+\label{sec:banana-split}
+
+\todo[inline]{algebras corresponding to singleton ornaments and ornaments for optimised predicates}
+
+\section{Discussion}
+\label{sec:equivalence-discussion}
+
+\todo[inline]{bad computational behaviour; ornaments for optimised representation; compare the \citet{McBride-ornaments} version (compatible with the two-constructor universe) and the \citet{Dagand-functional-ornaments} version of algebraic ornamentation in terms of ``quality'' (amount of~|σ|'s used); proof-relevant Algebra of Programming (e.g., |fun-preserves-fold|)}
 
 Perhaps the most important consequence of the completeness theorem (in its present form) is that it provides a new perspective on the expressive power of ornaments and inductive families.
 We showed in a previous paper~\cite{Ko-pcOrn} that every ornament induces a promotion predicate and a corresponding family of isomorphisms.
 But one question was untouched: can we determine (independently from ornaments) the range of predicates induced by ornaments?
 An answer to this question would tell us something about the expressive power of ornaments, and also about the expressive power of inductive families in general, since the inductive families we use are usually ornamentations of simpler algebraic datatypes from traditional functional programming.
 The completeness theorem offers such an answer: ornament-induced promotion predicates are exactly those expressible as relational folds (up to pointwise isomorphism).
-In other words, a predicate can be baked into a datatype by ornamentation if and only if it can be thought of as a nondeterministic classification of the elements of the datatype with a relational fold.
+In other words, a predicate can be baked into a datatype by ornamentation if and only if it can be thought of as a nondeterministic classification of the inhabitants of the datatype with a relational fold.
 This is more a guideline than a precise criterion, though, as the closest work about characterisation of the expressive power of folds discusses only functional folds~\cite{Gibbons-kernels}
 (however, we believe that those results generalise to relations too).
 But this does encourage us to think about ornamentation computationally and to design new datatypes with relational algebraic methods.
-We illustrate this point with a solution to the \emph{minimum coin change problem} in the next section.
-
-\section{Ornaments and horizontal transformations}
-
-\section{Ornaments and relational algebras}
-
-\section{Consequences}
-
-\subsection{Parallel composition and the banana-split law}
-
-\todo[inline]{algebras corresponding to singleton ornaments and ornaments for optimised predicates}
-
-\subsection{Ornamental algebraic ornaments}
-
-\section{Discussion}
-
-\todo[inline]{bad computational behaviour; ornaments for optimised representation; compare the \citet{McBride-ornaments} version (compatible with the two-constructor universe) and the \citet{Dagand-functional-ornaments} version of algebraic ornamentation in terms of ``quality'' (amount of~|σ|'s used); proof-relevant Algebra of Programming (e.g., |fun-preserves-fold|)}

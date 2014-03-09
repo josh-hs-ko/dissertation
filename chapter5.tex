@@ -279,7 +279,7 @@ algROD (σ S D)  {-""-}  P =  (σ'(s ∶ S)) algROD (D s) (curry P s)
 
 algOD :  {I : Set} (D : Desc I) {J : I → Set} →
          (Ḟ D J ↝ J) → OrnDesc (Σ I J) proj₁ D
-algOD D R (ok (i , j)) = algROD (D i) ((lambda(js)) R js j)
+algOD D R (ok (i , j)) = algROD (D i) ((R º) j)
 \end{code}
 \caption{Definitions for algebraic ornamentation.}
 \label{fig:algOD}
@@ -305,6 +305,7 @@ such that |Swap.P (algOD-FSwap D R (ok (i , x))) = (lambda(d)) (cata(R)) d x|, s
 \begin{flalign}
 &\hskip\mathindent |(i : I) (x : X i) → μ ⌊ algOD D R ⌋ (i , x) ≅ (Σ'(d ∶ μ D i)) (cata(R)) d x| \label{eq:algOD} &
 \end{flalign}
+We get back |AlgList| by defining |AlgList A R x = μ ⌊ algOD (ListD A) R ⌋ (tt , x)|.
 The definition of |algOD|, shown in \autoref{fig:algOD}, is an adaptation and generalisation of \varcitet{McBride-ornaments}{'s original definition of functional algebraic ornamentation}.
 Roughly speaking, it retains (in the |σ|~case of |algROD|) all the fields of the base description and inserts (in the |ṿ|~case of |algROD|) before every~|ṿ|
 \begin{itemize}
@@ -363,17 +364,17 @@ Since algebraically ornamented datatypes are datatypes with constraints expresse
 new-Σ :  (I : Set) {A : Set} {X : I → Set} →
          ((i : I) → Upgrade A (X i)) → Upgrade A (Σ I X)
 new-Σ I u = record  case  P  = (lambda(a)) (Σ'(i ∶ I)) Upgrade.P (u i) a
-                    sep   C  = λ case a (i , x) mapsto Upgrade.C (u i) a x endcase
-                    sep   u  = λ case a (i , p) mapsto i , Upgrade.u (u i) a p endcase
-                    sep   c  = λ case a (i , p) mapsto Upgrade.c (u i) a p endcase endcase
+                    sep   C  = λ case a (i , x) mapsto Upgrade.C (u i) a x      endcase
+                    sep   u  = λ case a (i , p) mapsto i , Upgrade.u (u i) a p  endcase
+                    sep   c  = λ case a (i , p) mapsto Upgrade.c (u i) a p      endcase endcase
 
 syntax new-Σ I (λ i → u) = (newSigma(i ∶ I)) u
 
 _×⁺_ : {X Y : Set} → Upgrade X Y → (Z : Set) → Upgrade X (Y × Z)
 u ×⁺ Z = record  case  P  = (lambda(x)) Upgrade.P u x × Z
-                 sep   C  = λ case x (y , z) mapsto Upgrade.C u x y endcase
-                 sep   u  = λ case x (p , z) mapsto Upgrade.u u x p , z endcase
-                 sep   c  = λ case x (p , z) mapsto Upgrade.c u x p endcase endcase
+                 sep   C  = λ case x (y , z) mapsto Upgrade.C u x y      endcase
+                 sep   u  = λ case x (p , z) mapsto Upgrade.u u x p , z  endcase
+                 sep   c  = λ case x (p , z) mapsto Upgrade.c u x p      endcase endcase
 \end{code}
 \caption{Two additional upgrade combinators.}
 \label{fig:fusion-upgrade-combinators}
@@ -1134,7 +1135,7 @@ At Goal~8, \Agda\ deduces that |n|~is |value d + n'| and demands that we prove |
 \label{sec:algebraic-discussion}
 
 \autoref{sec:relations} heavily borrows techniques from the \name{AoPA} (Algebra of Programming in \Agda) library~\citep{Mu-AoPA} while making generalisations and adaptations:
-\name{AoPA} deals with non-dependently typed programs only, whereas to work with indexed datatypes we need to move to indexed families of relations; to work with the ornamental universe, we parametrise the relational fold with a description, making it fully datatype-generic, whereas \name{AoPA} has only specialised versions for lists and binary trees; we defined |min_•Λ_| as a single operator (which happens to be the ``shrinking'' operator proposed by \citet{Mu-Galois}) to avoid the struggle with predicativity that \name{AoPA} had.
+\name{AoPA} deals with non-dependently typed programs only, whereas to work with indexed datatypes we need to move to indexed families of relations; to work with the ornamental universe, we parametrise the relational fold with a description, making it fully datatype-generic, whereas \name{AoPA} has only specialised versions for lists and binary trees; we define |min_•Λ_| as a single operator (which happens to be the ``shrinking'' operator proposed by \citet{Mu-Galois}) to avoid the struggle with predicativity that \name{AoPA} had.
 All of the above are not fundamental differences between the work presented in this chapter and \name{AoPA}, though --- the two differ essentially in methodology: in \name{AoPA}, dependent types merely provide a foundation on which relational program derivations can be expressed formally and checked by machines, but the programs remain non-dependently typed throughout the formalisation, whereas in this chapter, relational programming is a tool for obtaining nontrivial inductive families that effectively guide program development as advertised as the strength of internalist programming.
 In short, the focus of \name{AoPA} is on traditional relational program derivation (expressed in a dependently typed language), whereas our emphasis is on internalist programming (aided by relational programming).
 

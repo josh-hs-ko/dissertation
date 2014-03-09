@@ -214,9 +214,14 @@
 %format ⟦_⟧ = ⟦ _ "\kern.08em" ⟧
 %format Desc = "\constructor{Desc}"
 %format Ḟ = "\mathbb F"
-%format μ = "\mu"
+%format μ' = "\mu"
+%format μ = μ'
 %format con = "\constructor{con}"
 %format mapFold-Ṗ = "\identifier{mapFold\text-" Ṗ "}"
+%format Ṡ = "\constructor{S}"
+%format horizontal-iso ="\identifier{horizontal\text-iso}"
+%format pcROD-iso = "\identifier{pcROD\text-iso}"
+%format algROD-iso = "\identifier{algROD\text-iso}"
 
 %format Ė = "\mathbb E"
 %format ROrn = "\constructor{ROrn}"
@@ -227,6 +232,7 @@
 %format ∇ = "\rotatebox[origin=c]{180}{$" Δ "$}"
 %format (∇'(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (∇''(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
+%format erase-Ṡ = erase "_{" Ṡ "}"
 %format ROrnDesc = "\constructor{ROrnDesc}"
 %format OrnDesc = "\constructor{OrnDesc}"
 %format und-Ṗ = "\identifier{und\text-" Ṗ "}"
@@ -248,6 +254,7 @@
 %format diff-Ė-l = "\identifier{diff\text-" Ė "\text-l}"
 %format diffROrn-l = "\identifier{diffROrn\text-l}"
 %format diffROrn-l-double∇ = "\identifier{diffROrn\text-l\text-double" ∇ "}"
+%format diffROrn-r = "\identifier{diffROrn\text-r}"
 %format _⊙_ = _ "{" ⊙ "}\kern-\underscorespace" _
 %format Ė-refl = "\identifier{" Ė "\text-refl}"
 %format Ė-trans = "\identifier{" Ė "\text-trans}"
@@ -274,6 +281,17 @@
 %format FRefC = "\categorical{}{FRefC}"
 %format Ind = "\categorical{}{Ind}"
 %format RSem = "\categorical{}{RSem}"
+
+%format HTrans = "\constructor{HTrans}"
+%format HTrans.t = HTrans "\recordmember" t
+%format HTrans.c = HTrans "\recordmember" c
+%format normROrn-∇ ="\identifier{normROrn\text-}\kern-.5pt" ∇
+%format FHTrans = "\constructor{FHTrans}"
+%format ḞHTrans = "\categorical{F}{HTrans}"
+%format Erase = "\categorical{}{Erase}"
+%format Normal = "\categorical{}{Normal}"
+%format Shape = "\categorical{}{Shape}"
+
 
 %%%%%%%%
 % relations
@@ -319,6 +337,10 @@
 %format ref-T = "\identifier{ref\text-T}"
 %format BVec = "\constructor{BVec}"
 %format foldl-alg = "\identifier{foldl\text-alg}"
+
+%format RAlg = "\categorical{R}{Alg}"
+%format algROD-decomp = "\identifier{algROD\text-decomp}"
+%format algROD-comp = "\identifier{algROD\text-comp}"
 
 
 %%%%%%%%
