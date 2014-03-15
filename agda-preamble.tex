@@ -87,6 +87,7 @@
 %format Σ = "\Sigma"
 %format (Σ'(t)) = Σ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format pair = _ "\kern.1em,\kern-.1em" _
+%format threetuple = _ "\kern.1em,\kern-.1em" _ "\kern.1em,\kern-.1em" _
 %format proj₁ = "\identifier{outl}"
 %format proj₂ = "\identifier{outr}"
 %format Σ.proj₁ = Σ "\recordmember" proj₁
@@ -132,9 +133,11 @@
 %format cong-r = "\identifier{cong\text-r}"
 %format Functor = "\constructor{Functor}"
 %format Functor.object = Functor "\recordmember" object
+%format Functor.morphism = Functor "\recordmember" morphism
 %format equiv-preserving = "\identifier{equiv\text-preserving}"
 %format id-preserving = "\identifier{id\text-preserving}"
 %format comp-preserving = "\identifier{comp\text-preserving}"
+%format _⋄_ = _ "\kern\underscorespace{" ⋄ "}" _
 %format Iso = "\constructor{Iso}"
 %format from-to-inverse = "\identifier{from\text-to\text-inverse}"
 %format to-from-inverse = "\identifier{to\text-from\text-inverse}"
@@ -157,8 +160,10 @@
 %format sliceMorphism = "\constructor{sliceMorphism}"
 %format SliceMorphism.m = SliceMorphism "\recordmember" m
 %format SliceMorphism.triangle = SliceMorphism "\recordmember" triangle
+%format SliceF = "\categorical{}{SliceF}"
 %format Pullback-Preserving = "\identifier{Pullback\text-Preserving}"
-
+%format φ = "\phi"
+%format / = "\kern-3pt\raisebox{-1pt}{\scalebox{1.1}{/}}\kern-3pt"
 
 %%%%%%%%
 % refinements
@@ -220,6 +225,7 @@
 %format mapFold-Ṗ = "\identifier{mapFold\text-" Ṗ "}"
 %format Ṡ = "\constructor{S}"
 %format horizontal-iso ="\identifier{horizontal\text-iso}"
+%format hori-decomp = "\identifier{hori\text-decomp}"
 %format pcROD-iso = "\identifier{pcROD\text-iso}"
 %format algROD-iso = "\identifier{algROD\text-iso}"
 
@@ -339,8 +345,13 @@
 %format foldl-alg = "\identifier{foldl\text-alg}"
 
 %format RAlg = "\categorical{R}{Alg}"
+%format RAlgebra = "\constructor{RAlgebra}"
+%format RAlgebra.Carrier = RAlgebra "\recordmember" Carrier
+%format RAlgebra.Alg = RAlgebra "\recordmember" Alg
+%format RAlgMorphism = "\constructor{RAlgMorphism}"
 %format algROD-decomp = "\identifier{algROD\text-decomp}"
-%format algROD-comp = "\identifier{algROD\text-comp}"
+%format ClsAlg = "\categorical{}{ClsAlg}"
+%format AlgOrn = "\categorical{}{AlgOrn}"
 
 
 %%%%%%%%

@@ -70,6 +70,12 @@
 \shade[top color=transparent!100, bottom color=transparent!0] (-1, .65) rectangle (1, 1);
 \end{tikzfadingfrompicture}
 \tikzset{label on arrow/.style={fill=white, path fading=fade out}}
+\begin{tikzfadingfrompicture}[name=horizontal fade out, x=25bp, y=25bp]
+\fill[color=transparent!0] (-.66 , -1) rectangle (.66 , 1);
+\shade[right color=transparent!0, left color=transparent!100] (-1, -1) rectangle (-.65 , 1);
+\shade[right color=transparent!100, left color=transparent!0] (.65, -1) rectangle (1, 1);
+\end{tikzfadingfrompicture}
+\tikzset{horizontal label on arrow/.style={fill=white, path fading=horizontal fade out}}
 
 \usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
@@ -106,7 +112,7 @@
 
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
-\linespread{1.25}
+\linespread{1.2}
 \usepackage{rsfso}
 \newcommand{\keyword}{\mathbf}
 \newcommand{\constructor}{\mathsf}

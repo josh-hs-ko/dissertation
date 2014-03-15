@@ -336,14 +336,14 @@ Ind = record  case  object    =  λ case (I , D  ) mapsto I , μ D       endcase
               sep   proofs-of-laws endcase
 \end{code}
 
-To translate |Ōrn| to |FRef|, a naive way is to use the composite functor
-\[ \begin{tikzpicture}
-\matrix (m) [matrix of math nodes, column sep=4em]
-{ \smash{|Ōrn|}\vphantom{|Fam|} & |Fam| & |FRef| \\ };
-\path[->]
-(m-1-1) edge node[above]{|Ind|} (m-1-2)
-(m-1-2) edge node[above]{|FRefC|} (m-1-3);
-\end{tikzpicture} \]
+To translate |Ōrn| to |FRef|, a naive way is to use the composite functor |FRefC ⋄ Ind : Functor Ōrn FRef|, where composition |F ⋄ G| of functors |F : Functor D E| and |G : Functor C D| is defined by
+\begin{code}
+F ⋄ G : Functor C E
+F ⋄ G = record  case  object    = object F ∘ object G
+                sep   morphism  = morphism F ∘ morphism G
+                sep   proofs-of-laws endcase
+\end{code}
+(We assume that there is an \Agda\ statement ``|open Functor|'' in scope throughout the thesis, so |Functor.object| and |Functor.morphism| can simply be referred to as |object| and |morphism|.)
 The resulting refinements would then use the canonical promotion predicates.
 However, the whole point of incorporating |Ōrn| in the framework is that we can construct an alternative functor |RSem| directly from |Ōrn| to |FRef|.
 The functor |RSem| is extensionally equal to the above composite functor but intensionally different.
@@ -376,7 +376,6 @@ Isomorphisms are preserved by functors, i.e.,
 (F : Functor C D) → Iso C X Y → Iso D (object F X) (object F Y)
 \end{code}
 which is proved by mapping all objects, morphisms, compositions, and equivalences in~|C| appearing in the input isomorphism into~|D| by~|F|.
-(We |open Functor| so |Functor.object| can be simply referred to as |object| and so on.)
 This fact immediately tells us, for example, that when two ornaments are inverse to each other, so are their forgetful functions, by taking |F = Ind|.
 
 Another useful class of purely categorical structures are introduced next.
@@ -425,7 +424,7 @@ Let |C|~be a category and |L|,~|R| two objects in~|C|.
 A \key{span} over |L|~and~|R| is defined by
 \begin{code}
 record Span C L R : Set _ where
-  constructor span
+  constructor threetuple
   field
     M  : Object
     l  : M ==> L
@@ -443,7 +442,7 @@ If we interpret a morphism |X ==> Y| as evidence that |X|~is more informative th
 Spans over the same objects can be ``compared'': define a morphism between two spans by
 \begin{code}
 record SpanMorphism C L R (s s' : Span C L R) : Set _ where
-  constructor spanMorphism
+  constructor threetuple
   field
     m : Span.M s ==> Span.M s'
     triangle-l  : Span.l  s' · m ≈ Span.l  s
@@ -495,7 +494,7 @@ A slice category is parametrised with an ambient category~|C| and an object~|B| 
 \item objects: all the morphisms in~|C| with target~|B|,
 \begin{code}
 record Slice C B : Set _ where
-  constructor slice
+  constructor pair
   field
     T  : Object
     s  : T ==> B
@@ -504,7 +503,7 @@ and
 \item morphisms: mediating morphisms giving rise to commutative triangles,
 \begin{code}
 record SliceMorphism C B (s s' : Slice C B) : Set _ where
-  constructor sliceMorphism
+  constructor pair
   field
     m : Slice.T s ==> Slice.T s'
     triangle : Slice.s s' · m ≈ Slice.s s
@@ -663,9 +662,9 @@ We assert that the square is a pullback by marking its vertex with ``\smash{\beg
 The \Agda\ term for the square is
 \begin{code}
 pc-square O P : Square Ōrn (slice (J , E) (e , O)) (slice (K , F) (f , P))
-pc-square O P = span  (slice (e ⋈ f , ⌊ O ⊗ P ⌋) (pull, ⌈ O ⊗ P ⌉))
-                      (sliceMorphism (π₁  , diffOrn-l  O P)  (goal()(0)))
-                      (sliceMorphism (π₂  , diffOrn-r  O P)  (goal()(1)))
+pc-square O P =  ((e ⋈ f , ⌊ O ⊗ P ⌋) , (pull, ⌈ O ⊗ P ⌉)) ,
+                 ((π₁  , diffOrn-l  O P) , (goal()(0))) ,
+                 ((π₂  , diffOrn-r  O P) , (goal()(1)))
 \end{code}
 where Goal~0 has type |OrnEq (O ⊙ diffOrn-l O P) ⌈ O ⊗ P ⌉| and Goal~1 has type |OrnEq (P ⊙ diffOrn-r O P) ⌈ O ⊗ P ⌉|, both of which can be discharged.
 Comparing the commutative diagram~(\ref{eq:pc-square}) and the \Agda\ term |pc-square O P|, it should be obvious how concise the categorical language can be --- the commutative diagram expresses the structure of the \Agda\ term in a clean and visually intuitive way.
@@ -908,17 +907,24 @@ Then $(X \boxtimes Y) \boxtimes Z$ is the vertex of a pullback of the two projec
 We again intend to view a pullback as a product of slices, and instantiate the lemma in |SliceCategory Fam (I , μ D)|, substituting all the objects by slices consisting of relevant ornamental forgetful functions in~(\ref{eq:modularity}).
 The substitutions are as follows:
 \[ \begin{array}{rcl}
-X                            & \mapsto & |slice _ (_ , forget O)| \\
-Y                            & \mapsto & |slice _ (_ , forget P)| \\
-X \boxtimes Y                & \mapsto & |slice _ (_ , forget ⌈ O ⊗ P ⌉)| \\
-Z                            & \mapsto & |slice _ (_ , forget ⌈ S ⌉)| \\
-X \boxtimes Z                & \mapsto & |slice _ (_ , forget ⌈ O ⊗ ⌈ S ⌉ ⌉)| \\
-Y \boxtimes Z                & \mapsto & |slice _ (_ , forget ⌈ P ⊗ ⌈ S ⌉ ⌉)| \\
-(X \boxtimes Y) \boxtimes Z  & \mapsto & |slice _ (_ , forget ⌈ ⌈ O ⊗ P ⌉ ⊗ ⌈ S ⌉ ⌉)|
+X                            & \mapsto & |_ , (_ , forget O)| \\
+Y                            & \mapsto & |_ , (_ , forget P)| \\
+X \boxtimes Y                & \mapsto & |_ , (_ , forget ⌈ O ⊗ P ⌉)| \\
+Z                            & \mapsto & |_ , (_ , forget ⌈ S ⌉)| \\
+X \boxtimes Z                & \mapsto & |_ , (_ , forget ⌈ O ⊗ ⌈ S ⌉ ⌉)| \\
+Y \boxtimes Z                & \mapsto & |_ , (_ , forget ⌈ P ⊗ ⌈ S ⌉ ⌉)| \\
+(X \boxtimes Y) \boxtimes Z  & \mapsto & |_ , (_ , forget ⌈ ⌈ O ⊗ P ⌉ ⊗ ⌈ S ⌉ ⌉)|
 \end{array} \]
 where $X \boxtimes Y$, $X \boxtimes Z$, $Y \boxtimes Z$, and $(X \boxtimes Y) \boxtimes Z$ indeed give rise to products in |SliceCategory Fam (I , μ D)|, i.e., pullbacks in |Fam|, by instantiating~(\ref{eq:Fam-pullback}).
 What we get out of this instantiation of the lemma is a pullback in |SliceCategory Fam (I , μ D)| rather than |Fam|.
-This is easy to fix, since there is a forgetful functor from any |SliceCategory C B| to~|C| whose object part is |Slice.T|, and it is pullback-preserving.
+This is easy to fix, since there is a forgetful functor from any |SliceCategory C B| to~|C|:
+\begin{code}
+SliceF : Functor (SliceCategory C B) C
+SliceF = record  case  object    = Slice.T
+                 sep   morphism  = SliceMorphism.m
+                 sep   proofs-of-laws endcase
+\end{code}
+which is pullback-preserving.
 We thus get a pullback in |Fam| of the same slices as~(\ref{eq:N-pullback}) whose vertex is |(pull ⋈ proj₁ , M)|.
 
 \end{itemize}

@@ -271,15 +271,15 @@ by |fun-preserves-fold|.
 \begin{figure}
 \codefigure
 \begin{code}
-algROD :  {I : Set} (D : RDesc I) {J : I → Set} →
-          (⟦ D ⟧ J → Set) → ROrnDesc (Σ I J) proj₁ D
-algROD (ṿ is)   {J}     P =  (Δ'(js ∶ Ṗ is J)) (Δ'(_ ∶ P js))
-                               ṿ (Ṗ-map ((lambda({i} j)) ok (i , j)) is js)
+algROD :  {I : Set} (D : RDesc I) {X : I → Set} →
+          ℘ (⟦ D ⟧ X) → ROrnDesc (Σ I X) proj₁ D
+algROD (ṿ is)   {X}     P =  (Δ'(xs ∶ Ṗ is X)) (Δ'(_ ∶ P xs))
+                               ṿ (Ṗ-map ((lambda({i} x)) ok (i , x)) is xs)
 algROD (σ S D)  {-""-}  P =  (σ'(s ∶ S)) algROD (D s) (curry P s)
 
-algOD :  {I : Set} (D : Desc I) {J : I → Set} →
-         (Ḟ D J ↝ J) → OrnDesc (Σ I J) proj₁ D
-algOD D R (ok (i , j)) = algROD (D i) ((R º) j)
+algOD :  {I : Set} (D : Desc I) {X : I → Set} →
+         (Ḟ D X ↝ X) → OrnDesc (Σ I X) proj₁ D
+algOD D R (ok (i , x)) = algROD (D i) ((R º) x)
 \end{code}
 \caption{Definitions for algebraic ornamentation.}
 \label{fig:algOD}
@@ -385,7 +385,7 @@ Assume that we have a proof of the antecedent
 \begin{code}
 fcond-⊆ : R • S ⊆ T • Ṙ D R
 \end{code}
-Expanding the conclusion of~(\ref{eq:fusion-subseteq}) pointwise: if |d : μ D i| folds to |x : X i| by~|S|, which is ``relaxed'' to |y : Y i| by~|R|, then |d|~folds to~|y| by~|T|.
+Expanding the conclusion of~(\ref{eq:fusion-subseteq}) pointwise: if |d : μ D i| folds to |x : X i| with~|S|, which is ``relaxed'' to |y : Y i| by~|R|, then |d|~folds to~|y| with~|T|.
 This can be translated to a conversion function from a datatype algebraically ornamented with~|S| to one with~|T|:
 \begin{code}
 fusion-conversion-⊆ D R S T fcond-⊆ :
@@ -1159,3 +1159,5 @@ By applying the laws and theorems, we massage a relational specification into a 
 For example, we now know that a relational fold can be turned into an inductive family for internalist programming by algebraic ornamentation.
 Thus, given a relational specification, we might seek to massage it into a relational fold when that possibility is pointed out by known laws and theorems (e.g., the Greedy Theorem).
 To sum up, we get a hybrid methodology that leads us from relational specifications towards internalist types for type-directed programming, providing hints in the form of relational algebraic laws and theorems, and this is made possible by going through the synthetic direction of the interconnection between internalism and externalism, synthesising internalist types from relational expressions via algebraic ornamentation.
+
+\todo[inline]{subsumes coalgebra}
