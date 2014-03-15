@@ -1,4 +1,4 @@
-\begin{thebibliography}{76}
+\begin{thebibliography}{77}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -210,6 +210,13 @@
 \newblock In \emph{Logic in Computer Science}, LICS'13, pages 530--539. IEEE.
 \newblock \doi{10.1109/LICS.2013.60}.
 
+\bibitem[{Dijkstra(1982)}]{Dijkstra-EWD447}
+\bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1982].
+\newblock On the role of scientific thought.
+\newblock In \emph{Selected Writings on Computing: A personal Perspective},
+  Texts and Monographs in Computer Science, pages 60--66. Springer-Verlag.
+\newblock \doi{10.1007/978-1-4612-5695-3_12}.
+
 \bibitem[{Dummett(2000)}]{Dummett-intuitionism}
 \bibfnamefont{Michael} \bibnamefont{Dummett} [2000].
 \newblock \emph{Elements of Intuitionism}.
@@ -383,6 +390,12 @@
 \newblock \emph{Journal of Functional Programming}, 18(1):1--13.
 \newblock \doi{10.1017/S0956796807006326}.
 
+\bibitem[{Meertens(1992)}]{Meertens-paramorphisms}
+\bibfnamefont{Lambert} \bibnamefont{Meertens} [1992].
+\newblock Paramorphisms.
+\newblock \emph{Formal Aspects of Computing}, 4(5):413--424.
+\newblock \doi{10.1007/BF01211391}.
+
 \bibitem[{Meijer et~al.(1991)Meijer, Fokkinga, and Paterson}]{Meijer-bananas}
 \bibfnamefont{Erik} \bibnamefont{Meijer}, \bibfnamefont{Maarten}
   \bibnamefont{Fokkinga}, and \bibfnamefont{Ross} \bibnamefont{Paterson}
@@ -399,15 +412,6 @@
 \newblock Notions of computation and monads.
 \newblock \emph{Information and Computation}, 93(1):55--92.
 \newblock \doi{10.1016/0890-5401(91)90052-4}.
-
-\bibitem[{Monnier and Haguenauer(2010)}]{Monnier-singleton-types}
-\bibfnamefont{Stefan} \bibnamefont{Monnier} and \bibfnamefont{David}
-  \bibnamefont{Haguenauer} [2010].
-\newblock Singleton types here, singleton types there, singleton types
-  everywhere.
-\newblock In \emph{Programming Languages meets Program Verification}, PLPV'10,
-  pages 1--8. ACM.
-\newblock \doi{10.1145/1707790.1707792}.
 
 \bibitem[{Morris(2007)}]{Morris-thesis}
 \bibfnamefont{Peter} \bibnamefont{Morris} [2007].

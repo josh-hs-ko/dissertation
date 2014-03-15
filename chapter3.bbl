@@ -38,19 +38,17 @@
   ICFP'12, pages 103--114. ACM.
 \newblock \doi{10.1145/2364527.2364544}.
 
+\bibitem[{Dijkstra(1982)}]{Dijkstra-EWD447}
+\bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1982].
+\newblock On the role of scientific thought.
+\newblock In \emph{Selected Writings on Computing: A personal Perspective},
+  Texts and Monographs in Computer Science, pages 60--66. Springer-Verlag.
+\newblock \doi{10.1007/978-1-4612-5695-3_12}.
+
 \bibitem[{McBride(2011)}]{McBride-ornaments}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].
 \newblock Ornamental algebras, algebraic ornaments.
 \newblock To appear in \textit{Journal of Functional Programming}.
-
-\bibitem[{Monnier and Haguenauer(2010)}]{Monnier-singleton-types}
-\bibfnamefont{Stefan} \bibnamefont{Monnier} and \bibfnamefont{David}
-  \bibnamefont{Haguenauer} [2010].
-\newblock Singleton types here, singleton types there, singleton types
-  everywhere.
-\newblock In \emph{Programming Languages meets Program Verification}, PLPV'10,
-  pages 1--8. ACM.
-\newblock \doi{10.1145/1707790.1707792}.
 
 \bibitem[{Okasaki(1999)}]{Okasaki-data-structures}
 \bibfnamefont{Chris} \bibnamefont{Okasaki} [1999].

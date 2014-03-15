@@ -683,7 +683,7 @@ where |streaming-condition : StreamingCondition f g| is a proof term that should
 Goal~0 is then discharged by the term |streaming-lemma b x x' gxeq as|.
 
 We have thus completed the implementation of the Streaming Theorem, except that |stream f g| is non-terminating, as there is no guarantee that |g|~produces only a finite number of elements.
-In our setting, where the output list is specified to be finite, we can additionally require that |g|~is well-founded and revise |stream| accordingly (see, e.g., \citet{Nordstrom-accessibility}); the general way out is to switch to coinductive datatypes to allow the output list to be infinite, which, however, falls outside the scope of this thesis.
+In our setting, where the output list is specified to be finite, we can additionally require that |g|~is well-founded and revise |stream| accordingly (see, e.g., \citet{Nordstrom-accessibility}); the general way out is to switch to coinductive datatypes to allow the output list to be infinite, which, however, falls outside the scope of this dissertation.
 
 It is interesting to compare our implementation with the proofs of \citet{Bird-arithmetic-coding}.
 While their Lemma~29 turns explicitly into our |streaming-lemma|, their Theorem~30 goes implicitly into the typing of |stream| and no longer needs special attention.
@@ -1143,7 +1143,7 @@ Algebraic ornamentation was originally proposed by \citet{McBride-ornaments}, wh
 Generalising algebraic ornamentation to a relational setting allows us to write more specifications (like the one given by the Streaming Theorem, which involves converses) and employ more powerful theorems (like the Greedy Theorem, which involves minimisation).
 We will show in \autoref{chap:equivalence} that this generalisation is in fact a ``maximal'' one: any datatype obtained via ornamentation can be obtained via relational algebraic ornamentation up to isomorphism.
 \citet{Atkey-refining-inductive-types} also investigated algebraic ornamentation via a fibrational, syntax-free perspective.
-While their ``partial refinement'' (which generalises functional algebraic ornamentation) is subsumed by relational algebraic ornamentation (since relational algebras allow partiality), they were able to go beyond inductive families to indexed inductive-recursive datatypes, which are out of the scope of this thesis.
+While their ``partial refinement'' (which generalises functional algebraic ornamentation) is subsumed by relational algebraic ornamentation (since relational algebras allow partiality), they were able to go beyond inductive families to indexed inductive-recursive datatypes, which are out of the scope of this dissertation.
 
 Let us contemplate the interplay between internalist programming and relational programming, especially the one in \autoref{sec:minimum-coin-change}.
 As mentioned in \autoref{sec:externalism-and-internalism}, internalist programs can encode more semantic information, including correctness proofs; we can thus write programs that directly explain their own meaning.

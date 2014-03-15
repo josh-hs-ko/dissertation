@@ -151,7 +151,7 @@ We can then express that a piece of horizontal data of type |⟦ D ⟧ X| can be
 horizontal-iso :  {I : Set} (D : RDesc I) (X : I → Set) →
                   ⟦ D ⟧ X ≅ Σ (Ṡ D) (flip Ṗ X ∘ next D)
 \end{code}
-The implementation is just lossless rearrangement of data --- for example, the left-to-right direction is defined by
+The implementation is just rearrangement of data --- for example, the left-to-right direction is defined by
 \begin{code}
 hori-decomp :  {I : Set} (D : RDesc I) (X : I → Set) →
                ⟦ D ⟧ X → Σ (Ṡ D) (flip Ṗ X ∘ next D)
@@ -385,7 +385,7 @@ For such shapes we have the following isomorphisms
 algROD-iso :  {I : Set} (D' : RDesc I) {X : I → Set} (P : ℘ (⟦ D' ⟧ X)) →
               Ṡ (toRDesc (algROD D' P)) ≅ Σ (⟦ D' ⟧ X) P
 \end{code}
-whose implementation is, again, just lossless rearrangement of data --- for example, the left-to-right direction is defined by
+whose implementation is, again, just rearrangement of data --- for example, the left-to-right direction is defined by
 \begin{code}
 algROD-decomp :
   {I : Set} (D' : RDesc I) (X : I → Set) (P : ℘ (⟦ D' ⟧ X)) →
@@ -509,7 +509,7 @@ Switching to horizontal transformations, we should construct an isomorphism betw
 for each |j : J|, and make sure that its two directions make the corresponding triangles commute.
 For the left-to-right direction, by |algROD-iso|, the left-hand side decomposes into some |js : ⟦ D (e j) ⟧ (Inv' e)| and a proof of |clsAlg O js (j , refl)| --- the latter contains an inhabitant of |Ṡ (E j)|, which is exactly what we need.
 Conversely, any |ss : Ṡ (E j)| by itself determines a |js : ⟦ D (e j) ⟧ (Inv' e)| and a proof of |clsAlg O js (j , refl)| that contains~|ss|, since the equations in |clsAlg| completely specifies what |js|~should be.
-The two directions are inverse to each other because all that is involved is lossless rearrangement of data, and the corresponding triangles commute because (in particular) the fields from~|D| are not modified.
+The two directions are inverse to each other because all that is involved is rearrangement of data, and the corresponding triangles commute because (in particular) the fields from~|D| are not modified.
 We also need to establish naturality of one of the natural transformations (naturality of the other natural transformation can be derived from the componentwise isomorphisms) --- here we choose the left-to-right direction.
 Let |m|~be a morphism in |Ōrn / (I , D)|:
 \[ \begin{tikzpicture}[x=4em, y=2em, baseline=(P.base), text height=1.5ex, text depth=.25ex]
@@ -522,13 +522,13 @@ Let |m|~be a morphism in |Ōrn / (I , D)|:
           (T)  edge node[above]{|g , Q|} (T');
 \end{tikzpicture} \]
 Because the equivalence on slice morphisms ignores the commutative triangles, we only need to establish commutativity of the following square in |Ōrn|:
-\[ \begin{tikzpicture}[x=3em, y=3em, text height=1.5ex, text depth=.25ex]
+\[ \begin{tikzpicture}[x=3em, y=3em, baseline=(P.base), text height=1.5ex, text depth=.25ex]
 \node(FX)                 {|Σ I (Inv' e) , ⌊ algOD D (clsAlg O) ⌋|};
 \node(X)  [right=1 of FX] {|J , E|};
 \node(FY) [below=1 of FX] {|Σ I (Inv' f) , ⌊ algOD D (clsAlg P) ⌋|};
 \node(Y)  [below=1 of X ] {|K , F|};
 \draw[->] (FX) edge node[above]{|φ O|} (X)
-          (FY) edge node[below]{|φ P|} (Y)
+          (FY) edge node(P)[below]{|φ P|} (Y)
           (FX) edge node[left ]{|morphism (SliceF ⋄ AlgOrn ⋄ ClsAlg) m|} (FY)
           (X)  edge node[right]{|g , Q|} (Y);
 \end{tikzpicture} \]
@@ -546,8 +546,8 @@ Below we give two examples that connect ornamental and relational algebraic cons
 \subsection{Ornamental algebraic ornamentation}
 \label{sec:OAO}
 
-The idea of computing promotion predicates and conversion isomorphisms from ornaments was first fully formulated by \citet{Ko-OAOAOO}, where the promotion predicates were computed by \key{ornamental algebraic ornamentation}, i.e., algebraic ornamentation with an ornamental algebra.
-This thesis, on the other hand, uses parallel composition with singleton ornamentation to compute (optimised) ornamental promotion predicates.
+The idea of computing promotion predicates and conversion isomorphisms from ornaments was first fully formulated by \citet{Ko-OAOAOO}, where the promotion predicates were computed by ``ornamental algebraic ornamentation'', i.e., algebraic ornamentation with an ornamental algebra.
+This dissertation, on the other hand, uses parallel composition with singleton ornamentation to compute (optimised) ornamental promotion predicates.
 Using a part of the categorical equivalence, we can show that the two approaches indeed yield isomorphic predicates.
 
 Let |O : Orn e D E| where |D : Desc I| and |E : Desc J|.
@@ -558,32 +558,38 @@ fun (ornAlg O) : Ḟ E (μ D ∘ e) ↝ (μ D ∘ e)
 is isomorphic to the optimised predicate datatype for~|O|, i.e.,
 \begin{code}
 Iso Fam  (Σ J (μ D ∘ e)  , μ ⌊ algOD E (fun (ornAlg O)) ⌋)
-         (e ⋈ proj₁      , μ ⌊ O ⊗ singletonOD D ⌋)
+         (e ⋈ proj₁      , μ ⌊ O ⊗ ⌈ S ⌉ ⌋)
 \end{code}
+where |S = singletonOD D|.
 By isomorphism preservation of |Ind|, it suffices to establish
 \begin{code}
 Iso Ōrn  (Σ J (μ D ∘ e)  , ⌊ algOD E (fun (ornAlg O)) ⌋)
-         (e ⋈ proj₁      , ⌊ O ⊗ ⌈ singletonOD D ⌉ ⌋)
+         (e ⋈ proj₁      , ⌊ O ⊗ ⌈ S ⌉ ⌋)
 \end{code}
 We are attempting to establish that an algebraic ornamentation of~|E| is isomorphic to some other description; if that description is also an algebraic ornamentation of~|E|, then we can just reason in terms of their algebras.
-This is easy: from any ornament~|P : Orn f E ⌊ O ⊗ ⌈ singletonOD D ⌉ ⌋| we get an isomorphism 
+This is easy: from any ornament |P : Orn f E ⌊ O ⊗ ⌈ S ⌉ ⌋| we get an isomorphism 
 \begin{code}
-Iso Ōrn  (e ⋈ proj₁     , ⌊ O ⊗ ⌈ singletonOD D ⌉ ⌋)
+Iso Ōrn  (e ⋈ proj₁     , ⌊ O ⊗ ⌈ S ⌉ ⌋)
          (Σ J (Inv' f)  , ⌊ algOD E (clsAlg P) ⌋)
 \end{code}
-and there is an obvious choice of~|P| --- |diffOrn-l O ⌈ singletonOD D ⌉|.
+and there is an obvious choice of~|P| --- |diffOrn-l O ⌈ S ⌉|.
 The proof obligation thus reduces to
 \begin{code}
 Iso Ōrn  (Σ J (μ D ∘ e)  , ⌊ algOD E (fun (ornAlg O)) ⌋)
-         (Σ J (Inv' π₁)  , ⌊ algOD E (clsAlg (diffOrn-l O ⌈ singletonOD D ⌉)) ⌋)
+         (Σ J (Inv' π₁)  , ⌊ algOD E (clsAlg (diffOrn-l O ⌈ S ⌉)) ⌋)
 \end{code}
 which, by isomorphism preservation of |SliceF ⋄ AlgOrn|, is further reduced to
 \begin{code}
 Iso (RAlg E)  (μ D ∘ e  , fun (ornAlg O))
-              (Inv' π₁  , clsAlg (diffOrn-l O ⌈ singletonOD D ⌉))
+              (Inv' π₁  , clsAlg (diffOrn-l O ⌈ S ⌉))
 \end{code}
-
-
+This is a proof obligation that we can discharge more easily.
+For the carriers, we need to show
+\begin{code}
+μ D (e j) ≅ (Σ'(p ∶ e ⋈ proj₁)) π₁ p ≡ j
+\end{code}
+for every |j : J|, which is easy since the canonical form of~|p| is |(ok j , ok (e j , d))| for some |d : μ D (e j)|.
+For the algebras,
 
 \begin{code}
 

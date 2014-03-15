@@ -1,4 +1,4 @@
-\begin{thebibliography}{44}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -239,6 +239,12 @@
 \newblock The view from the left.
 \newblock \emph{Journal of Functional Programming}, 14(1):69--111.
 \newblock \doi{10.1017/S0956796803004829}.
+
+\bibitem[{Meertens(1992)}]{Meertens-paramorphisms}
+\bibfnamefont{Lambert} \bibnamefont{Meertens} [1992].
+\newblock Paramorphisms.
+\newblock \emph{Formal Aspects of Computing}, 4(5):413--424.
+\newblock \doi{10.1007/BF01211391}.
 
 \bibitem[{Meijer et~al.(1991)Meijer, Fokkinga, and Paterson}]{Meijer-bananas}
 \bibfnamefont{Erik} \bibnamefont{Meijer}, \bibfnamefont{Maarten}
