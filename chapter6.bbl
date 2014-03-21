@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -13,37 +13,12 @@
 \newblock \emph{Algebra of Programming}.
 \newblock Prentice-Hall.
 
-\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
-\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
-\newblock Transporting functions across ornaments.
-\newblock In \emph{International Conference on Functional Programming},
-  ICFP'12, pages 103--114. ACM.
-\newblock \doi{10.1145/2364527.2364544}.
-
-\bibitem[{Gibbons et~al.(2001)Gibbons, Hutton, and
-  Altenkirch}]{Gibbons-kernels}
-\bibfnamefont{Jeremy} \bibnamefont{Gibbons}, \bibfnamefont{Graham}
-  \bibnamefont{Hutton}, and \bibfnamefont{Thorsten} \bibnamefont{Altenkirch}
-  [2001].
-\newblock When is a function a fold or an unfold?
-\newblock \emph{Electronic Notes in Theoretical Computer Science},
-  44(1):146--160.
-\newblock \doi{10.1016/S1571-0661(04)80906-X}.
-
 \bibitem[{Ko and Gibbons(2011)}]{Ko-OAOAOO}
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
   \bibnamefont{Gibbons} [2011].
 \newblock Modularising inductive families.
 \newblock In \emph{Workshop on Generic Programming}, WGP'11, pages 13--24. ACM.
 \newblock \doi{10.1145/2036918.2036921}.
-
-\bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
-\bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
-  \bibnamefont{Gibbons} [2013].
-\newblock Modularising inductive families.
-\newblock \emph{Progress in Informatics}, 10:65--88.
-\newblock \doi{10.2201/NiiPi.2013.10.5}.
 
 \bibitem[{McBride(2011)}]{McBride-ornaments}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].

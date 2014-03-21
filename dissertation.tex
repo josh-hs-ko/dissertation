@@ -33,8 +33,7 @@
 \newcommand{\doi}[1]{\href{http://dx.doi.org/#1}{doi:~\nolinkurl{#1}}}
 \newcommand{\arXiv}[1]{\href{http://arxiv.org/abs/#1}{\nolinkurl{arXiv:#1}}}
 
-\usepackage[UKenglish]{isodate}
-\cleanlookdateon
+\usepackage{microtype}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -82,8 +81,8 @@
 
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hskip1em$\Box$} % \hskip1em(\textit{End of \lowercase{#1}}.)
-\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hskip1em$\Box$}
+\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hfill$\Box$} % \hskip1em(\textit{End of \lowercase{#1}}.)
+\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hfill$\Box$}
 \makeatother
 
 \usepackage{enumitem}
@@ -100,7 +99,7 @@
 \newcommand{\name}{\textsc}
 \newcommand{\Agda}{\name{Agda}}
 
-\newcommand{\sidenote}[1]{{\small\color[gray]{.45}(#1)}}
+\newcommand{\sidenote}[1]{{\color[gray]{.45}(#1)}}
 
 \usepackage{bussproofs}
 \EnableBpAbbreviations
@@ -109,6 +108,9 @@
 \setul{1.2pt}{.5pt}
 \renewcommand{\emph}{\ul}
 \newcommand{\key}{\textbf}
+
+\usepackage[UKenglish]{isodate}
+\cleanlookdateon
 
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
@@ -157,11 +159,12 @@
 
 \frontmatter
 
-\title{Analysis and synthesis of inductive families}
-\author{Hsiang-Shang Ko}
-\maketitle
+\subfile{titlepage}
 
-\tableofcontents
+\chapter{Acknowledgements}
+
+{\renewcommand{\MakeUppercase}{\relax}
+\tableofcontents}
 
 \mainmatter
 

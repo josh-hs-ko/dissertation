@@ -13,9 +13,9 @@ Several examples are given in \autoref{sec:internalism-examples}, followed by so
 \section{Relational programming in \Agda}
 \label{sec:relations}
 
-Functional programs are known for their amenability to algebraic calculation (see, e.g., \citet{Backus-liberated} and \citet{Bird-pearls}), leading to one form of program correctness by construction: one begins with a specification in the form of a functional program that expresses straightforward but possibly inefficient computation, and transforms it into an extensionally equal but more efficient functional program by applying algebraic laws and theorems.
+Functional programs are known for their amenability to algebraic calculation (see, e.g., \citet{Backus-liberated} and \citet{Bird-pearls}), leading to one form of program correctness by construction: one begins with a specification in the form of a functional program that expresses a straightforward but possibly inefficient computation, and transforms it into an extensionally equal but more efficient functional program by applying algebraic laws and theorems.
 Using functional programs as the specification language means that specifications are directly executable, but the deterministic nature of functional programs can result in less flexible specifications.
-For example, when specifying an optimisation problem using a functional program that generates all feasible solutions and chooses an optimal one among them, the program would enforce a particular way of choosing the optimal solution, but such enforcement should not be part of the specification.
+For example, when specifying an optimisation problem using a functional program that generates all feasible solutions and chooses an optimal one among them, the program necessarily enforces a particular way of choosing the optimal solution, but such enforcement should not in general be part of the specification.
 To gain more flexibility, the specification language was later generalised to \key{relational programs} (see, e.g., \citet{Bird-functional-algorithm-design}).
 With relational programs, we specify only the relationship between input and output without actually specifying a way to execute the programs, so specifications in the form of relational programs can be as flexible as possible.
 Though lacking a directly executable semantics, most relational programs can still be read computationally as potentially partial and nondeterministic mappings, so relational specifications largely remain computationally intuitive as functional specifications.
@@ -86,7 +86,7 @@ idR = fun id
 _•_ : {I : Set} {X Y Z : I → Set} → (Y ↝ Z) → (X ↝ Y) → (X ↝ Z)
 (R • S) x = S x >>= R
 \end{code}
-\item Some relations do not carry obvious computational meaning, which we can still define pointwise, like the \key{meet} of two relations:
+\item Some relations do not carry obvious computational meaning, but can still be defined pointwise, like the \key{meet} of two relations:
 \begin{code}
 _∩_ : {I : Set} {X Y : I → Set} → (X ↝ Y) → (X ↝ Y) → (X ↝ Y)
 (R ∩ S) x y = R x y × S x y
@@ -315,7 +315,7 @@ Roughly speaking, it retains (in the |σ|~case of |algROD|) all the fields of th
 \item the indices supplied in the previous field and 
 \item the values for the fields originally in the base description
 \end{itemize}
-computes to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| in |AlgList|).
+compute to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| in |AlgList|).
 \end{itemize}
 
 Algebraic ornamentation is a convenient method for adding new indices to inductive families.
@@ -326,7 +326,7 @@ We can thus easily translate relational expressions into internalist types for t
 \section{Examples}
 \label{sec:internalism-examples}
 
-We give three examples about three relational theorems.
+We give three examples involving three relational theorems.
 \begin{itemize}
 \item \autoref{sec:fold-fusion} shows how the \key{Fold Fusion Theorem}~\citep[Section~6.2]{Bird-AoP} gives rise to conversion functions between algebraically ornamented datatypes.
 \item \autoref{sec:metamorphism-streaming} implements the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} as an internalist program, whose type directly corresponds to the ``metamorphic'' specification stated by the theorem.
@@ -355,7 +355,7 @@ and the other variation simply reverses the direction of inclusion:
 \begin{flalign}
 &\hskip\mathindent |R • S ⊇ T • Ṙ D R| \quad|→|\quad |R • (cata(S)) ⊇ (cata(T))| \label{eq:fusion-supseteq} &
 \end{flalign}
-Both of them roughly state that a fold can be conditionally transformed into another.
+Both of them roughly state that one fold can be conditionally transformed into another.
 Since algebraically ornamented datatypes are datatypes with constraints expressed as a fold, we should be able to transform these constraints by the Fold Fusion Theorem while leaving the underlying data unchanged, thus converting one algebraically ornamented datatype into another.
 
 \begin{figure}
@@ -486,7 +486,7 @@ And from right to left:
 \hskip\mathindent \subseteq~& \reason{|geq| transitive} & \\
 \hskip\mathindent & |geq • fun length-alg| &
 \end{flalign*}
-Note that these calculations are good illustrations of the power of relational calculation despite their simplicity --- they are straightforward symbolic manipulations, hiding details like quantifier reasoning behind the scenes.
+Note that these calculations are good illustrations of the power of relational calculation because of their simplicity --- they are straightforward symbolic manipulations, hiding details like quantifier reasoning behind the scenes.
 As demonstrated by the \name{AoPA} library~\citep{Mu-AoPA}, they can be faithfully formalised with preorder reasoning combinators in \Agda\ and used to discharge the fusion conditions of |fusion-conversion-⊆| and |fusion-conversion-⊇|.
 Hence we get two conversions, one of type
 \begin{code}
@@ -604,7 +604,7 @@ which easily implies
 i.e., |fun (stream' f g x) ⊆ meta f g x|, as required.
 
 What is left is the implementation of |stream f g|.
-Operationally, we maintain a state of type~|X| (and hence requires an initial state as an input to the function), and we can try either
+Operationally, we maintain a state of type~|X| (and hence require an initial state as an input to the function), and we can try either
 \begin{itemize}
 \item to update the state by consuming elements of~|A| with~|f|, or
 \item to produce elements of~|B| (and transit to a new state) by applying~|g| to the state.
@@ -623,7 +623,7 @@ stream f g x      (cons a h'  refl as  )  | nothing     | [ gxeq ] =  stream f g
 We match~|g x| with either of the two patterns |next' b x' = (`cons , b , x' , tt)| and |nothing = (`nil , tt)|.
 \begin{itemize}
 \item If the result is |next' b x'|, we should emit~|b| and and use |x'| as the new state; the recursively computed algebraic list is indexed with~|h x'|, and we are left with a proof obligation of type |g (h x) ≡ next' b (h x')| at Goal~0; we will come back to this proof obligation later.
-\item If the result is |nothing|, we should attempt to consume the input list.
+\item If the result is |nothing|, we should attempt to consume from the input list.
 \begin{itemize}
 \item If the input list is empty, implying that the index~|h| of its type is just~|id|, both production and consumption have ended, so we return an empty list.
 The |nil| constructor requires a proof of |(fun g º) nothing (h x)|, which reduces to |g x ≡ nothing| and is discharged with the help of the ``inspect idiom'' in \Agda's standard library (which, in a |with|-matching, gives a proof that the term being matched (in this case |g x|) is propositionally equal to the matched pattern (in this case |nothing|)).
@@ -709,7 +709,7 @@ An input |x : X i| for some |i : I| is mapped by |min R •Λ S| to |y : Y i| if
 (We think of~|R| as mapping larger inputs to smaller outputs.)
 Intuitively, we can think of |min R •Λ S| as consisting of two steps: the first step |Λ S| computes the set of all possible results yielded by~|S|, and the second step |min R| nondeterministically chooses a minimum result from that set.
 We use bags of coins as the type of solutions, and represent them as decreasingly ordered lists indexed with an upper bound.
-(This is a deliberate choice to make the derivation work, but one would naturally turn to this representation having attempted to apply the \key{Greedy Theorem}, which will be introduced shortly.)
+(This is a deliberate choice to make the derivation work, but one would naturally be led to this representation having attempted to apply the \key{Greedy Theorem}, which will be introduced shortly.)
 If we define the ordering on coins as
 \begin{code}
 _≤C_ : Coin → Coin → Set
@@ -763,7 +763,7 @@ Can we construct the program and its correctness proof in a more manageable way?
 
 \subsubsection{The plan}
 
-In traditional relational program derivation, we would attempt to refine the specification |min-coin-change| to some simpler relational program and then to an executable functional program by applying algebraic laws and theorems.
+In traditional relational program derivation~\citep{Bird-AoP}, we would attempt to refine the specification |min-coin-change| to some simpler relational program and then to an executable functional program by applying algebraic laws and theorems.
 With algebraic ornamentation, however, there is a new possibility: if we can derive that, for some algebra |R : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ↝ const Nat|,
 \begin{flalign}
 &\hskip\mathindent |(cata(R)) º ⊆ min-coin-change| &
@@ -813,7 +813,7 @@ Thus all we need to do to solve the minimum coin change problem is
 
 \subsubsection{Refining the specification}
 
-The key to refining |min-coin-change| to the converse of a fold lies in the following version of the \key{Greedy Theorem}, which is a specialisation of \varcitet{Bird-AoP}{'s Theorem~10.1} modulo indexing:
+The key to refining |min-coin-change| to the converse of a fold lies in the following version of the \key{Greedy Theorem}, which is a specialisation of \citeauthor{Bird-AoP}'s Theorem~10.1 modulo indexing:
 Let |D : Desc I| be a description, |R : μ D ↝ μ D| a preorder, and |S : Ḟ D X ↝ X| an algebra.
 Consider the specification
 \begin{code}
@@ -840,7 +840,7 @@ The Greedy Theorem essentially reduces a \emph{global} optimisation problem (as 
 Here we offer an intuitive explanation of the Greedy Theorem, but the theorem admits an elegant calculational proof, which can be faithfully reprised in \Agda.
 The monotonicity condition states that if |ds : Ḟ D (μ D) i| for some |i : I| is better than |ds' : Ḟ D (μ D) i| under |Ṙ D R|, i.e., |ds|~and~|ds'| are equal except that the recursive positions of~|ds| are all better than the corresponding recursive positions of~|ds'| under~|R|, then |con ds : μ D i| would be better than |con ds' : μ D i| under~|R|.
 This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
-The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem which has significant influence on the quality of solutions:
+The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem that has significant influence on the quality of solutions:
 Suppose that there are two decompositions |xs| and |xs' : Ḟ D X i| of some problem |x : X i| for some |i : I|, i.e., both |xs|~and~|xs'| are in |S º x : (Power (Ḟ D X i))|, and assume that |xs|~is better than~|xs'| under~|Q|.
 Then for any solution resulting from~|xs'| (computed by |α • Ṙ D ((cata(S)) º)|) there always exists a better solution resulting from~|xs|, so ignoring~|xs'| would only rule out worse solutions.
 The greedy condition thus guarantees that we will arrive at an optimal solution by always choosing the best decomposition, which is done by |min Q •Λ (S º) : X ↝ Ḟ D X|.
@@ -1136,7 +1136,7 @@ At Goal~8, \Agda\ deduces that |n|~is |value d + n'| and demands that we prove |
 
 \autoref{sec:relations} heavily borrows techniques from the \name{AoPA} (Algebra of Programming in \Agda) library~\citep{Mu-AoPA} while making generalisations and adaptations:
 \name{AoPA} deals with non-dependently typed programs only, whereas to work with indexed datatypes we need to move to indexed families of relations; to work with the ornamental universe, we parametrise the relational fold with a description, making it fully datatype-generic, whereas \name{AoPA} has only specialised versions for lists and binary trees; we define |min_•Λ_| as a single operator (which happens to be the ``shrinking'' operator proposed by \citet{Mu-Galois}) to avoid the struggle with predicativity that \name{AoPA} had.
-All of the above are not fundamental differences between the work presented in this chapter and \name{AoPA}, though --- the two differ essentially in methodology: in \name{AoPA}, dependent types merely provide a foundation on which relational program derivations can be expressed formally and checked by machines, but the programs remain non-dependently typed throughout the formalisation, whereas in this chapter, relational programming is a tool for obtaining nontrivial inductive families that effectively guide program development as advertised as the strength of internalist programming.
+All of the above are not fundamental differences between the work presented in this chapter and \name{AoPA}, though --- the two differ essentially in methodology: in \name{AoPA}, dependent types merely provide a foundation on which relational program derivations can be expressed formally and checked by machine, but the programs remain non-dependently typed throughout the formalisation; whereas in this chapter, relational programming is a tool for obtaining nontrivial inductive families that effectively guide program development as advertised as the strength of internalist programming.
 In short, the focus of \name{AoPA} is on traditional relational program derivation (expressed in a dependently typed language), whereas our emphasis is on internalist programming (aided by relational programming).
 
 Algebraic ornamentation was originally proposed by \citet{McBride-ornaments}, which deals with functions only.
@@ -1152,8 +1152,8 @@ Internalist programming alone has limited power, however, because internalist pr
 In particular, there is no hope of integrating a correctness proof into a program when the structure of the proof is more complicated than that of the program.
 For example, it is hard to imagine how to integrate a correctness proof for the full specification of the minimum coin change problem into a program for the greedy algorithm.
 In essence, we have two kinds of proofs to deal with: the first kind follow program structure and can be embedded in internalist programs, and the second kind are general proofs of full specifications, which do not necessarily follow program structure and thus fall outside the scope of internalism.
-To exploit the power of internalism as much as possible, we need ways to reduce the second kind of proof obligations to the first kind --- note that such reduction involves not only constructing proof transformations but also determining what internalist proofs are sufficient for establishing proofs of full specifications.
-It turns out that relational program derivation is exactly one way in which we can construct such proof transformations systematically from specifications.
+To exploit the power of internalism as much as possible, we need ways to reduce the second kind of proof obligation to the first kind --- note that such reduction involves not only constructing proof transformations but also determining what internalist proofs are sufficient for establishing proofs of full specifications.
+It turns out that relational program derivation is precisely a way in which to construct such proof transformations systematically from specifications.
 In relational program derivation, we identify important forms of relational programs (i.e., relational composition, recursion schemes, and various other combinators), and formulate algebraic laws and theorems in terms of these forms.
 By applying the laws and theorems, we massage a relational specification into a known form which corresponds to a proof obligation that can be expressed in an internalist type, enabling transition to internalist programming.
 For example, we now know that a relational fold can be turned into an inductive family for internalist programming by algebraic ornamentation.

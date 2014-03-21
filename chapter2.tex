@@ -54,7 +54,7 @@ Hence, in type theory, the notion of propositions and proofs is subsumed by the 
 This is called the \key{propositions-as-types principle}, which reflects the observation that proofs are nothing but a certain kind of mental construction.
 
 Notice that the notion of ``effective methods'' --- or computation --- was presumed when the notion of sets was introduced, and at some point we need to concretely specify an effective method.
-Since the description of every set includes an effective way to construct its canonical inhabitants, it is possible to express an effective method that mimics the construction of an inhabitant by saying that the computation has the same structure as how the inhabitant is constructed, and the computation is guaranteed to terminate since the structure of the inhabitant is finitary.
+Since the description of every set includes an effective way to construct its canonical inhabitants, it is possible to express an effective method that mimics the construction of an inhabitant by saying that the computation has the same structure as how the inhabitant is constructed, and the computation is guaranteed to terminate since the construction of the inhabitant is finitary.
 For a typical example, let us look again at the natural numbers.
 Suppose that we have a \key{family of sets} |P : Nat → Set| indexed by inhabitants of~|Nat|.
 \sidenote{Since we only aim to present a casual sketch of type theory, we take the liberty of using \Agda\ functions (including |Set|-computing ones like |P|~above) in places where terms under contexts should have been used.}
@@ -742,7 +742,7 @@ With interactive development, internalist types not only passively rule out nons
 We will see several examples of such ``type-directed programming'' in this dissertation (notably in \autoref{sec:internalism-examples}).
 
 \block*{Historical remark}{
-The distinction between internalism and externalism goes back to at least simply typed $\lambda$-calculus à~la Church and Curry --- a Church-style $\lambda$-term always appears with its type and they together denote a value of the type, whereas Curry-style $\lambda$-terms are untyped and all reside in a common domain, and a term is later stated to have additional properties via typing.
+The distinction between internalism and externalism goes back at least to simply typed $\lambda$-calculus à~la Church and Curry --- a Church-style $\lambda$-term always appears with its type and they together denote a value of the type, whereas Curry-style $\lambda$-terms are untyped and all reside in a common domain, and a term is later stated to have additional properties via typing.
 \citet{Reynolds-intrinsic-extrinsic-semantics} characterised the two styles as giving ``intrinsic'' and ``extrinsic'' semantics to a language, and established relationship between the two kinds of semantics via logical relations.\todo{slightly more precisely?}
 Our emphasis is on a more practical aspect about how intrinsic and extrinsic semantics can affect the attitude and approach to program construction.}
 

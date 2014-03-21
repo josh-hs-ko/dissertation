@@ -1,4 +1,4 @@
-\begin{thebibliography}{77}
+\begin{thebibliography}{76}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -252,16 +252,6 @@
 \newblock Metamorphisms: Streaming representation-changers.
 \newblock \emph{Science of Computer Programming}, 65(2):108--139.
 \newblock \doi{10.1016/j.scico.2006.01.006}.
-
-\bibitem[{Gibbons et~al.(2001)Gibbons, Hutton, and
-  Altenkirch}]{Gibbons-kernels}
-\bibfnamefont{Jeremy} \bibnamefont{Gibbons}, \bibfnamefont{Graham}
-  \bibnamefont{Hutton}, and \bibfnamefont{Thorsten} \bibnamefont{Altenkirch}
-  [2001].
-\newblock When is a function a fold or an unfold?
-\newblock \emph{Electronic Notes in Theoretical Computer Science},
-  44(1):146--160.
-\newblock \doi{10.1016/S1571-0661(04)80906-X}.
 
 \bibitem[{Goguen et~al.(2006)Goguen, McBride, and McKinna}]{Goguen-elim}
 \bibfnamefont{Healfdene} \bibnamefont{Goguen}, \bibfnamefont{Conor}

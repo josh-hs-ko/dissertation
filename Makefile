@@ -5,8 +5,11 @@ all: dissertation
 clean:
 	cat .gitignore | xargs echo rm -f | sh
 
-dissertation: processed-agda-preamble.tex processed-chapter1.tex processed-chapter2.tex processed-chapter3.tex processed-chapter4.tex processed-chapter5.tex processed-chapter6.tex processed-chapter7.tex
+dissertation: titlepage.tex processed-agda-preamble.tex processed-chapter1.tex processed-chapter2.tex processed-chapter3.tex processed-chapter4.tex processed-chapter5.tex processed-chapter6.tex processed-chapter7.tex
 	pdflatex dissertation
+
+titlepage: titlepage.tex
+	pdflatex titlepage
 
 processed-agda-preamble.tex: agda-preamble.tex
 	$(lhs2TeX) --agda agda-preamble.tex -o processed-agda-preamble.tex

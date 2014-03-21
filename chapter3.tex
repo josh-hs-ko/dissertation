@@ -135,11 +135,11 @@ The coherence-based definition, however, can be more easily generalised for func
 \subsection{Upgrades}
 \label{sec:upgrades}
 
-Refinements are less useful when we move on to function types: the requirement that a conversion isomorphism exists between related function types is too strong (even when we use extensional equality for functions so isomorphisms between function types make more sense).
+\todo[inline]{Refinements are less useful when we move on to function types: the requirement that a conversion isomorphism exists between related function types is too strong (even when we use extensional equality for functions so isomorphisms between function types make more sense).
 For example, it is not --- and should not be --- possible to have a refinement from the function type |Nat → Nat| to the function type |List Nat → List Nat|, despite that the component types |Nat| and |List Nat| are related by a refinement: if such a refinement existed, we would be able to extract from any function |f : List Nat → List Nat| an ``underlying'' function of type |Nat → Nat| which ``has roughly the same behaviour'' as~|f|.
 However, the behaviour of a function taking a list may depend essentially on the list elements, which is not available to a function taking only a natural number.
 For example, a function of type |List Nat → List Nat| might compute the sum~|s| of the input list and emit a list of length~|s| whose elements are all |zero|.
-We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.
+We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.}
 
 It is only the decomposing direction of refinements that causes problems in the case of function types, however; the promoting direction is perfectly valid for function types.
 For example, to promote the function doubling a natural number
@@ -477,7 +477,7 @@ It is worth emphasising again that ornaments encode only horizontal transformati
 \begin{figure}
 \codefigure\small\vskip-\baselineskip
 \begin{code}
-data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁ where
+data ROrnDesc J e : RDesc I → Set₁ where
   ṿ   :  {is : List I} (js : Ṗ is (Inv e)) → ROrnDesc J e (ṿ is)
   σ   :  (S : Set) {D : S → RDesc I}
          (OD : (s : S) → ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
@@ -485,40 +485,39 @@ data ROrnDesc {I : Set} (J : Set) (e : J → I) : RDesc I → Set₁ where
   ∇   :  {S : Set} (s : S) {D : S → RDesc I}
          (OD : ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
 
-und-Ṗ : {I J : Set} {e : J → I} (is : List I) → Ṗ is (Inv e) → List J
-und-Ṗ []        tt        = []
-und-Ṗ (i ∷ is)  (j , js)  = und j ∷ und-Ṗ is js
+Ṗ-toList : {X : I → List} → (X ⇉ const J) → (is : List I) → Ṗ is X → List J
+Ṗ-toList f []        tt        = []
+Ṗ-toList f (i ∷ is)  (x , xs)  = f x ∷ Ṗ-toList f is xs
 
-toRDesc : {I J : Set} {e : J → I} {D : RDesc I} → ROrnDesc J e D → RDesc J
-toRDesc (ṿ {is} js)  = ṿ (und-Ṗ is js)
+toRDesc : {D : RDesc I} → ROrnDesc J e D → RDesc J
+toRDesc (ṿ {is} js)  = ṿ (Ṗ-toList und is js)
 toRDesc (σ S OD)     = (σ'(s ∶ S)) toRDesc (OD s)
 toRDesc (Δ T OD)     = (σ'(t ∶ T)) toRDesc (OD t)
 toRDesc (∇ s OD)     = toRDesc OD
 
-toEq : {I J : Set} {e : J → I} (j : e ⁻¹ i) → e (und j) ≡ i
+toEq : {i : I} (j : e ⁻¹ i) → e (und j) ≡ i
 toEq (ok j) = refl
 
-toEq-Ṗ :  {I J : Set} {e : J → I} (is : List I) (js : Ṗ is (Inv e)) → Ė e (und-Ṗ is js) is
-toEq-Ṗ []        tt        = []
-toEq-Ṗ (i ∷ is)  (j , js)  = toEq j ∷ toEq-Ṗ is js
+Ṗ-toEq : (is : List I) (js : Ṗ is (Inv e)) → Ė e (Ṗ-toList und is js) is
+Ṗ-toEq []        tt        = []
+Ṗ-toEq (i ∷ is)  (j , js)  = toEq j ∷ Ṗ-toEq is js
 
-toROrn :   {I J : Set} {e : J → I} {D : RDesc I}
-           (OD : ROrnDesc J e D) → ROrn e D (toRDesc OD)
-toROrn (ṿ {is} js)  = ṿ (toEq-Ṗ is js)
+toROrn : {D : RDesc I} (OD : ROrnDesc J e D) → ROrn e D (toRDesc OD)
+toROrn (ṿ {is} js)  = ṿ (Ṗ-toEq is js)
 toROrn (σ S OD)     = (σ'(s ∶ S)) toROrn (OD s)
 toROrn (Δ T OD)     = (Δ'(t ∶ T)) toROrn (OD t)
 toROrn (∇ s OD)     = (∇'(s)) (toROrn OD)
 
-OrnDesc : {I : Set} (J : Set) (e : J → I) (D : Desc I) → Set₁
+OrnDesc J e : Desc I → Set₁
 OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
 
-⌊_⌋ : {I J : Set} {e : J → I} {D : Desc I} → OrnDesc J e D → Desc J
+⌊_⌋ : {D : Desc I} → OrnDesc J e D → Desc J
 ⌊ OD ⌋ j = toRDesc (OD (ok j))
 
-⌈_⌉ : {I J : Set} {e : J → I} {D : Desc I} (OD : OrnDesc J e D) → Orn e D ⌊ OD ⌋
+⌈_⌉ : {D : Desc I} (OD : OrnDesc J e D) → Orn e D ⌊ OD ⌋
 ⌈ OD ⌉ (ok j) = toROrn (OD (ok j))
-\end{code}\vskip-\baselineskip
-\caption{Definitions for ornamental descriptions.}
+\end{code}
+\caption{Definitions for ornamental descriptions, where |I|, |J : Set| and |e : J → I|.}
 \label{fig:ornamental-descriptions}
 \end{figure}
 
@@ -817,7 +816,7 @@ und-fromEq e refl = refl
 
 diff-Ė-l :  {I J K : Set} {e : J → I} {f : K → I} →
             {is : List I} {js : List J} {ks : List K} →
-            (eeqs : Ė e js is) (feqs : Ė f ks is) → Ė π₁ (und-Ṗ is (pc-Ė eeqs feqs)) js
+            (eeqs : Ė e js is) (feqs : Ė f ks is) → Ė π₁ (Ṗ-toList und is (pc-Ė eeqs feqs)) js
 diff-Ė-l           []            []            = []
 diff-Ė-l {e := e}  (eeq ∷ eeqs)  (feq ∷ feqs)  = und-fromEq e eeq ∷ diff-Ė-l eeqs feqs
 

@@ -3,7 +3,7 @@
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}[x=4em, y=4em]
+\begin{tikzpicture}[x=4em, y=4em, baseline=(Fun.base)]
 \node(Orn) {|Ōrn|};
 \node(Fam) [below=1.5 of Orn] {|Fam|};
 \node(FRef) [left=1 of Fam] {|FRef|};
@@ -44,7 +44,7 @@ It is desirable to have a macroscopic characterisation of parallel composition, 
 Both sets of isomorphisms are about the optimised predicates~(\autoref{sec:optimised-predicates}), which are defined in terms of parallel composition with singleton ornamentation~(\autoref{sec:ornamental-descriptions}).
 We thus expect that the existence of these isomorphisms can be explained in terms of properties of parallel composition and singleton ornamentation.
 \end{itemize}
-A lightweight organisation of the ornament--refinement framework in basic category theory~\citep{MacLane-categories} can help to fill up all these holes.
+A lightweight organisation of the ornament--refinement framework in basic category theory~\citep{MacLane-categories} can help to fill in all these holes.
 In more detail:
 \begin{itemize}
 \item Categories and functors are abstractions for compositional structures and structure-preserving maps between them.
@@ -52,7 +52,7 @@ Facts about translations between ornaments, refinements, and functions can thus 
 The categories and functors used in this chapter are summarised in \autoref{fig:categories}.
 \item Parallel composition merges two compatible ornaments and does nothing more; in other words, it computes the least informative ornament that contains the information of both ornaments.
 Characterisation of such \key{universal constructions} is a speciality of category theory; in our case, parallel composition can be shown to be a categorical \key{pullback}~(\autoref{sec:parallel-composition-pullback}).
-\item Universal constructions are unique up to isomorphism, so it is convenient to establish isomorphisms about universal constructions.
+\item Universal constructions are unique up to isomorphism, so it is convenient for establishing isomorphisms about universal constructions.
 The status of parallel composition being a pullback can thus help to construct the ornamental conversion isomorphisms (in \autoref{sec:ornamental-conversion-isomorphisms}) and the modularity isomorphisms (in \autoref{sec:modularity-isomorphisms}).
 \end{itemize}
 \autoref{sec:categorical-discussion} concludes with some discussion.
@@ -87,7 +87,7 @@ _·_  : {X Y Z : Object} → (Y ==> Z) → (X ==> Y) → (X ==> Z)
 which has left and right identities and is associative.
 
 \block{Syntactic remark}{universe polymorphism}{Many definitions in this chapter (like |Graph| above) employ \Agda's \key{universe polymorphism}~\citep{Harper-universes}, so the definitions can be instantiated at suitable levels of the |Set| hierarchy as needed.
-(For example, the type of |Fun-graph| is implicitly instantiated as |Graph {1} {0}|, since both |Set| is of type |Set₁| and and any |A → B| (where |A|, |B : Set|) are of type |Set| ($=$~|Set₀|), and |Graph {1} {0}| itself is of type |Set₂|, whose level is computed by taking the successor of the maximum of the two level arguments.)
+(For example, the type of |Fun-graph| is implicitly instantiated as |Graph {1} {0}|, since both |Set| is of type |Set₁| and any |A → B| (where |A|, |B : Set|) are of type |Set| ($=$~|Set₀|), and |Graph {1} {0}| itself is of type |Set₂|, whose level is computed by taking the successor of the maximum of the two level arguments.)
 We will give the first few universe-polymorphic definitions with full detail about the levels, but will later suppress the syntactic noise wherever possible.}
 
 Before we move on to the definition of categories, though, special attention must be paid to equality on morphisms, which is usually coarser than definitional equality --- in |Fun|, for example, it is necessary to identify functions up to extensional equality (so uniqueness of morphisms in universal properties would make sense).
@@ -416,7 +416,7 @@ Thus, to prove that two constructions are isomorphic, one way is to prove that t
 This is the main method we use to construct the ornamental conversion isomorphisms in \autoref{sec:ornamental-conversion-isomorphisms} and the modularity isomorphisms in \autoref{sec:modularity-isomorphisms}, both involving parallel composition.
 The goal of the rest of this section is to find suitable universal properties that characterise parallel composition, preparing for Sections \ref{sec:ornamental-conversion-isomorphisms}~and~\ref{sec:modularity-isomorphisms}.
 
-\subsubsection{Products}
+\subsubsection{Span categories and products}
 
 As said earlier, parallel composition computes the least informative ornament that contains the information of two compatible ornaments, and this is exactly a categorical \key{product}.
 Below we construct the definition of categorical products step by step.
@@ -731,7 +731,7 @@ It turns out that the pullback property~(\ref{eq:Fun-pullback}) in |Fun| can hel
 \begin{itemize}
 
 \item Set-theoretically, the vertex of a pullback of two functions |f : A → C| and |g : B → C| is isomorphic to |(Σ'(p ∶ A × B)) f (proj₁ p) ≡ g (proj₂ p)|; the more information |f|~and~|g| carries into~|C|, the stronger the equality constraint.
-An extreme case is when |C|~is just~|B| and |g|~is identity (which retains all information): the equality constraint reduces to |f (outl p) ≡ outr p|, so the second component of~|p| is completely determined by the first component, and thus the vertex is isomorphic to just~|A|.
+An extreme case is when |C|~is just~|B| and |g|~is the identity (which retains all information): the equality constraint reduces to |f (outl p) ≡ outr p|, so the second component of~|p| is completely determined by the first component, and thus the vertex is isomorphic to just~|A|.
 The same situation happens for the following pullback square:
 \begin{equation}
 \begin{tikzpicture}[scale=5,baseline=(D.base)]
@@ -765,7 +765,7 @@ so by~(\ref{eq:vertex-iso}) we obtain an isomorphism
 \item To get from~(\ref{eq:rep-iso-raw}) to~(\ref{eq:rep-iso}), we need to look more closely into the construction of~(\ref{eq:rep-iso-raw}).
 The right-to-left direction of~(\ref{eq:rep-iso-raw}) is obtained by applying the universal property of~(\ref{eq:E-square}) to the square~(\ref{eq:Fun-pullback}) (with |P|~substituted by~|⌈ S ⌉|), so it is the unique mediating morphism~|m| that makes the following diagram commute:
 \begin{center}
-\begin{tikzpicture}[xscale=3, yscale=3.5]
+\begin{tikzpicture}[xscale=3, yscale=3.5, baseline=(E'.base)]
 \node(E) at (0, 0) {|Σ J (μ E)|};
 \node(E') at (-1, .5) {|Σ J (μ E)|};
 \node(S) at (1, .5) {|Σ (Σ I (μ D)) (μ ⌊ S ⌋)|};
@@ -846,7 +846,7 @@ For fixed |i|, |j|, |k|, and~|x|, the set
 N (ok (j , k) , ok (i , x))
 \end{code}
 along with the cartesian projections is a product, which trivially extends to a pullback since there is a forgetful function from each of the two component sets to the \emph{singleton} set |μ ⌊ S ⌋ (i , x)|, as shown in the following diagram:
-\[ \begin{tikzpicture}[scale=5]
+\[ \begin{tikzpicture}[scale=5, baseline=(D.base)]
 \node(D) at (1.25, 0) {|μ ⌊ S ⌋ (i , x)|};
 \node(E) at (0, 0) {|μ ⌊ O  ⊗ ⌈ S ⌉ ⌋ (j , ok (i , x))|};
 \node(F) at (1.25, .5) {|μ ⌊ P  ⊗ ⌈ S ⌉ ⌋ (k , ok (i , x))|};
@@ -944,9 +944,9 @@ For example, the functor |Ind| from |Ōrn| to |Fam| is itself a summary of the f
 \item sequential composition of ornaments, and the fact that the forgetful function for any sequentially composed ornament |O ⊙ P| is extensionally equal to the composition of the forgetful functions for |O|~and~|P| (since functors preserve composition).
 \end{itemize}
 Most importantly, a categorical pullback structure emerges from the framework, which gives a macroscopic meaning to the microscopic type-theoretical definition of parallel composition (thus ensuring that the definition is not an arbitrary one), and enables constructions of the ornamental conversion isomorphisms and the modularity isomorphisms on a more abstract level.
-Compared to the constructions of the isomorphisms of \citet{Ko-pcOrn} using datatype-generic induction, the constructions presented in this chapter offer more insights and are easier to understand: after establishing the pullback properties of parallel composition, at the root of the ornamental conversion isomorphisms is the intuition that singleton ornamentation does not add information, and the modularity isomorphisms stem from the fact that the \emph{pointwise} conjunction of optimised predicates trivially extends to a pullback.
+Compared to the constructions of the isomorphisms using datatype-generic induction in previous work~\citep{Ko-pcOrn}, the constructions presented in this chapter offer more insights and are easier to understand: after establishing the pullback properties of parallel composition, at the root of the ornamental conversion isomorphisms is the intuition that singleton ornamentation does not add information, and the modularity isomorphisms stem from the fact that the \emph{pointwise} conjunction of optimised predicates trivially extends to a pullback.
 Also, the categorical constructions are impervious to change of representation of the universes of descriptions and ornaments; modification to the universes only affects constructions logically prior to the pullback property~(\ref{eq:Fam-pullback}).
-This statement is empirically verified --- the representation of the universes really had to be changed once after carrying out the categorical constructions.
+This statement is empirically verified --- the representation of the universes really had to be changed once after carrying out the categorical constructions, but the consequences of this change of representation were limited.
 
 \citet{Dagand-categorical-ornaments} provided a purely categorical treatment of ornaments using fibred category theory, which is quite independent of the development in this chapter, though.
 They established correspondences between descriptions and polynomial functors~\citep{Gambino-polynomial-functors} and between ornaments and cartesian morphisms, and sketched how several operations on ornaments correspond to certain categorical notions (including pullbacks), all of which are ultimately based on the abstract notion of locally cartesian closed categories.
@@ -955,7 +955,7 @@ Methodologically, there is another notable difference: \citeauthor{Dagand-catego
 In the light of the propositions-as-types principle, though, a further step should be taken: rather than merely making a connection between software artifacts that have the necessary level of detail and mathematical objects that possess desired abstract properties, we should design the software artifacts such that they satisfy the abstract properties themselves, all expressed in one uniform language, so the detail of the artifacts can be effectively managed by reasoning in terms of the abstract properties.
 In this spirit, category theory is regarded in this chapter as providing a set of abstractions that are internalised in type theory, as opposed to being an independent formalism.
 Ornaments are complex, but the complexity is necessary (as justified in \autoref{sec:ornament-refinement-discussion}) and hence can only be somehow managed rather than being eliminated.
-Fortunately, ornaments exhibit a useful categorical structure, and we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure.
+Fortunately, ornaments exhibit useful categorical structure, and we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure.
 
 The results of this chapter are completely formalised in \Agda.
 The setoid approach to managing morphism equivalence works reasonably well for this chapter, being able to express extensional equality (e.g., in |Fun| and |Fam|), proof irrelevance (e.g., in |SpanCategory| and |SliceCategory|), and layered definitions of equality (e.g., morphism equivalence in |SquareCategory| is ultimately defined in terms of morphism equivalence in the ambient category).
