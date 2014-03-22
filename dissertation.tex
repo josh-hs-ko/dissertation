@@ -37,8 +37,8 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~#1}{}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~#1}{\textbf{\thechapter}~~~#1}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~#1}}
 \fancyhf{}
 \fancyhead[LE, RO]{\thepage}
 \fancyhead[RE]{\leftmark}
@@ -79,10 +79,17 @@
 \usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
 
+\def\endofblock{%   
+   % according to the TeX book, at the end of Chapter 14:
+   \unskip\nobreak\hfill\penalty50
+   \hskip1em\hbox{}
+   \hfill\endofblockmark}
+   %\parfillskip=0pt\finalhyphendemerits=0
+\def\endofblockmark{$\Box$}
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\hfill$\Box$} % \hskip1em(\textit{End of \lowercase{#1}}.)
-\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\hfill$\Box$}
+\newcommand{\@block}[2]{\begingroup\noindent\textbf{#1.}\hskip1em #2\endofblock\endgroup} % \hskip1em(\textit{End of \lowercase{#1}}.)
+\newcommand{\@@block}[3]{\begingroup\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\endofblock\endgroup}
 \makeatother
 
 \usepackage{enumitem}
@@ -111,6 +118,10 @@
 
 \usepackage[UKenglish]{isodate}
 \cleanlookdateon
+
+%\usepackage{mathtools}
+%\newtagform{bold}[\textbf]{(}{)}
+%\usetagform{bold}
 
 \usepackage{amsmath}
 \usepackage[sc]{mathpazo}
@@ -161,7 +172,7 @@
 
 \subfile{titlepage}
 
-\chapter{Acknowledgements}
+%\chapter{Acknowledgements}
 
 {\renewcommand{\MakeUppercase}{\relax}
 \tableofcontents}

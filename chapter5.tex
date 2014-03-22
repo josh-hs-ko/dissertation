@@ -392,7 +392,7 @@ fusion-conversion-⊆ D R S T fcond-⊆ :
   {i : I} (x : X i) → μ ⌊ algOD D S ⌋ (i , x) →
   (y : Y i) → R x y → μ ⌊ algOD D T ⌋ (i , y)
 \end{code}
-This function does not alter the underlying |(μ D)|--data, which can be easily expressed by \emph{upgrading}~(\autoref{sec:upgrades}) the identity function on~|μ D| to its type.
+This function does not alter the underlying |(μ D)|-data, which can be easily expressed by \emph{upgrading}~(\autoref{sec:upgrades}) the identity function on~|μ D| to its type.
 We thus write the following upgrade
 \begin{code}
 upg-⊆ : Upgrade  ({i : I} → μ D i → μ D i)
@@ -425,7 +425,7 @@ The coherence property
 {y : Y i} → R x y →
   forget ⌈ algOD D T ⌉ (fusion-conversion-⊆ D R S T fcond-⊆ d') ≡ id d
 \end{code}
-then states that the conversion function transforms the underlying |(μ D)|--data in the same way as~|id|, i.e., it leaves the underlying data unchanged.
+then states that the conversion function transforms the underlying |(μ D)|-data in the same way as~|id|, i.e., it leaves the underlying data unchanged.
 Similarly for~(\ref{eq:fusion-supseteq}), assuming that we have
 \begin{code}
 fcond-⊇ : R • S ⊇ T • Ṙ D R

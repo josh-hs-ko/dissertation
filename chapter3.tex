@@ -376,7 +376,7 @@ In terms of the two-dimensional metaphor mentioned towards the end of \autoref{s
 For example, the |length| function discards elements associated with cons nodes, shrinking the list horizontally to a natural number, but keeps the vertical structure (i.e., the |con| nodes) intact.
 Look more closely:
 Given |y : μ E j|, we should transform it into an inhabitant of type |μ D (e j)|.
-Deconstructing~|y| into |con ys| where |ys : ⟦ E j ⟧ (μ E)| and assuming that the |(μ E)|--inhabitants at the recursive positions of~|ys| have been inductively transformed into |(μ D ∘ e)|--inhabitants, we horizontally modify the resulting structure of type |⟦ E j ⟧ (μ D ∘ e)| to one of type |⟦ D (e j) ⟧ (μ D)|, which can then be wrapped by |con| to an inhabitant of type |μ D (e j)|.
+Deconstructing~|y| into |con ys| where |ys : ⟦ E j ⟧ (μ E)| and assuming that the |(μ E)|-inhabitants at the recursive positions of~|ys| have been inductively transformed into |(μ D ∘ e)|-inhabitants, we horizontally modify the resulting structure of type |⟦ E j ⟧ (μ D ∘ e)| to one of type |⟦ D (e j) ⟧ (μ D)|, which can then be wrapped by |con| to an inhabitant of type |μ D (e j)|.
 The above steps are performed by the \key{ornamental algebra} induced by~|O|:
 \begin{code}
 ornAlg O : Ḟ E (μ D ∘ e) ⇉ (μ D ∘ e)
@@ -388,7 +388,7 @@ The forgetful function is then defined by
 forget O : μ E ⇉ (μ D ∘ e)
 forget O = fold (ornAlg O)
 \end{code}
-Hence an ornament of type |Orn e D E| contains, for each index request~|j|, a response ornament of type |ROrn e (D (e j)) (E j)| to cope with all possible horizontal structures that can occur in a |(μ E)|--inhabitant.
+Hence an ornament of type |Orn e D E| contains, for each index request~|j|, a response ornament of type |ROrn e (D (e j)) (E j)| to cope with all possible horizontal structures that can occur in a |(μ E)|-inhabitant.
 The definition of |Orn| given above is a restatement of this in an intensionally more flexible form (whose indexing style corresponds to that of refinement families).
 
 Now we look at the definitions of |ROrn| and |erase|, followed by explanations of the four cases.

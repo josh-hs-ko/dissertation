@@ -568,7 +568,7 @@ For any |f : Ḟ D X ⇉ X| and |g : Ḟ D Y ⇉ Y| we have
 \begin{code}
 fold f ▵ fold g ≐ fold ((f ∘ Ḟ-map D proj₁) ▵ (g ∘ Ḟ-map D proj₂))
 \end{code}
-The left-hand side of the equation traverses a (|μ D|)--inhabitant by two independent folds, while the right-hand side combines the two traversals into a single fold using a composite algebra.
+The left-hand side of the equation traverses a |(μ D)|-inhabitant by two independent folds, while the right-hand side combines the two traversals into a single fold using a composite algebra.
 This composite algebra, when generalised straightforwardly to relations, gives rise to a product in |RAlg D|:
 Let |R : Ḟ D X ↝ X| and |S : Ḟ D Y ↝ Y|.
 We define the ``banana-split algebra'' of |R|~and~|S| by
@@ -683,7 +683,7 @@ Let |j : J|, |ds : ⟦ E j ⟧ (μ D ∘ e)|, and |d : μ D (e j)|.
 \begin{itemize}
 \item The type |fun (ornAlg O) ds d| reduces to |con (erase O ds) ≡ d|.
 Matching~|d| with |con ds'| where |ds' : ⟦ D (e j) ⟧ (μ D)|, we get to an isomorphic type |erase O ds ≡ ds'|.
-Since |erase| modifies only the shape part, this decomposes into two conditions: \,(i)~that the result of applying |erase-Ṡ (O (ok j))| to the shape part of~|ds| is equal to the shape part of~|ds'|, and \,(ii)~that the series of (|μ D|)--inhabitants contained in |ds|~and~|ds'| are equal.
+Since |erase| modifies only the shape part, this decomposes into two conditions: \,(i)~that the result of applying |erase-Ṡ (O (ok j))| to the shape part of~|ds| is equal to the shape part of~|ds'|, and \,(ii)~that the series of |(μ D)|-inhabitants contained in |ds|~and~|ds'| are equal.
 \item On the other hand, setting |wds = mapRD (E j) wrap ds|, a proof of type
 \begin{code}
 clsAlg (diffOrn-l O ⌈ S ⌉) wds (wrap (con ds'))
@@ -698,23 +698,36 @@ By |pcROD-iso|, this decomposes into two shapes |ts : Ṡ (E j)| and |ss : Ṡ (
 erase-Ṡ (O (ok j)) ts ≡ erase-Ṡ (⌈ S ⌉ (ok (e j , con ds'))) ss
 \end{code}
 The right-hand side is equal to the shape part of~|ds'|, and by the first equation associated with~|ts|, the left-hand side is equal to the result of applying |erase-Ṡ (O (ok j))| to the shape part of~|wds|, i.e., the shape part of~|ds| --- this corresponds to condition~(i).
-For condition~(ii), |⌊ S ⌋| uses the |(μ D)|--inhabitants contained in~|ds'| as the indices at the recursive positions, which, by the second equation associated with~|ts|, are just the (|μ D|)--inhabitants contained in~|wds|, i.e., those contained in~|ds|.
+For condition~(ii), |⌊ S ⌋| uses the |(μ D)|-inhabitants contained in~|ds'| as the indices at the recursive positions, which, by the second equation associated with~|ts|, are just the |(μ D)|-inhabitants contained in~|wds|, i.e., those contained in~|ds|.
 \end{itemize}
 
 
 \section{Discussion}
 \label{sec:equivalence-discussion}
 
-Starting from \autoref{chap:categorical}, we have been carefully evading the formalisation of isomorphism of categories.
+As mentioned in the beginning, the results of this chapter are only partially formalised.
+Specifically, the formalised results include
+\begin{itemize}
+\item everything in \autoref{sec:ornaments-and-horizontal-transformations}\todo{(except pullback)},
+\item general definition of categorical equivalences (which, unlike general isomorphisms of categories, can be easily defined with our formalisation of categories),
+\item definition of |RAlg|,
+\item the isomorphism |algROD-iso|,
+\item the completeness theorem~(\ref{eq:AlgOrn-ClsAlg-inverse}) for a different version of classifying algebras, and
+\item the banana-split algebra as a product in |RAlg|.
+\end{itemize}
+The rest are worked out on paper, skipping over tedious type-theoretic detail.
+In general, while the internalist typing of constructions about descriptions and ornaments works well in \autoref{chap:refinements-and-ornaments}, ensuring that every expression we write down makes sense, the encoded constraints need to be reasoned about non-trivially in this chapter, and this is greatly hindered because the constraints are implicitly coupled with the expressions in a particular way --- here externalism can be much more helpful.
+(For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.)
 
-\todo[inline]{implicit change from |Inv| to |Inv'|; additional proofs about intricately typed programs}
-
-The categorical equivalence prompts us to further contemplate why we need ornaments: if relational algebras can express the same relationship between datatypes as ornaments, what benefit do ornaments provide that justifies their existence?
-The answer is finer-grained control of representation down to the level of individual fields.
+The categorical equivalence prompts us to contemplate again why we need ornaments: if relational algebras can express the same refinement relationships between datatypes as ornaments and can offer corresponding constructions as shown in \autoref{sec:banana-split}, what extra benefit do ornaments provide that justifies their existence?
+Firstly, relational algebras describe how to classify inhabitants of existing datatypes to obtain more informative datatypes, and hence correspond more closely to \emph{ornamental descriptions}, which are more restrictive than ornaments as explained in the beginning of \autoref{sec:ornament-refinement-discussion} --- indeed, the categorical equivalence is between |RAlg| and the \emph{slice category} on top of |Ōrn|.
+Even when we restrict the comparison to one between relational algebras and ornamental descriptions, the latter still offer finer-grained control of representation, down to the level of individual fields.
+For example, while we can get a datatype of vectors by specialising |AlgList| with a suitable algebra, the index-first, representation-optimised version can only be obtained via ornamentation.
+We can thus think of ornamental descriptions as a form of relational algebras that allow us to additionally specify representation optimisation, and the categorical equivalence lets us switch between the two forms of specifications of datatype refinement relationships.
 
 The example about ornamental algebraic ornamentation in \autoref{sec:OAO} shows that we can reduce reasoning about datatypes to reasoning about algebras via the categorical equivalence.
-The discharging of the proof obligation~(\ref{eq:OAO-RAlg}) is admittedly unsatisfactory, however --- discharging the earlier proof obligation~(\ref{eq:OAO-Orn}) could in fact be more straightforward.
-For the reduction to be justified, reasoning about algebras has to be easier, e.g., in the algebraic style of \citet{Bird-AoP}.
+The discharging of the proof obligation~(\ref{eq:OAO-RAlg}) is unsatisfactory, however --- discharging the earlier proof obligation~(\ref{eq:OAO-Orn}) could in fact be more straightforward.
+For the reduction to be justified, reasoning about algebras has to be easier, e.g., in the calculational style of \citet{Bird-AoP}.
 This requires formulation of calculational laws for algebras defined datatype-generically on top of the universes of descriptions and ornaments; furthermore, these laws have to be strengthened to establish isomorphisms --- rather than merely bi-implications --- between algebras.
 (The lemma |fun-preserves-fold| stated at the end of \autoref{sec:relations} is an example.)
 In short: the categorical equivalence points out not only the possibility of reasoning about datatypes algebraically, but also the need for algebraic reasoning to receive a \emph{proof-relevant} revision for that purpose.
