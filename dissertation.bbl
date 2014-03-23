@@ -444,8 +444,8 @@
 
 \bibitem[{Norell(2007)}]{Norell-thesis}
 \bibfnamefont{Ulf} \bibnamefont{Norell} [2007].
-\newblock \emph{Towards a practical programming language based on dependent
-  type theory}.
+\newblock \emph{Towards a Practical Programming Language based on Dependent
+  Type Theory}.
 \newblock Ph.D. thesis, Chalmers University of Technology.
 
 \bibitem[{Norell(2009)}]{Norell-Agda}
