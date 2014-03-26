@@ -1,7 +1,7 @@
 \chapter{Relational algebraic ornamentation}
 \label{chap:algebraic}
 
-This chapter turns to the \key{synthetic} direction of the interconnection between internalism and externalism. \todo{analytic direction}
+This chapter turns to the \key{synthetic} direction of the interconnection between internalism and externalism.
 As stated in \autoref{sec:externalism-and-internalism}, internalist types can be hard to read and write, and it would be helpful to be able to switch to an alternative language for understanding and deriving internalist types.
 The alternative language adopted in this chapter is the \key{relational} language~(\autoref{sec:relations}), of which \citet{Bird-AoP} gave an authoritative account.
 Unlike the datatype declaration language, using relations we can give concise yet computationally intuitive specifications, which are amenable to manipulation by algebraic laws and theorems.
@@ -319,7 +319,7 @@ compute to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| i
 \end{itemize}
 
 Algebraic ornamentation is a convenient method for adding new indices to inductive families.
-(We will see in \autoref{chap:equivalence} that it is actually a \emph{canonical} way to refine inductive families by ornamentation.)
+(We will see in \autoref{chap:equivalence} that it is actually a canonical way to refine inductive families by ornamentation.)
 Most importantly, the conversion isomorphisms~(\ref{eq:algOD}) state clearly what the new indices mean in terms of relations.
 We can thus easily translate relational expressions into internalist types for type-directed programming, as demonstrated in the next section.
 
@@ -764,7 +764,7 @@ Can we construct the program and its correctness proof in a more manageable way?
 \subsubsection{The plan}
 
 In traditional relational program derivation~\citep{Bird-AoP}, we would attempt to refine the specification |min-coin-change| to some simpler relational program and then to an executable functional program by applying algebraic laws and theorems.
-With algebraic ornamentation, however, there is a new possibility: if we can derive that, for some algebra |R : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ↝ const Nat|,
+With algebraic ornamentation, however, there is a new possibility: if, for some algebra |R : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ↝ const Nat|, we can derive
 \begin{flalign}
 &\hskip\mathindent |(cata(R)) º ⊆ min-coin-change| &
 \label{eq:generic-inclusion}
@@ -837,7 +837,8 @@ is satisfied, then we have
 (cata((min Q •Λ (S º)) º)) º ⊆ min R •Λ ((cata(S)) º)
 \end{code}
 The Greedy Theorem essentially reduces a \emph{global} optimisation problem (as indicated by the \emph{outermost} |min R|) to a \emph{local} optimisation problem (as indicated by the |min Q| \emph{inside} the relational fold).
-Here we offer an intuitive explanation of the Greedy Theorem, but the theorem admits an elegant calculational proof, which can be faithfully reprised in \Agda.
+The theorem admits an elegant calculational proof, which can be faithfully reprised in \Agda.
+Here we offer an intuitive explanation:
 The monotonicity condition states that if |ds : Ḟ D (μ D) i| for some |i : I| is better than |ds' : Ḟ D (μ D) i| under |Ṙ D R|, i.e., |ds|~and~|ds'| are equal except that the recursive positions of~|ds| are all better than the corresponding recursive positions of~|ds'| under~|R|, then |con ds : μ D i| would be better than |con ds' : μ D i| under~|R|.
 This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
 The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem that has significant influence on the quality of solutions:
@@ -1159,5 +1160,3 @@ By applying the laws and theorems, we massage a relational specification into a 
 For example, we now know that a relational fold can be turned into an inductive family for internalist programming by algebraic ornamentation.
 Thus, given a relational specification, we might seek to massage it into a relational fold when that possibility is pointed out by known laws and theorems (e.g., the Greedy Theorem).
 To sum up, we get a hybrid methodology that leads us from relational specifications towards internalist types for type-directed programming, providing hints in the form of relational algebraic laws and theorems, and this is made possible by going through the synthetic direction of the interconnection between internalism and externalism, synthesising internalist types from relational expressions via algebraic ornamentation.
-
-\todo[inline]{subsumes coalgebra}

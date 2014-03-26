@@ -28,7 +28,7 @@ The name ``classifying algebra'' is explained after the examples below.
 \block{Examples}{classifying algebras for two ornaments}{
 The following relational algebra~|R| serves as a classifying algebra for the ornament |⌈ OrdListOD ⌉| from lists to ordered lists:
 \begin{code}
-R : Ḟ (ListD Val) (Inv' !) ↝ Inv' !  -- |! : Val → ⊤|
+R : Ḟ (ListD Val) (Inv' !) ↝ Inv' !  -- where |! : Val → ⊤|
 R (`nil   ,                    tt) (b , refl) = ⊤
 R (`cons  , x , (b' , refl) ,  tt) (b , refl) = (b ≤ x) × (b' ≡ x)
 \end{code}
@@ -466,7 +466,7 @@ In particular, we should define the function |clsAlg| used in its object part:
 clsAlg O : Ḟ D (Inv' e) ↝ Inv' e
 clsAlg O js (j , refl) =
   let  (ss , ps) = Iso.to (horizontal-iso (D (e j)) (Inv' e)) js
-  in   (Σ'(ts ∶ Ṡ (E j)))  erase-Ṡ (O (ok j)) ts ≡ ss 
+  in   (Σ'(ts ∶ Ṡ (E j)))  erase-Ṡ (O (ok j)) ts ≡ ss ×
                            Ṗ-toList proj₁ (next (D (e j)) ss) ps ≡ next (E j) ts
 \end{code}
 The condition for saying that |js : ⟦ D (e j) ⟧ (Inv' e)| is mapped by |clsAlg O| to |j : J| is stated in terms of the two parts of~|js| decomposed by |horizontal-iso|:
@@ -538,7 +538,7 @@ Because the equivalence on slice morphisms ignores the commutative triangles, we
           (X)  edge node[right]{|g , Q|} (Y);
 \end{tikzpicture} \]
 where |φ|~denotes the components of the natural transformation sketched above.
-Switching to horizontal transformations, the vertical morphisms essentially replace a shape of type |Ṡ (E j)| (for some suitable |j : J|) with one of type |Ṡ (F (g j))|, while the horizontal ones extract those shapes.
+Switching to horizontal transformations, the vertical morphisms essentially replace a shape of type |Ṡ (E j)| (for some suitable |j : J|) with one of type |Ṡ (F (g j))| by |erase-Ṡ (Q (ok j))|, while the horizontal ones extract those shapes.
 The two operations are independent, and hence the diagram commutes.
 
 \section{Consequences}
@@ -715,8 +715,8 @@ Specifically, the formalised results include
 \item the completeness theorem~(\ref{eq:AlgOrn-ClsAlg-inverse}) for a different version of classifying algebras, and
 \item the banana-split algebra as a product in |RAlg|.
 \end{itemize}
-The rest are worked out on paper, skipping over tedious type-theoretic detail.
-In general, while the internalist typing of constructions about descriptions and ornaments works well in \autoref{chap:refinements-and-ornaments}, ensuring that every expression we write down makes sense, the encoded constraints need to be reasoned about non-trivially in this chapter, and this is greatly hindered because the constraints are implicitly coupled with the expressions in a particular way --- here externalism can be much more helpful.
+The rest are worked out on paper, skipping over overwhelmingly tedious type-theoretic detail --- the problems about formalisation mentioned in \autoref{sec:categorical-discussion} escalate into unmanageable ones for the constructions in this chapter due to their greater complexity.
+In general, while the internalist typing of constructions about descriptions and ornaments works well in \autoref{chap:refinements-and-ornaments}, ensuring that every expression we write down makes sense, the encoded constraints need to be reasoned about non-trivially in this chapter, and this is greatly hindered because the constraints are implicitly coupled with the expressions in a particular way --- here externalism could be much more helpful.
 (For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.)
 
 The categorical equivalence prompts us to contemplate again why we need ornaments: if relational algebras can express the same refinement relationships between datatypes as ornaments and can offer corresponding constructions as shown in \autoref{sec:banana-split}, what extra benefit do ornaments provide that justifies their existence?

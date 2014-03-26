@@ -378,7 +378,7 @@ While it might be possible to model observational equality in \Agda\ to some ext
 
 \item A new direction is being pursued by \key{homotopy type theory}~\citep{UFP-HoTT}, which gives propositional equality a higher-dimensional homotopic interpretation and broadens its scope with the univalence axiom and higher inductive types, but the computational meaning of the theory remains an open problem.
 Its investigations into the higher dimensional structure of propositional equality might eventually lead to a systematic treatment of equality in dependently typed programming.
-For this dissertation, however, we confine ourselves to a basic setting in which we freely invoke \key{uniqueness of identity proofs}, which is definable in \Agda\ by pattern matching:
+For this dissertation, however, we confine ourselves to the zero-dimensional setting, in which we freely invoke \key{uniqueness of identity proofs}, which is definable in \Agda\ by pattern matching:
 \begin{code}
 UIP : {A : Set} {x y : A} (p q : x ≡ y) → p ≡ q
 UIP refl refl = refl
@@ -387,7 +387,7 @@ Our identification of types and sets is thus consistent with the terminology of 
 \end{itemize}
 
 With only \Agda's intensional equality, we have to explicitly work with equality-like propositions (like pointwise equality on functions) and manage them with the help of \key{setoids}~\citep{Barthe-setoids} in this dissertation --- Chapters \ref{chap:categorical}~and~\ref{chap:equivalence}, specifically.
-We will discuss to what extent the intensional approach works at the end of these chapters.
+We will discuss to what extent the intensional approach works at the end of \autoref{sec:categorical-discussion}.
 
 \section{Universes and datatype-generic programming}
 \label{sec:universes}
