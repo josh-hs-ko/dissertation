@@ -1,4 +1,4 @@
-\begin{thebibliography}{82}
+\begin{thebibliography}{84}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -274,6 +274,14 @@
 \newblock Metamorphisms: Streaming representation-changers.
 \newblock \emph{Science of Computer Programming}, 65(2):108--139.
 \newblock \doi{10.1016/j.scico.2006.01.006}.
+
+\bibitem[{Girard et~al.(1989)Girard, Taylor, and
+  Lafont}]{Girard-proofs-and-types}
+\bibfnamefont{Jean-Yves} \bibnamefont{Girard}, \bibfnamefont{Paul}
+  \bibnamefont{Taylor}, and \bibfnamefont{Yves} \bibnamefont{Lafont} [1989].
+\newblock \emph{Proofs and Types}.
+\newblock Cambridge University Press.
+\newblock \isbn{978-0521371810}.
 
 \bibitem[{Goguen et~al.(2006)Goguen, McBride, and McKinna}]{Goguen-elim}
 \bibfnamefont{Healfdene} \bibnamefont{Goguen}, \bibfnamefont{Conor}
@@ -566,6 +574,12 @@
 \newblock \emph{Homotopy Type Theory: Univalent Foundations of Mathematics}.
 \newblock Institute for Advanced Study, Princeton.
 \newblock \urlentry{http://homotopytypetheory.org/book/}.
+
+\bibitem[{van Dalen(2012)}]{vanDalen-logic}
+\bibfnamefont{Dirk} \bibnamefont{van Dalen} [2012].
+\newblock \emph{Logic and Structure}.
+\newblock Springer-Verlag, fifth edition.
+\newblock \isbn{978-1447145578}.
 
 \bibitem[{Wadler(1987)}]{Wadler-views}
 \bibfnamefont{Philip} \bibnamefont{Wadler} [1987].

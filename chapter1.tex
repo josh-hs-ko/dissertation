@@ -14,7 +14,7 @@ Central to the design of intuitionistic type theory (which we simply call ``type
 Consequently, type theory can be regarded simultaneously as a computationally meaningful higher-order logic system and an expressively typed functional programming language (whose type system is commonly referred to as \key{dependent types}) --- proof rules for constructing formal derivations in logic are typed primitive terms in the programming language, and valid derivations of propositions are typechecked programs.
 Compared with Hoare logic, in which an imperative program can be similarly regarded as a formal derivation of a transformation from one predicate to another, type theory is a more natural and powerful system for achieving program correctness:
 A specification for functional programs is simply a proposition --- i.e., a type --- rather than a predicate transformer (an apparently more complicated notion).
-Moreover, in type theory, the proof rules available for deriving propositions are the standard, structural ones (introduction and elimination rules for every type former), whereas in Hoare logic, the available primitive transformers are more contrived, catering for state-based computation.
+Moreover, in type theory, the proof rules available for deriving propositions are the standard, structural ones from natural deduction (see, e.g., \citet{Girard-proofs-and-types} and \citet{vanDalen-logic}), whereas in Hoare logic, the available primitive transformers are more contrived, catering for state-based computation.
 Most importantly, Hoare logic merely imposes a special-purpose proof system on imperative programs, whereas type theory is based on a fundamental unification of proofs and programs, allowing them to coexist in a uniform language and interact freely --- in particular, we can state and prove various properties about existing programs all in the same language, with the proving process being just additional programming.
 
 The methodological distinction between program correctness by verification and by construction exists for type theory as well.
@@ -24,7 +24,7 @@ A type in general can be thought of as expressing a programming problem to be so
 When inductive families are used for defining predicates that state properties about existing programs, they can influence strategies for discharging proof obligations; more interestingly, when they are used as datatypes that are directly programmed with, they can effectively guide program construction by directly dictating the structure of conforming programs in unprecedented detail.
 The latter mode of programming, called \key{internalism} in this dissertation, is the most distinguishing feature of \key{dependently typed programming}~\citep{McBride-Epigram, Altenkirch-why-dependent-types-matter}, while the former mode is called \key{externalism}.
 
-Both internalism and externalism are indispensable in dependently typed program development (see \autoref{sec:internalism-and-externalism}): key correctness properties can provide useful guidance on program construction and are best treated in the internalist way, but there are also some other properties that are separable concerns and thus should be dealt with separately with externalism.
+Both internalism and externalism are indispensable in dependently typed program development (see \autoref{sec:externalism-and-internalism}): key correctness properties can provide useful guidance on program construction and are best treated in the internalist way, but there are also some other properties that are separable concerns and thus should be dealt with separately with externalism.
 Whereas externalism is a well understood concept, being deeply rooted in the mathematical tradition, techniques and mechanisms for facilitating internalist programming are relatively lacking.
 To provide more support for internalism, this dissertation proposes that internalist programming can be facilitated by exploiting an \key{interconnection} between internalism and externalism, expressed as isomorphisms for converting between internalist and externalist representations of data structures.
 Here an internalist representation refers to an inductive family used as a datatype with some built-in data structure invariant, while an externalist representation is a basic datatype paired with a separate predicate stating the invariant.
@@ -48,8 +48,9 @@ The supporting mechanisms are based on \varcitet{McBride-ornaments}{'s \key{orna
 Some further theoretical characterisations of the two mechanisms using lightweight category theory are respectively presented in Chapters \ref{chap:categorical}~and~\ref{chap:equivalence}.
 Finally \autoref{chap:conclusion} concludes.
 
-\block*{Formalisation}{Except for a major part of \autoref{chap:equivalence}, the constructions in this dissertation are completely formalised in the dependently typed programming language \Agda~\citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
-The code base is available at \url{https://github.com/josh-hs-ko/Thesis}.}
+The dependently typed programming language \Agda~\citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work} is chosen as the expository language of this dissertation.
+Except for a major part of \autoref{chap:equivalence}, the results in this dissertation are completely formalised in \Agda; the code base is available at \url{https://github.com/josh-hs-ko/Thesis}.
 
-\block*{Previous publications}{\autoref{chap:refinements-and-ornaments} is based on the paper \textit{Modularising inductive families} published in the \textit{Progress in Informatics} journal~\citep{Ko-pcOrn}, and \autoref{chap:algebraic} on the paper \textit{Relational algebraic ornaments} presented at the \textit{Workshop on Dependently Typed Programming}~\citep{Ko-algOrn}. All technical contributions of both papers are from the first author.}
-\vfil
+\block*{Previous publications}{\autoref{chap:refinements-and-ornaments} is based on the paper \textit{Modularising inductive families} published in \textit{Progress in Informatics}~\citep{Ko-pcOrn}, and \autoref{chap:algebraic} on the paper \textit{Relational algebraic ornaments} presented at the \textit{Workshop on Dependently Typed Programming}~\citep{Ko-algOrn}. All technical contributions of both papers are from the first author.}
+
+\vskip1pt

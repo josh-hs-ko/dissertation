@@ -1,4 +1,4 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{25}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -69,6 +69,14 @@
 \newblock Inductive families.
 \newblock \emph{Formal Aspects of Computing}, 6(4):440--465.
 \newblock \doi{10.1007/BF01211308}.
+
+\bibitem[{Girard et~al.(1989)Girard, Taylor, and
+  Lafont}]{Girard-proofs-and-types}
+\bibfnamefont{Jean-Yves} \bibnamefont{Girard}, \bibfnamefont{Paul}
+  \bibnamefont{Taylor}, and \bibfnamefont{Yves} \bibnamefont{Lafont} [1989].
+\newblock \emph{Proofs and Types}.
+\newblock Cambridge University Press.
+\newblock \isbn{978-0521371810}.
 
 \bibitem[{Gries(1981)}]{Gries-science-of-programming}
 \bibfnamefont{David} \bibnamefont{Gries} [1981].
@@ -159,5 +167,11 @@
 \newblock In \emph{Advanced Functional Programming}, volume 5832 of
   \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
 \newblock \doi{10.1007/978-3-642-04652-0_5}.
+
+\bibitem[{van Dalen(2012)}]{vanDalen-logic}
+\bibfnamefont{Dirk} \bibnamefont{van Dalen} [2012].
+\newblock \emph{Logic and Structure}.
+\newblock Springer-Verlag, fifth edition.
+\newblock \isbn{978-1447145578}.
 
 \end{thebibliography}

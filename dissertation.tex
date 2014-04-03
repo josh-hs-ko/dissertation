@@ -82,16 +82,30 @@
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
 %\usepackage[disable]{todonotes}
 
-\def\endofblock{%   
-   % according to the TeX book, at the end of Chapter 14:
-   \unskip\nobreak\hfill\penalty50
-   \hskip1em\hbox{}\hfill\endofblockmark
-   \parfillskip=0pt\finalhyphendemerits=0}
-\def\endofblockmark{$\Box$}
+% by Paul Taylor
+\def\qed {{%        set up
+   \parfillskip=0pt        % so \par doesnt push \square to left
+   \widowpenalty=10000     % so we dont break the page before \square
+   \displaywidowpenalty=10000  % ditto
+   \finalhyphendemerits=0  % TeXbook exercise 14.32
+  %
+  %                 horizontal
+   \leavevmode             % \nobreak means lines not pages
+   \unskip                 % remove previous space or glue
+   \nobreak                % don’t break lines
+   \hfil                   % ragged right if we spill over
+   \penalty50              % discouragement to do so
+   \hskip.2em              % ensure some space
+   \null                   % anchor following \hfill
+   \hfill                  % push \square to right
+   $\Box$\kern-.5pt%              % the end-of-proof mark
+%
+% vertical
+   \par}}                  % build paragraph
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
-\newcommand{\@block}[2]{\begingroup\noindent\textbf{#1.}\hskip1em #2\endofblock\endgroup} % \hskip1em(\textit{End of \lowercase{#1}}.)
-\newcommand{\@@block}[3]{\begingroup\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\endofblock\endgroup}
+\newcommand{\@block}[2]{\noindent\textbf{#1.}\hskip1em #2\qed}
+\newcommand{\@@block}[3]{\noindent\textbf{#1}~(\nobreak\hskip.05em\nobreak\textit{#2}\nobreak\hskip.05em\nobreak)\textbf.\hskip1em #3\qed}
 \makeatother
 
 \usepackage{enumitem}
