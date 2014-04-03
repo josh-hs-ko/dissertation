@@ -167,7 +167,7 @@ D = λ case tt mapsto ṿ (tt ∷ tt ∷ []) endcase : Desc ⊤
 \end{code}
 be a trivially indexed description with two recursive positions, and define
 \begin{code}
-plus = fun (λ case (x , y , tt) mapsto x + y endcase) : Ḟ D Nat ↝ Nat
+plus = fun (λ case (x , y , tt) mapsto x + y endcase) : Ḟ D (const Nat) ↝ const Nat
 \end{code}
 Then |plus| is monotonic on
 \begin{code}

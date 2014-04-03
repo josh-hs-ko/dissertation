@@ -29,9 +29,11 @@
   \or        {\small$\Lsh$~page~#2}%
   \else      {\small$\Lsh$~pages~#2}%
   \fi}
-\urlstyle{same}
-\newcommand{\doi}[1]{\href{http://dx.doi.org/#1}{doi:~\nolinkurl{#1}}}
-\newcommand{\arXiv}[1]{\href{http://arxiv.org/abs/#1}{\nolinkurl{arXiv:#1}}}
+\urlstyle{tt}
+\newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\nolinkurl{#1}}}
+\newcommand{\isbn}[1]{{\small ISBN}:~\href{http://www.isbnsearch.org/isbn/#1}{\nolinkurl{#1}}}
+\newcommand{\urlentry}[1]{{\small URL}:~\url{#1}}
+\newcommand{\arXiv}[1]{arXiv:\href{http://arxiv.org/abs/#1}{\nolinkurl{#1}}}
 
 \usepackage{microtype}
 
@@ -78,13 +80,13 @@
 
 \usepackage[vskip=0pt]{quoting}
 \usepackage[color=yellow,textsize=footnotesize]{todonotes}
+%\usepackage[disable]{todonotes}
 
 \def\endofblock{%   
    % according to the TeX book, at the end of Chapter 14:
    \unskip\nobreak\hfill\penalty50
-   \hskip1em\hbox{}
-   \hfill\endofblockmark}
-   %\parfillskip=0pt\finalhyphendemerits=0
+   \hskip1em\hbox{}\hfill\endofblockmark
+   \parfillskip=0pt\finalhyphendemerits=0}
 \def\endofblockmark{$\Box$}
 \makeatletter
 \def\block{\@ifstar\@block\@@block}
@@ -100,6 +102,7 @@
 \hyphenation{pa-ra-me-tri-sa-tion}
 \hyphenation{da-ta-type}
 \hyphenation{da-ta-types}
+\hyphenation{light-weight}
 
 \newcommand{\omission}{{\small[\ldots\!]}}
 

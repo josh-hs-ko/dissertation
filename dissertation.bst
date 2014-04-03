@@ -4,9 +4,9 @@
 %%
 %% The original source files were:
 %%
-%% merlin.mbs  (with options: `ay,nat,ed-au,nmft,nmft-def,fnm-def,nmand-rm,keyxyr,dt-beg,yr-brk,note-yr,num-xser,isbn,issn,doi,xedn,nfss,')
+%% merlin.mbs  (with options: `ay,nat,ed-au,nmft,nmft-def,fnm-def,nmand-rm,keyxyr,dt-beg,yr-brk,note-yr,num-xser,isbn,issn,doi,xedn,etal-xc,url,url-blk,nfss,')
 %% ----------------------------------------
-%% ***  ***
+%% *** n ***
 %% 
 %% Copyright 1994-2011 Patrick W Daly
  % ===============================================================
@@ -76,6 +76,7 @@ ENTRY
     series
     title
     type
+    url
     volume
     year
   }
@@ -367,6 +368,15 @@ FUNCTION {bibinfo.warn}
     }
   if$
 }
+FUNCTION {format.url}
+{
+  url
+  duplicate$ empty$
+    { pop$ "" }
+    { "\urlentry{" swap$ * "}" * }
+  if$
+}
+
 INTEGERS { nameptr namesleft numnames }
 
 
@@ -404,6 +414,7 @@ FUNCTION {format.names}
                 { pop$ }
               if$
               numnames #2 >
+              t "others" = not and
                 { "," * }
                 'skip$
               if$
@@ -455,11 +466,11 @@ FUNCTION {format.editors}
   if$
 }
 FUNCTION {format.isbn}
-{ isbn "isbn" bibinfo.check
-  duplicate$ empty$ 'skip$
+{ isbn empty$
+    { "" }
     {
       new.block
-      "ISBN " swap$ *
+      "\isbn{" isbn * "}" *
     }
   if$
 }
@@ -942,6 +953,8 @@ FUNCTION {article}
   format.issn output
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -977,6 +990,8 @@ FUNCTION {book}
   format.isbn output
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -992,6 +1007,8 @@ FUNCTION {booklet}
   address "address" bibinfo.check output
   format.isbn output
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note output
   fin.entry
@@ -1035,6 +1052,8 @@ FUNCTION {inbook}
   if$
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -1062,6 +1081,8 @@ FUNCTION {incollection}
     }
   if$
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note output
   fin.entry
@@ -1095,6 +1116,8 @@ FUNCTION {inproceedings}
   if$
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -1111,6 +1134,8 @@ FUNCTION {manual}
   address "address" bibinfo.check output
   format.edition output
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note output
   fin.entry
@@ -1130,6 +1155,8 @@ FUNCTION {mastersthesis}
   address "address" bibinfo.check output
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -1144,6 +1171,8 @@ FUNCTION {misc}
   new.block
   howpublished "howpublished" bibinfo.check output
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note output
   fin.entry
@@ -1161,6 +1190,8 @@ FUNCTION {phdthesis}
   school "school" bibinfo.warn output
   address "address" bibinfo.check output
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note output
   fin.entry
@@ -1186,6 +1217,8 @@ FUNCTION {proceedings}
   format.issn output
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -1204,6 +1237,8 @@ FUNCTION {techreport}
   address "address" bibinfo.check output
   format.doi output
   new.block
+  format.url output
+  new.block
   format.note output
   fin.entry
 }
@@ -1216,6 +1251,8 @@ FUNCTION {unpublished}
   date.block
   format.title "title" output.check
   format.doi output
+  new.block
+  format.url output
   new.block
   format.note "note" output.check
   fin.entry
@@ -1510,6 +1547,10 @@ FUNCTION {begin.bib}
   "\providecommand{\bibnamefont}[1]{#1}"
   write$ newline$
   "\providecommand{\bibfnamefont}[1]{#1}"
+  write$ newline$
+  "\providecommand{\url}[1]{\texttt{#1}}"
+  write$ newline$
+  "\providecommand{\urlprefix}{URL }"
   write$ newline$
   "\expandafter\ifx\csname urlstyle\endcsname\relax"
   write$ newline$

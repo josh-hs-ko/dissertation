@@ -1,9 +1,55 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
-\todo[inline]{program correctness by construction (from specifications to programs); type theory (unification of logic and computation and/vs types as classification/specification); new direction of program derivation, while inheriting problems; a study not really emphasising practicality}
+Programs are a unique engineering material as they can be constructed and reasoned about entirely abstractly and even mathematically: while solutions to engineering problems in general require more than mathematical reasoning, program correctness with respect to their formal specifications --- a mathematical subject in itself --- is a concern separable from others, like suitability of the specifications with respect to the actual engineering problems (see, e.g., \citet{Dijkstra-EWD447}).
+One possible approach to program correctness is by \key{verification}, in which a program is first written and then proved correct separately.
+For example, let a specification for imperative programs be a pair of predicates on machine states --- called the precondition and the postcondition --- expressed in first-order logic; a program meets the specification exactly when its execution transforms any state satisfying the precondition to one satisfying the postcondition, which can be proved with Hoare logic~\citep{Hoare-logic}, i.e., by annotating the program with Hoare triples.
+With this approach, however, the construction of a program is in general detached from the construction of its correctness proof; program development becomes strictly harder, since in addition to program construction, there is now the extra burden of proof construction.
+The approach was dismissed by Dijkstra as ``putting the cart before the horse''~\citep{Dijkstra-EWD361}, who instead argued that correctness proofs should be developed hand in hand with --- and even slightly ahead of --- the programs, so correctness proofs can ``act as an inspiring heuristic guidance'' on the exploration of the program space, thereby facilitating program construction rather than merely being an extra burden.
+This leads to the methodology of \key{program correctness by construction}.
+For example, instead of verifying the correctness of an imperative program by subsequent annotation, we can simultaneously derive the program and its correctness proof from the specification in the first place using the weakest precondition calculus \citep{Dijkstra-discipline, Gries-science-of-programming, Kaldewaij-derivation}, with the whole development driven by the force of transforming the postcondition to the precondition.
 
-Martin-Löf's intuitionistic type theory \citep{ML-TT73, ML-TT84, Nordstrom-programming} and dependently typed programming~\citep{Altenkirch-why-dependent-types-matter, McBride-Epigram} using the \Agda\ language \citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
-Intuitionistic type theory was developed by Martin-Löf to serve as a foundation of intuitionistic mathematics, like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
-While originated from intuitionistic type theory, dependently typed programming is more concerned with mechanisation and practicalities, and is influenced by the program-correctness-by-construction movement.
-It has thus departed from the mathematical traditions considerably, and deviations can be found from syntactic presentations to the underlying philosophy.
+On the other hand, Martin-Löf developed \key{intuitionistic type theory}~\citep{ML-TT73, ML-TT84, Nordstrom-programming} to serve as a foundation of intuitionistic mathematics~\citep{Heyting-intuitionism, Dummett-intuitionism}, like Bishop's renowned work on constructive analysis \citep{Bishop-analysis}.
+Central to the design of intuitionistic type theory (which we simply call ``type theory'' henceforth) is the \key{propositions-as-types principle}, which states that the notion of propositions and proofs is subsumed by the notion of types and programs (see \autoref{sec:propositions-as-types}).
+Consequently, type theory can be regarded simultaneously as a computationally meaningful higher-order logic system and an expressively typed functional programming language (whose type system is commonly referred to as \key{dependent types}) --- proof rules for constructing formal derivations in logic are typed primitive terms in the programming language, and valid derivations of propositions are typechecked programs.
+Compared with Hoare logic, in which an imperative program can be similarly regarded as a formal derivation of a transformation from one predicate to another, type theory is a more natural and powerful system for achieving program correctness:
+A specification for functional programs is simply a proposition --- i.e., a type --- rather than a predicate transformer (an apparently more complicated notion).
+Moreover, in type theory, the proof rules available for deriving propositions are the standard, structural ones (introduction and elimination rules for every type former), whereas in Hoare logic, the available primitive transformers are more contrived, catering for state-based computation.
+Most importantly, Hoare logic merely imposes a special-purpose proof system on imperative programs, whereas type theory is based on a fundamental unification of proofs and programs, allowing them to coexist in a uniform language and interact freely --- in particular, we can state and prove various properties about existing programs all in the same language, with the proving process being just additional programming.
+
+The methodological distinction between program correctness by verification and by construction exists for type theory as well.
+With the former methodology, we first write a program under a simple type (just informative enough for sanity check) and then separately prove that the program satisfies some correctness property; with the latter methodology, the correctness property is encoded into a more sophisticated type such that any program having the type is automatically guaranteed to be correct by typechecking.
+The distinction is most significant when \key{inductive families}~\citep{Dybjer-inductive-families} --- simultaneously inductively defined families of types, sometimes simply referred to as ``indexed datatypes'' --- come into play.
+A type in general can be thought of as expressing a programming problem to be solved (which was Kolmogorov's interpretation of intuitionistic propositions; see, e.g., \citet{ML-truth-of-a-proposition}); the use of an inductive family in a type suggests a particular decomposition of the problem into sub-problems (see \autoref{sec:pattern-matching}), and hence has a strong influence on the structure of programs having that type.
+When inductive families are used for defining predicates that state properties about existing programs, they can influence strategies for discharging proof obligations; more interestingly, when they are used as datatypes that are directly programmed with, they can effectively guide program construction by directly dictating the structure of conforming programs in unprecedented detail.
+The latter mode of programming, called \key{internalism} in this dissertation, is the most distinguishing feature of \key{dependently typed programming}~\citep{McBride-Epigram, Altenkirch-why-dependent-types-matter}, while the former mode is called \key{externalism}.
+
+Both internalism and externalism are indispensable in dependently typed program development (see \autoref{sec:internalism-and-externalism}): key correctness properties can provide useful guidance on program construction and are best treated in the internalist way, but there are also some other properties that are separable concerns and thus should be dealt with separately with externalism.
+Whereas externalism is a well understood concept, being deeply rooted in the mathematical tradition, techniques and mechanisms for facilitating internalist programming are relatively lacking.
+To provide more support for internalism, this dissertation proposes that internalist programming can be facilitated by exploiting an \key{interconnection} between internalism and externalism, expressed as isomorphisms for converting between internalist and externalist representations of data structures.
+Here an internalist representation refers to an inductive family used as a datatype with some built-in data structure invariant, while an externalist representation is a basic datatype paired with a separate predicate stating the invariant.
+%(For example, we can define an inductive family that is used as a datatype of lists guaranteed to have a particular length by construction, which is isomorphic to ordinary lists paired with separate proofs that they have a particular length.)
+The interconnection consists of two directions:
+\begin{itemize}
+\item one \key{analysing} any internalist datatype~|D| into a basic datatype~|D'| known to be related to~|D| and a predicate on~|D'| stating the invariant encoded in~|D|, and
+\item the other \key{synthesising} new internalist datatypes from a basic datatype and a given class of predicates on the basic datatype.
+\end{itemize}
+More specifically, this dissertation shows that
+\begin{itemize}
+\item the analytic direction can be exploited for achieving a modular structure of libraries of internalist datatypes, and
+\item the synthetic direction for bridging internalist programming with the relational revision of Bird--Meertens formalism~\citep{Bird-AoP}.
+\end{itemize}
+After \autoref{chap:background} covers some preliminary background, the above two applications and their supporting mechanisms are respectively presented in Chapters \ref{chap:refinements-and-ornaments}~and~\ref{chap:algebraic}.
+The supporting mechanisms are based on \varcitet{McBride-ornaments}{'s \key{ornaments}}:
+\begin{itemize}
+\item modular library structure in \autoref{chap:refinements-and-ornaments} is achieved with \key{parallel composition} of ornaments, and
+\item the bridging of internalism with relational programming in \autoref{chap:algebraic} is done by (relational) \key{algebraic ornamentation}.
+\end{itemize}
+Some further theoretical characterisations of the two mechanisms using lightweight category theory are respectively presented in Chapters \ref{chap:categorical}~and~\ref{chap:equivalence}.
+Finally \autoref{chap:conclusion} concludes.
+
+\block*{Formalisation}{Except for a major part of \autoref{chap:equivalence}, the constructions in this dissertation are completely formalised in the dependently typed programming language \Agda~\citep{Norell-thesis, Norell-Agda, Bove-dependent-types-at-work}.
+The code base is available at \url{https://github.com/josh-hs-ko/Thesis}.}
+
+\block*{Previous publications}{\autoref{chap:refinements-and-ornaments} is based on the paper \textit{Modularising inductive families} published in the \textit{Progress in Informatics} journal~\citep{Ko-pcOrn}, and \autoref{chap:algebraic} on the paper \textit{Relational algebraic ornaments} presented at the \textit{Workshop on Dependently Typed Programming}~\citep{Ko-algOrn}. All technical contributions of both papers are from the first author.}
+\vfil
