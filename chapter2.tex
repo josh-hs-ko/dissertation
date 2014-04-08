@@ -100,6 +100,8 @@ Before that, we make a transition from type theory to practical programming in \
 \section{Elimination and pattern matching}
 \label{sec:pattern-matching}
 
+\todo[inline]{emphasise that the advent of interactive development helps dealing with detail}
+
 The formation rules and introduction rules for sets in type theory directly translate into inductive datatype declarations in functional programming.
 For example, the set of natural numbers is translated into \Agda\ as an inductive datatype with two constructors, with their full types displayed:
 \begin{code}
@@ -393,11 +395,11 @@ We will discuss to what extent the intensional approach works at the end of \aut
 \label{sec:universes}
 
 \citet{ML-TT84} introduced the notion of \key{universes} to support ``large elimination'', i.e., arbitrary computation of sets, which is necessary for proving the fourth Peano axiom that zero is not the successor of any natural number~\citep{Smith-independence-fourth-axiom}.
-A universe (à la Tarski) is a set of codes for sets, which is equipped with a decoding function translating codes to sets.
+A universe (à~la Tarski) is a set of codes for sets, which is equipped with a decoding function translating codes to sets.
 Large elimination is then computing an inhabitant in the universe (via ordinary elimination like |Nat-elim|) and decoding the result to a set.
 Another important purpose of universes is to support quantification over sets while precluding paradoxical formation of self-referential sets --- \Agda, for example, has a universe hierarchy (|Set|, |Set₁|, |Set₂|,~\ldots\!) for this purpose.
 From the programming perspective, however, the most interesting case is when the universe is supplied with an elimination rule~\citep[Section~14.2]{Nordstrom-programming}: allowing computation on universes turns out to correspond to \key{datatype-generic programming}~\citep{Gibbons-DGP}, whose idea is that the ``shapes'' of datatypes can be encoded so programs can be defined in terms of these shapes.
-Universes can encode such shapes, and since universes are just ordinary sets, datatype-generic programming becomes just ordinary programming in dependently typed languages~\citep{Altenkirch-GP-within-DTP}.
+Universes can encode such shapes, and since universes are just ordinary sets, datatype-generic programming becomes just ordinary programming in dependently typed languages~\citep{Altenkirch-GP-within-DTP}.\todo{even more generalised}
 
 In this dissertation we not only use but also need to \emph{compute} a class of inductive families which we call \key{index-first datatypes}~\citep{Chapman-levitation, Dagand-functional-ornaments}, and hence need to construct a universe for them.
 Before that, we give a high-level introduction to these datatypes first.

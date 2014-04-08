@@ -486,7 +486,7 @@ And from right to left:
 \hskip\mathindent \subseteq~& \reason{|geq| transitive} & \\
 \hskip\mathindent & |geq • fun length-alg| &
 \end{flalign*}
-Note that these calculations are good illustrations of the power of relational calculation because of their simplicity --- they are straightforward symbolic manipulations, hiding details like quantifier reasoning behind the scenes.
+Note that these calculations are good illustrations of the power of relational calculation because of their simplicity --- they are straightforward symbol manipulations, hiding details like quantifier reasoning behind the scenes.
 As demonstrated by the \name{AoPA} library~\citep{Mu-AoPA}, they can be faithfully formalised with preorder reasoning combinators in \Agda\ and used to discharge the fusion conditions of |fusion-conversion-⊆| and |fusion-conversion-⊇|.
 Hence we get two conversions, one of type
 \begin{code}
@@ -497,6 +497,7 @@ which relaxes a vector of length~|n| to a bounded vector whose length is bounded
 BVec A m → (Σ'(n ∶ Nat)) Vec A n × (n ≤ m)
 \end{code}
 which converts a bounded vector whose length is at most~|m| to a vector of length precisely~|n| and guarantees that |n|~is at most~|m|.
+Both conversions preserve the underlying list.
 
 \subsection{The Streaming Theorem for list metamorphisms}
 \label{sec:metamorphism-streaming}

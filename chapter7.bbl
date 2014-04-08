@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -16,5 +16,23 @@
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'11, pages 143--155. ACM.
 \newblock \doi{10.1145/2034773.2034796}.
+
+\bibitem[{Dijkstra(1972)}]{Dijkstra-notes-on-structured-programming}
+\bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1972].
+\newblock Notes on structured programming.
+\newblock In \emph{Structured Programming}, pages 1--82. Academic Press.
+\newblock \isbn{978-0122005503}.
+
+\bibitem[{Jacobs(1999)}]{Jacobs-categorical-logic-and-type-theory}
+\bibfnamefont{Bart} \bibnamefont{Jacobs} [1999].
+\newblock \emph{Categorical Logic and Type Theory}.
+\newblock Elsevier B.V.
+\newblock \isbn{978-0444508539}.
+
+\bibitem[{McBride(2014)}]{McBride-pivotal}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2014].
+\newblock How to keep your neighbours in order.
+\newblock
+  \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/Pivotal.pdf}.
 
 \end{thebibliography}

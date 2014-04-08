@@ -33,7 +33,7 @@ R (`nil   ,                    tt) (b , refl) = ⊤
 R (`cons  , x , (b' , refl) ,  tt) (b , refl) = (b ≤ x) × (b' ≡ x)
 \end{code}
 The nil case says that the empty list can be mapped to any~|b| (since any |b : Val| is a lower bound of the empty list); for the cons case, where |x : Val| is the head element of a non-empty list and |b'|~is a possible result of folding the tail (i.e., |b' : Val| is a lower bound of the tail), the list can be mapped to~|b| if |b : Val| is a lower bound of~|x| and |x|~is exactly~|b'|.
-The type of proofs that a list~|xs| folds to some~|b| with~|R| is isomorphic to |Ordered b xs|, and hence
+The type of proofs that a list~|xs| folds with~|R| to some~|b| is isomorphic to |Ordered b xs|, and hence
 \begin{code}
 AlgList Val R (b , refl)  ≅ (Σ'(xs ∶ List Val)) (cata(R)) xs (b , refl)  {-""-}
                           ≅ (Σ'(xs ∶ List Val)) Ordered b xs             ≅ OrdList b
@@ -91,20 +91,20 @@ Together with the completeness theorem, we see that |algOD| and |clsAlg| are, in
 This suggests that we can seek to construct a \key{categorical equivalence} between |SliceCategory Ōrn (I , D)| and a suitable category of |D|-algebras and homomorphisms by extending |algOD| and |clsAlg| to functors between the two categories and proving that the two functors are inverse up to (natural) isomorphism.
 This we do in \autoref{sec:ornaments-and-relational-algebras}, after we look at ornaments from a more semantic perspective in \autoref{sec:ornaments-and-horizontal-transformations}, where we also deal with some unresolved issues in \autoref{chap:categorical}.
 The categorical equivalence shows that ornaments and relational algebras are essentially the same entities, which lets us associate some ornamental and relational algebraic constructions in \autoref{sec:equivalence-consequences}.
-The results in this chapter are only partially formalised, largely due to the dreadful manoeuvrability of complicatedly typed terms.
+The results in this chapter are only partially formalised, largely due to the difficulty of manipulating complicatedly typed terms.
 This issue, along with some others, is discussed in \autoref{sec:equivalence-discussion}.
 
 
 \section{Ornaments and horizontal transformations}
 \label{sec:ornaments-and-horizontal-transformations}
 
-We first aim to find a semantic perspective of ornaments, so we can step away from the syntactic detail and handle ornaments more easily, in preparation for \autoref{sec:ornaments-and-relational-algebras}.
+We first aim to find a semantic perspective on ornaments, so we can step away from the syntactic detail and handle ornaments more easily, in preparation for \autoref{sec:ornaments-and-relational-algebras}.
 Consider the equivalence on ornaments that was left undefined in \autoref{sec:concrete-categories}:
 \begin{code}
 OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
          Orn e D E → Orn f D E → Set
 \end{code}
-Here we aim for an extensional equality --- for example, if the only difference between two ornaments is either
+Here we aim for an extensional equality --- for example, if two ornaments between the same pair of descriptions differ only in either
 \begin{itemize}
 \item that one uses~|σ S| and the other uses |(Δ''(s ∶ S)) (∇''(s))|, both expressing copying, or
 \item that one uses
@@ -117,7 +117,7 @@ and the other uses
 \end{code}
 the latter swapping the order of the middle two independent markings,
 \end{itemize}
-then it seems pointless to distinguish the two ornaments.
+then they describe precisely the same relationship between the pair of descriptions.
 Since the direct semantics of ornaments is decoded componentwise by |erase|, we might define |OrnEq| as pointwise equality of |erase|, which requires a rather tricky type to express.
 However, it turns out that we can focus on only one aspect of |erase|: fixing two response descriptions related by at least one response ornament, the two response descriptions necessarily have the same pattern of recursive positions and |erase| always copies the values at the positions, so the only behaviour of |erase| that can vary with response ornaments is how the values of the \emph{fields} are transformed.
 This suggests that, in an inhabitant of |⟦ D ⟧ X| where |D : RDesc I| and |X : I → Set|, we can separate the values of the fields from the values at the recursive positions, and focus on how |erase| acts on the first part.
@@ -137,7 +137,7 @@ The container is interpreted as the type
 That is, given a type family |X : I → Set|, an inhabitant of the container type starts with a specific shape --- from which we derive a set of positions and associated indices --- and contains an element of type~|X i| for each of the positions where |i|~is the index associated with the position.
 (For example, take~|S| to be the set of natural numbers, and let the set of positions derived from a natural number~|n| be a finite set of size~|n|, enumerable in a fixed order.
 The container type is then isomorphic to the type of lists, whose elements are indexed in accordance with the |next| function.)
-Response descriptions can be regarded as a special case of indexed containers: values of fields constitute a shape, and sets of positions are restricted to finite sets; consequently, |next s : P s → I| for any |s : S| can be represented by a |List I|, and there is no longer need to specify~|P|.
+Response descriptions can be regarded as a special case of indexed containers: values of fields constitute a shape, and sets of positions are restricted to \emph{enumerable} finite sets; consequently, |next s : P s → I| for any |s : S| can be represented by a |List I|, and there is no longer need to specify~|P|.
 We thus define the set of shapes derived from a response description by
 \begin{code}
 Ṡ : {I : Set} → RDesc I → Set
@@ -263,7 +263,7 @@ for any |O : ROrn e D E| and |P : ROrn f D F|, provable by induction on |O|~and~
 \section{Ornaments and relational algebras}
 \label{sec:ornaments-and-relational-algebras}
 
-We now seek to characterise ornaments and relational algebras as essentially the same entities via an \key{equivalence of categories}, which subsumes the completeness theorem (and its dual) in the beginning of this chapter.
+We now seek to characterise ornaments and relational algebras as essentially the same entities via a \key{categorical equivalence}, which subsumes the completeness theorem (and its dual) at the beginning of this chapter.
 The definition of categorical equivalence is unfolded below:
 \begin{itemize}
 \item An equivalence between two categories consists of two functors back and forth such that their compositions are \key{naturally isomorphic} to the identity functors.
@@ -285,7 +285,7 @@ it consists of a morphism |φ X : object F X =D=> object G X| for each object~|X
 Both equivalence and composition for natural transformations are componentwise.
 \end{itemize}
 \item Natural isomorphism is an equivalence relation on functors, so we can assemble a category whose objects are (smaller) categories and morphisms are functors, with natural isomorphism as the equivalence on morphisms.
-An equivalence of categories is then an isomorphism in this category of categories and functors.
+A categorical equivalence is then an isomorphism in this category of categories and functors.
 \end{itemize}
 \end{itemize}
 Fixing |D : Desc I|, the completeness theorem is a consequence of one direction of the \emph{object part} of an equivalence between |SliceCategory Ōrn (I , D)| --- which we denote by |Ōrn / (I , D)| from now on --- and the category |RAlg D| whose objects are relational |D|-algebras
@@ -432,7 +432,7 @@ which, when suitably quantified, is a pointwise form of
 fun h • R ⊆ S • Ṙ D (fun h)
 \end{code}
 i.e., one direction of the homomorphism condition.
-This is actually the only direction of the homomorphism condition that we should impose on the functions between carriers, which is denoted by the inclusion sign in the ``semi-commutative'' diagram:
+This is actually the only direction of the homomorphism condition that we should impose on the functions between carriers; we denote it by the inclusion sign in the ``semi-commutative'' diagram:
 \[ \begin{tikzpicture}[x=8em, y=2em, baseline=(RDh.base)]
 \node(X)                  {|X|};
 \node(Y)   [right=1 of X] {|Y|};
@@ -448,7 +448,7 @@ This is actually the only direction of the homomorphism condition that we should
 In short, the morphism part of |AlgOrn| treats the input homomorphism condition as a proof transformer, and apply that transformer to the proof encapsulated in the input shape.
 
 One of the functor laws we should prove for |AlgOrn| is that its morphism part preserves equivalence, and it is when doing so that we encounter the final problem: we need to prove that the shape transformation~(\ref{eq:algROD-shape-transformation}) --- whose behaviour depends on the \emph{computational content} of the homomorphism condition --- is extensionally the same for equivalent homomorphisms, but homomorphism equivalence as we defined it does not include any information about the homomorphism condition and is not strong enough.
-We thus see that proofs of the homomorphism condition should not be treated irrelevantly since they are used computation-relevantly in the shape transformations, and we must take their behaviour into account when defining homomorphism equivalence.
+We thus see that proofs of the homomorphism condition should not be treated irrelevantly since they are used computation-relevantly in the shape transformations; we must take their behaviour into account when defining homomorphism equivalence.
 This brings us to the right notion of algebra homomorphisms, defined by
 \begin{code}
 record RAlgMorphism D (X , R) (Y , S) : Set₁ where
@@ -558,7 +558,7 @@ We have seen in \autoref{sec:parallel-composition-pullback} that parallel compos
 The functor |ClsAlg| --- being part of a categorical equivalence --- preserves products, so the image of~(\ref{eq:pc-square}) under |ClsAlg| in |RAlg D| is also a product, and is thus isomorphic to any product in |RAlg D|; conversely, any product in |RAlg D| when mapped to |Ōrn / (I , D)| by |AlgOrn| is also isomorphic to~(\ref{eq:pc-square}).
 Below we look at a consequence of the latter direction.
 
-In |RAlg D|, a product construction is inspired by the \key{banana-split law}~\citep[Section~3.1]{Bird-AoP}, whose original, functional form is as follows:
+In |RAlg D|, a construction of products is inspired by the \key{banana-split law}~\citep[page~88]{Fokkinga-thesis}, whose original, functional form is as follows:
 Define the functorial mapping |Ḟ-map D| by
 \begin{code}
 Ḟ-map D : {Z W : I → Set} → (Z ⇉ W) → (Ḟ D Z ⇉ Ḟ D W)
@@ -705,10 +705,10 @@ For condition~(ii), |⌊ S ⌋| uses the |(μ D)|-inhabitants contained in~|ds'|
 \section{Discussion}
 \label{sec:equivalence-discussion}
 
-As mentioned in the beginning, the results of this chapter are only partially formalised.
+As mentioned at the beginning of the chapter, these results are only partially formalised.
 Specifically, the formalised results include
 \begin{itemize}
-\item everything in \autoref{sec:ornaments-and-horizontal-transformations}\todo{(except pullback)},
+\item everything in \autoref{sec:ornaments-and-horizontal-transformations} except for pullback reflection of |Shape| and pullback property of the image of (\ref{eq:pc-square}) under |Shape ⋄ Erase|,
 \item general definition of categorical equivalences (which, unlike general isomorphisms of categories, can be easily defined with our formalisation of categories),
 \item definition of |RAlg|,
 \item the isomorphism |algROD-iso|,
@@ -717,7 +717,7 @@ Specifically, the formalised results include
 \end{itemize}
 The rest are worked out on paper, skipping over impractically tedious type-theoretic detail --- the problems about formalisation mentioned in \autoref{sec:categorical-discussion} escalate into unmanageable ones for the constructions in this chapter due to their greater complexity.
 In general, while the internalist typing of constructions about descriptions and ornaments works well in \autoref{chap:refinements-and-ornaments}, ensuring that every expression we write down makes sense, the encoded constraints need to be reasoned about non-trivially in this chapter, and this is greatly hindered because the constraints are implicitly coupled with the expressions in a particular way --- here externalism could be much more helpful.
-(For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.)
+(For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.)\todo{and the original representation of classifying algebras}
 
 The categorical equivalence prompts us to contemplate again why we need ornaments: if relational algebras can express the same refinement relationships between datatypes as ornaments, and can offer corresponding constructions as shown in \autoref{sec:banana-split}, what extra benefit do ornaments provide that justifies their existence?
 Firstly, relational algebras describe how to classify inhabitants of existing datatypes to obtain more informative datatypes, and hence correspond more closely to \emph{ornamental descriptions}, which are more restrictive than ornaments as explained in the beginning of \autoref{sec:ornament-refinement-discussion} --- indeed, the categorical equivalence is between |RAlg| and the \emph{slice category} on top of |Ōrn|.

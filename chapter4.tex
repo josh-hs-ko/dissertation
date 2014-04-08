@@ -708,6 +708,7 @@ and the image of~(\ref{eq:Fam-pullback}) under |Com| in |Fun|:
 Both (\ref{eq:Fam-pullback})~and~(\ref{eq:Fun-pullback}) are indeed pullbacks by pullback preservation of |Ind| and |Com|.
 
 \section{Consequences}
+\label{sec:categorical-consequences}
 
 Characterising parallel composition as a pullback immediately allows us to instantiate standard categorical results, like commutativity |(_ , ⌊ O ⊗ P ⌋) ≅ (_ , ⌊ P ⊗ O ⌋)| and associativity |(_ , ⌊ ⌈ O ⊗ P ⌉ ⊗ Q ⌋) ≅ (_ , ⌊ O ⊗ ⌈ P ⊗ Q ⌉ ⌋)| up to isomorphism in |Ōrn| (which can then be transferred by isomorphism preservation to |Fam|, for example).
 Our original motivation, on the other hand, is to implement the ornamental conversion isomorphisms and the modularity isomorphisms, which we carry out below.
@@ -950,12 +951,12 @@ This statement is empirically verified --- the representation of the universes r
 
 \citet{Dagand-categorical-ornaments} provided a purely categorical treatment of ornaments using fibred category theory, which is quite independent of the development in this chapter, though.
 They established correspondences between descriptions and polynomial functors~\citep{Gambino-polynomial-functors} and between ornaments and cartesian morphisms, and sketched how several operations on ornaments correspond to certain categorical notions (including pullbacks), all of which are ultimately based on the abstract notion of locally cartesian closed categories.
-This chapter, on the other hand, merely uses a lightweight categorical language for organising various type-theoretic constructions, and the reasoning is still essentially type-theoretical, rather than insisting on purely categorical arguments.
-Methodologically, there is another notable difference: \citeauthor{Dagand-categorical-ornaments} distinguish ``software'' (e.g., descriptions and ornaments) and ``mathematics'' (e.g., polynomial functors and cartesian morphisms) and then make a connection between them, so they can use mathematical notions as inspiration for software constructs.
+Methodologically, there is a notable difference between their work and the categorical development in this dissertation: \citeauthor{Dagand-categorical-ornaments} distinguish ``software'' (e.g., descriptions and ornaments) and ``mathematics'' (e.g., polynomial functors and cartesian morphisms) and then make a connection between them, so they can use mathematical notions as inspiration for software constructs.
 In the light of the propositions-as-types principle, though, a further step should be taken: rather than merely making a connection between software artifacts that have the necessary level of detail and mathematical objects that possess desired abstract properties, we should design the software artifacts such that they satisfy the abstract properties themselves, all expressed in one uniform language, so the detail of the artifacts can be effectively managed by reasoning in terms of the abstract properties.
-In this spirit, category theory is regarded in this chapter as providing a set of abstractions that are internalised in type theory, as opposed to being an independent formalism.
-Ornaments are complex, but the complexity is necessary (as justified in \autoref{sec:ornament-refinement-discussion}) and hence can only be somehow managed rather than being eliminated.
-Fortunately, ornaments exhibit useful categorical structure, and we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure.
+In this spirit, category theory is regarded in this dissertation as merely providing an additional set of abstractions formulated within type theory, as opposed to being an independent formalism.
+(As a consequence, the reasoning is still essentially type-theoretical, rather than insisting on purely categorical arguments.)
+Ornaments are complex, but the complexity is necessary (as justified in \autoref{sec:ornament-refinement-discussion}) and hence can only be somehow managed rather than being neglected by turning attention to similar mathematical objects.
+Fortunately, ornaments themselves exhibit useful categorical structure that can be expressed type-theoretically, so we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure without switching to a different formalism.
 
 The results of this chapter are completely formalised in \Agda.
 The setoid approach to managing morphism equivalence works reasonably well, being able to express extensional equality (e.g., in |Fun| and |Fam|), proof irrelevance (e.g., in |SpanCategory| and |SliceCategory|), and layered definitions of equality (e.g., morphism equivalence in |SquareCategory| is ultimately defined in terms of morphism equivalence in the ambient category).

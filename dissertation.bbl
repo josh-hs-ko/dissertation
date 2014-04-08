@@ -1,4 +1,4 @@
-\begin{thebibliography}{84}
+\begin{thebibliography}{88}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -93,7 +93,7 @@
   \bibnamefont{Cast{\'e}ran} [2004].
 \newblock \emph{Interactive Theorem Proving and Program Development ---
   Coq'Art: The Calculus of Inductive Constructions}.
-\newblock Texts in Theoretical Computer Science. Springer-Verlag.
+\newblock Springer-Verlag.
 \newblock \isbn{978-3540208549}.
 
 \bibitem[{Bird(1996)}]{Bird-functional-algorithm-design}
@@ -177,7 +177,7 @@
 \bibitem[{Coquand and Huet(1988)}]{Coquand-calculus-of-constructions}
 \bibfnamefont{Thierry} \bibnamefont{Coquand} and \bibfnamefont{G{\'e}rard}
   \bibnamefont{Huet} [1988].
-\newblock The calculus of constructions.
+\newblock The {C}alculus of {C}onstructions.
 \newblock \emph{Information and Computation}, 76(2--3):95--120.
 \newblock \doi{10.1016/0890-5401(88)90005-3}.
 
@@ -218,6 +218,12 @@
   ICFP'11, pages 143--155. ACM.
 \newblock \doi{10.1145/2034773.2034796}.
 
+\bibitem[{Dijkstra(1972)}]{Dijkstra-notes-on-structured-programming}
+\bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1972].
+\newblock Notes on structured programming.
+\newblock In \emph{Structured Programming}, pages 1--82. Academic Press.
+\newblock \isbn{978-0122005503}.
+
 \bibitem[{Dijkstra(1974)}]{Dijkstra-EWD361}
 \bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1974].
 \newblock Programming as a discipline of mathematical nature.
@@ -255,6 +261,11 @@
   in type theory.
 \newblock \emph{Journal of Symbolic Logic}, 65(2):525--549.
 \newblock \doi{10.2307/2586554}.
+
+\bibitem[{Fokkinga(1992)}]{Fokkinga-thesis}
+\bibfnamefont{Maarten~M.} \bibnamefont{Fokkinga} [1992].
+\newblock \emph{Law and Order in Algorithmics}.
+\newblock Ph.D. thesis, University of Twente.
 
 \bibitem[{Gambino and Kock(2010)}]{Gambino-polynomial-functors}
 \bibfnamefont{Nicola} \bibnamefont{Gambino} and \bibfnamefont{Joachim}
@@ -325,6 +336,12 @@
 \newblock In \emph{History of Programming Languages}, HOPL-III, pages 1--55.
   ACM.
 \newblock \doi{10.1145/1238844.1238856}.
+
+\bibitem[{Jacobs(1999)}]{Jacobs-categorical-logic-and-type-theory}
+\bibfnamefont{Bart} \bibnamefont{Jacobs} [1999].
+\newblock \emph{Categorical Logic and Type Theory}.
+\newblock Elsevier B.V.
+\newblock \isbn{978-0444508539}.
 
 \bibitem[{Kaldewaij(1990)}]{Kaldewaij-derivation}
 \bibfnamefont{Anne} \bibnamefont{Kaldewaij} [1990].
@@ -426,6 +443,12 @@
 \newblock A polynomial testing principle.
 \newblock
   \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf}.
+
+\bibitem[{McBride(2014)}]{McBride-pivotal}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2014].
+\newblock How to keep your neighbours in order.
+\newblock
+  \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/Pivotal.pdf}.
 
 \bibitem[{McBride and McKinna(2004)}]{McBride-view}
 \bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{James}
