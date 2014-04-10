@@ -78,7 +78,7 @@ The actual computation performed by |Nat-elim| is stated as two \key{computation
 \TIC{|Nat-elim P z s (suc n) = s n (Nat-elim P z s n) IN P (suc n)|} \DP
 \end{center}
 From the logic perspective, predicates on |Nat| are a special case of |Nat|-indexed families of sets like~|P|; |Nat-elim| then delivers the induction principle for natural numbers, as it produces a proof of~|P n| for every |n : Nat| if the base case~|z| and the inductive case~|s| can be proved.
-In general, the propositions-as-types principle treats logical entities as ordinary mathematical objects; the logic hence inherits the computational meaning of intuitionistic mathematics and becomes constructive.\todo{condense if short of space}
+In general, the propositions-as-types principle treats logical entities as ordinary mathematical objects; the logic hence inherits the computational meaning of intuitionistic mathematics and becomes constructive.
 
 By enabling the interplay of various sets governed by rules like the above ones, type theory is capable of formalising various mental constructions we manipulate in mathematics in a fully computational way, making it a powerful programming language.
 As \citet{ML-constructive-math-programming} noted: ``If programming is understood \omission\ as the design of the methods of computation \omission, then it no longer seems possible to distinguish the discipline of programming from constructive mathematics''.
@@ -100,8 +100,6 @@ Before that, we make a transition from type theory to practical programming in \
 \section{Elimination and pattern matching}
 \label{sec:pattern-matching}
 
-\todo[inline]{emphasise that the advent of interactive development helps dealing with detail}
-
 The formation rules and introduction rules for sets in type theory directly translate into inductive datatype declarations in functional programming.
 For example, the set of natural numbers is translated into \Agda\ as an inductive datatype with two constructors, with their full types displayed:
 \begin{code}
@@ -109,7 +107,7 @@ data Nat : Set where
   zero  : Nat
   suc   : Nat → Nat
 \end{code}
-In type theory, computations on inductive datatypes are specified using eliminators like |Nat-elim|, whose style corresponds to \key{recursion schemes}~\citep{Meijer-bananas, Meertens-paramorphisms} in functional programming.
+In type theory, computations on inductive datatypes are specified using eliminators like |Nat-elim|, whose style corresponds to \key{recursion schemes}~\citep{Meijer-bananas} in functional programming. (In particular, |Nat-elim| is a more informatively typed version of paramorphism on natural numbers~\citep{Meertens-paramorphisms}.)
 One reason for making elimination as the only option is that programs in type theory are required to terminate --- which is a consequence of the requirement that an inhabitant should be \emph{effectively} recognisable as belonging to a set, and results in decidable typechecking --- and using eliminators throughout is a straightforward way of enforcing termination.
 On the other hand, in functional programming, the \key{pattern matching} notation is widely used for defining programs on (inductive) datatypes (see, e.g., \citet[Section~5]{Hudak-history-of-Haskell}) in addition to recursion schemes.
 Pattern matching is vital to the clarity of functional programs because it not only allows a function to be intuitively defined by equations suggesting how the function computes, but also clearly conveys the programming strategy of splitting a problem into sub-problems by case analysis.
@@ -121,7 +119,7 @@ data _≤N_ (m : Nat) : Nat → Set where
   step  : (n : Nat) → m ≤N n → m ≤N suc n
 \end{code}
 \sidenote{An \Agda\ name with underscores (like~|_≤N_|) can be applied to arguments either by prefixing (like ``|_≤N_ m n|'') or by substituting the arguments for the underscores with proper spacing (like ``|m ≤N n|'').}
-Reading the declaration logically, the types of the two constructors |refl| and |step| give the two inference rules for establishing that one natural number is less than or equal to another.
+Reading the declaration logically, the types of the two constructors |refl| and |step| give the two proof rules for establishing that one natural number is less than or equal to another.
 More generally, we read the declaration as a datatype parametrised by |m : Nat| \sidenote{as signified by its appearance right next to~|data _≤N_|} and indexed by~|Nat|.
 For any |m : Nat|, the type family |_≤N_ m : Nat → Set| as a whole is inductively populated: we have an inhabitant |refl| in the set |(_≤N_ m) m|, and whenever we have an inhabitant |p : (_≤N_ m) n| for some |n : Nat|, we can make a larger inhabitant |step n p| in another set |(_≤N_ m) (suc n)| in the family.
 (From now on we usually refer to inductive families simply as datatypes, especially when emphasising their use in programming and de-emphasising the distinction with non-indexed datatypes like~|Nat|.)
@@ -129,7 +127,7 @@ For any |m : Nat|, the type family |_≤N_ m : Nat → Set| as a whole is induct
 With inductive families, splitting a problem into sub-problems by case analysis in dependently typed programming often leads to nontrivial refinement of the goal type and the context, and such refinement can be tricky to handle with eliminators.
 Admittedly, in terms of expressive power, pattern matching and elimination are basically equivalent, as eliminators can be easily defined by dependent pattern matching, and conversely, it has been shown that dependent pattern matching can be reduced to elimination if \key{uniqueness of identity proofs} --- or, equivalently, the \key{K~axiom}~\citep{Streicher-ITT} --- is assumed~\citep{McBride-thesis, Goguen-elim}.
 (See \autoref{sec:equality} for more on uniqueness of identity proofs.)
-Nevertheless, there is a significant notational advantage of recovering pattern matching in dependently typed programming, especially with the support of an interactive development environment.
+Nevertheless, there is a significant notational advantage of recovering pattern matching in dependently typed programming, especially with the support of an interactive development environment for managing detail about datatype indices.
 Below we look at an example of interactively constructing a program with pattern matching in \Agda, whose design was inspired by \name{Epigram}~\citep{McBride-Epigram, McBride-view}.
 
 \subsection{Pattern matching and interactive development}
@@ -398,8 +396,8 @@ We will discuss to what extent the intensional approach works at the end of \aut
 A universe (à~la Tarski) is a set of codes for sets, which is equipped with a decoding function translating codes to sets.
 Large elimination is then computing an inhabitant in the universe (via ordinary elimination like |Nat-elim|) and decoding the result to a set.
 Another important purpose of universes is to support quantification over sets while precluding paradoxical formation of self-referential sets --- \Agda, for example, has a universe hierarchy (|Set|, |Set₁|, |Set₂|,~\ldots\!) for this purpose.
-From the programming perspective, however, the most interesting case is when the universe is supplied with an elimination rule~\citep[Section~14.2]{Nordstrom-programming}: allowing computation on universes turns out to correspond to \key{datatype-generic programming}~\citep{Gibbons-DGP}, whose idea is that the ``shapes'' of datatypes can be encoded so programs can be defined in terms of these shapes.
-Universes can encode such shapes, and since universes are just ordinary sets, datatype-generic programming becomes just ordinary programming in dependently typed languages~\citep{Altenkirch-GP-within-DTP}.\todo{even more generalised}
+From the programming perspective, however, the most interesting case is when the universe is supplied with an elimination rule~\citep[Section~14.2]{Nordstrom-programming}: allowing computation on universes turns out to roughly correspond to \key{datatype-generic programming}~\citep{Gibbons-DGP}, whose idea is that the ``shapes'' of datatypes can be encoded so programs can be defined in terms of these shapes.
+Universes can encode such shapes, and since universes are just ordinary sets, datatype-generic programming becomes just ordinary programming in dependently typed languages~\citep{Altenkirch-GP-within-DTP}.
 
 In this dissertation we not only use but also need to \emph{compute} a class of inductive families which we call \key{index-first datatypes}~\citep{Chapman-levitation, Dagand-functional-ornaments}, and hence need to construct a universe for them.
 Before that, we give a high-level introduction to these datatypes first.
@@ -697,8 +695,6 @@ It would probably be helpful to think of the parts involving |ṿ|~and~|Ṗ| in 
 \section{Externalism and internalism}
 \label{sec:externalism-and-internalism}
 
-\todo[inline]{emphasise the role of inductive families}
-
 The use of ``such that'' to describe objects that have certain properties is universal in mathematics.
 If the objects in question have type~|A|, then objects with certain properties form a subset of~|A|, and using ``such that'' to describe such objects means that the subset is formed by specifying a suitable predicate on~|A|.
 In type theory, this can be modelled by |Σ|-types of dependent pairs.
@@ -710,7 +706,7 @@ A type theory of subsets was given by \citet{Nordstrom-programming} to suppress 
 The proof assistant \name{Coq}~\citep{Bertot-Coq} uses a type-theoretic foundation~\citep{Coquand-calculus-of-constructions, Coquand-CiC} which distinguishes programs and proofs, and proofs are written in a tactic-based language, differently from programs; it is also famous for the ability to extract executable portions of proof scripts into programs~\citep{Paulin-Mohring-extraction, Letouzey-Coq-extraction}, as used in the \name{Comp\-Cert} project developing a verified C~compiler~\citep{Leroy-CompCert}, for example.
 
 On the other hand, having unified programs and proofs in type theory~(\autoref{sec:propositions-as-types}), it seems a pity if the unification is not exploited to a deeper level.
-In Dijkstra's proposal for program correctness by construction, proofs and programs should be conceived ``hand in hand'', and the unification of programs and proofs brings us unprecedentedly closer to this ideal, since we can start thinking about programs that also serve as correctness proofs themselves.
+In Dijkstra's proposal for program correctness by construction, proofs and programs should be conceived ``hand in hand''~\citep{Dijkstra-discipline}, and the unification of programs and proofs brings us unprecedentedly closer to this ideal, since we can start thinking about programs that also serve as correctness proofs themselves.
 The dependently typed programming community has been exploring the use of inductive families not only for defining predicates on data (like |_≤N_|) but also for representing data with embedded constraints (like |Vec|).
 Programs manipulating such datatypes would also deal with the embedded constraints and are thus correct by construction.
 Vector append is a classic (albeit somewhat trivial) example:
@@ -736,19 +732,14 @@ append-length (x ∷ xs)  ys = cong suc (append-length xs ys)
 \end{code}
 But by switching to the vector datatype, the proof dissolves into the typing of the program and needs no separate handling.
 This is possible because list append and the proof |append-length| share the same structure; consequently, by careful type design, the vector append program alone is able to carry both of them simultaneously.
-We propose to call this programming style \key{internalism}, suggesting that proofs are internalised in programs, while the traditional proving-after-programming style is called \key{externalism}.
+We propose to call this programming style \key{internalism}, suggesting that inductive proofs are internalised in programs whose types involve inductive families, while the traditional proving-after-programming style is called \key{externalism}.
 Externalism is necessary when we wish to show that an existing program satisfies additional properties, especially when the proofs are complicated and do not follow the structure of the program.
 On the other hand, writing a (simply typed) program and an externalist proof following the structure of the program is like stating the same thing twice: even though the programmer knows the meaning of the program, they has to first state the meaningless symbol manipulation aspect and then explain its meaning via a separate proof, doubling the effort.
-In contrast, internalism is programming with informative types so as to give precise description of meaningful computations, so explanations via separate proofs become unnecessary.
+In contrast, internalism is programming with informative datatypes so as to give precise description of meaningful computations, so explanations via separate proofs become unnecessary.
 As \citet{McBride-Epigram} aptly put it, internalism makes programs and their explanations via proofs ``not merely coexist but coincide''.
-In addition, by encoding meanings in types, semantic considerations are (at least partially) reduced to syntax and can be aided mechanically --- \Agda's interactive development environment~(\autoref{sec:interaction}) is one form of such aid.
+In addition, by encoding meanings in datatypes, semantic considerations are (at least partially) reduced to syntax and can be aided mechanically --- \Agda's interactive development environment~(\autoref{sec:interaction}) is one form of such aid.
 With interactive development, internalist types not only passively rule out nonsensical programs, but can actively provide helpful information to guide program construction.
-We will see several examples of such ``type-directed programming'' in this dissertation (notably in \autoref{sec:internalism-examples}).
-
-\block*{Historical remark}{
-The distinction between internalism and externalism goes back at least to simply typed $\lambda$-calculus à~la Church and Curry --- a Church-style $\lambda$-term always appears with its type and they together denote a value of the type, whereas Curry-style $\lambda$-terms are untyped and all reside in a common domain, and a term is later stated to have additional properties via typing.
-\citet{Reynolds-intrinsic-extrinsic-semantics} characterised the two styles as giving ``intrinsic'' and ``extrinsic'' semantics to a language, and established relationship between the two kinds of semantics via logical relations.\todo{slightly more precisely?}
-Our emphasis is on a more practical aspect about how intrinsic and extrinsic semantics can affect the attitude and approach to program construction.}
+We will see several examples of such ``type-directed programming'' in this dissertation.
 
 Internalism comes with its own problems, however.
 For one: internalist type design is difficult, yet there is almost no effective guideline or discipline for such design.

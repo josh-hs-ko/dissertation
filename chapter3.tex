@@ -135,11 +135,11 @@ The coherence-based definition, however, can be more easily generalised for func
 \subsection{Upgrades}
 \label{sec:upgrades}
 
-\todo[inline]{Refinements are less useful when we move on to function types: the requirement that a conversion isomorphism exists between related function types is too strong (even when we use extensional equality for functions so isomorphisms between function types make more sense).
-For example, it is not --- and should not be --- possible to have a refinement from the function type |Nat → Nat| to the function type |List Nat → List Nat|, despite that the component types |Nat| and |List Nat| are related by a refinement: if such a refinement existed, we would be able to extract from any function |f : List Nat → List Nat| an ``underlying'' function of type |Nat → Nat| which ``has roughly the same behaviour'' as~|f|.
-However, the behaviour of a function taking a list may depend essentially on the list elements, which is not available to a function taking only a natural number.
-For example, a function of type |List Nat → List Nat| might compute the sum~|s| of the input list and emit a list of length~|s| whose elements are all |zero|.
-We cannot hope to write a function of type |Nat → Nat| that reproduces the corresponding behaviour on natural numbers.}
+Refinements are less useful when we move on to function types, however.
+A presupposition here is that we want refinement relationship between function types to be compositional --- for example, we are interested in stating how the function type |List Nat → List Nat| refines the function type |Nat → Nat| in terms of the refinement between their component types |Nat| and |List Nat| (which states that the underlying natural number of a list is its length): a function |f : Nat → Nat| underlies another function |g : List Nat → List Nat| exactly when |g|~transforms the underlying natural number in the same way as~|f|, i.e., |length (g xs) ≡ f (length xs)| for all |xs : List Nat|.
+It is not possible to have such a refinement between the two function types, though:
+Having such a refinement means, in particular, that we can extract an underlying function from any |g : List Nat → List Nat|, but the behaviour of~|g| may depend essentially on the list elements, which is not available to a function taking a natural number.
+For example, given input |xs : List Nat|, the function |g|~might compute the sum~|s| of~|xs| and emit a list of length~|s| whose elements are all |zero|; apparently there is no function of type |Nat → Nat| that can compute~|s| from |length xs| for all~|xs|.
 
 It is only the decomposing direction of refinements that causes problems in the case of function types, however; the promoting direction is perfectly valid for function types.
 For example, to promote the function doubling a natural number
@@ -366,7 +366,6 @@ erase :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
          ROrn e D E → {X : I → Set} → ⟦ E ⟧ (X ∘ e) → ⟦ D ⟧ X
 \end{code}
 The datatype |Orn| is parametrised by an erasure function |e : J → I| on the index sets and relates a basic description |D : Desc I| with a more informative description |E : Desc J|.
-\todo{We sometimes refer to |μ E| (e.g., lists) as an \key{ornamentation} of |μ D| (e.g., natural numbers).}
 As a consequence, from any ornament |O : Orn e D E| we can derive a forgetful map:
 \begin{spec}
 forget O : μ E ⇉ (μ D ∘ e)
@@ -542,6 +541,8 @@ and the ornament is
 ⌈ OD ⌉ : Orn e D ⌊ OD ⌋
 \end{code}
 
+\block*{Convention}{The ambiguity is also adopted informally for ornaments in general: when we mention an \key{ornamentation} of a datatype |μ D|, it can either refer to an ornament whose less informative end is~|D| or a more informative datatype |μ E| with which |μ D| has an ornamental relationship.}
+
 \block{Example}{ordered lists as an ornamentation of lists}{We can define ordered lists by an ornamental description, using the description of lists as the template:
 \begin{code}
 OrdListOD : OrnDesc Val ! (ListD Val)
@@ -566,7 +567,7 @@ indexfirst data ListS A : List A → Set where
   ListS A []        offers  nil
   ListS A (a ∷ as)  offers  cons (s : ListS A as)
 \end{code}
-For each type |ListS A as|, there is exactly one (canonical) inhabitant (hence the name ``singleton datatype''\todo{citation (e.g., Sheard on \name{$\Omega$mega})}), which is devoid of any horizontal content and whose vertical structure is exactly that of~|as|.
+For each type |ListS A as|, there is exactly one (canonical) inhabitant (hence the name ``singleton datatype''~\citep[Section~3.6]{Sheard-Omega}), which is devoid of any horizontal content and whose vertical structure is exactly that of~|as|.
 We can encode the datatype as an ornamental description relative to |ListD A|:
 \begin{code}
 ListSOD : (A : Set) → OrnDesc (List A) ! (ListD A)
@@ -642,7 +643,7 @@ Recall that our purpose of introducing ornaments is to be able to compute compos
 This can be achieved by composing two ornaments from the same description \key{in parallel}.
 The generic scenario is as follows (think of the direction of an ornamental arrow as following its forgetful function):
 \begin{center}
-\begin{tikzpicture}[scale=2.5, baseline=(C)]
+\begin{tikzpicture}[scale=2.25, baseline=(K.base)]
 \node(C) at ( 0,  0) [coordinate] {};
 \node(I) at ( 0, -1) {|I|};
 \node(J) at (-1,  0) {|J|};
@@ -655,7 +656,7 @@ The generic scenario is as follows (think of the direction of an ornamental arro
 (J) edge[<-] node[above left]{|π₁|} (P)
 (K) edge[<-] node[above right]{|π₂|} (P);
 \end{tikzpicture}\qquad
-\begin{tikzpicture}[scale=2.5, baseline=(C)]
+\begin{tikzpicture}[scale=2.25, baseline=(E.base)]
 \node(C) at ( 0,  0) [coordinate] {};
 \node(D) at ( 0, -1) {|D : Desc I|};
 \node(E) at (-1,  0) {|E : Desc J|};
@@ -665,8 +666,8 @@ The generic scenario is as follows (think of the direction of an ornamental arro
 (D) edge[<-] node[below left]{|O|} (E)
 (D) edge[<-] node[below right]{|P|} (F)
 (D) edge[<-] node[label on arrow]{|⌈ O ⊗ P ⌉|\kern1.8pt} (P)
-(E) edge[<-] node[xshift=-1.5em, label on arrow]{|diffOrn-l O P|} (P)
-(F) edge[<-] node[xshift=1.5em, label on arrow]{|diffOrn-r O P|} (P);
+(E) edge[<-] node[xshift=-1.5em, label on arrow]{\smash{|diffOrn-l O P|}\vphantom{(}} (P)
+(F) edge[<-] node[xshift=1.5em, label on arrow]{\smash{|diffOrn-r O P|}\vphantom{)}} (P);
 \end{tikzpicture}
 \end{center}
 Given three descriptions |D : Desc I|, |E : Desc J|, and |F : Desc K| and two ornaments |O : Orn e D E| and |P : Orn e D F| independently specifying how |D|~is refined to~|E| and to~|F|, we can compute an ornamental description
@@ -776,7 +777,7 @@ and then |pcROD-double∇| puts the deletion into the resulting response ornamen
 \begin{code}
 pcROD-double∇ {s := s} O P refl = (∇'(s)) pcROD O P
 \end{code}
-\sidenote{The implicit argument |{s := s}| is the one named~|s| in the type of |pcROD-double∇| --- the~`|s|' to the left of `|:=|' is the name of the argument, while the~`|s|' to the right is a pattern variable. This syntax allows us to skip the nine implicit arguments before this one.}
+\sidenote{The implicit argument |{s := s}| is the one named~|s| in the type of the function |pcROD-double∇| --- the~`|s|' to the left of `|:=|' is the name of the argument, while the~`|s|' to the right is a pattern variable. This syntax allows us to skip the nine implicit arguments before this one.}
 It might seem bizarre that two deletions results in a new field (and a deletion), but consider this informally described scenario:
 A field |σ S| in the base response description is refined by two independent response ornaments
 \savecolumns

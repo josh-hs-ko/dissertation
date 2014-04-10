@@ -1,7 +1,9 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
@@ -41,19 +43,29 @@
 \bibitem[{Dijkstra(1982)}]{Dijkstra-EWD447}
 \bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1982].
 \newblock On the role of scientific thought.
-\newblock In \emph{Selected Writings on Computing: A personal Perspective},
-  Texts and Monographs in Computer Science, pages 60--66. Springer-Verlag.
+\newblock In \emph{Selected Writings on Computing: A Personal Perspective},
+  pages 60--66. Springer-Verlag.
 \newblock \doi{10.1007/978-1-4612-5695-3_12}.
 
 \bibitem[{McBride(2011)}]{McBride-ornaments}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2011].
 \newblock Ornamental algebras, algebraic ornaments.
-\newblock To appear in \textit{Journal of Functional Programming}.
+\newblock
+  \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/pub/OAAO/LitOrn.pdf}.
 
 \bibitem[{Okasaki(1999)}]{Okasaki-data-structures}
 \bibfnamefont{Chris} \bibnamefont{Okasaki} [1999].
 \newblock \emph{Purely functional data structures}.
 \newblock Cambridge University Press.
+\newblock \isbn{978-0521663502}.
+
+\bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
+\bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}
+  \bibnamefont{Linger} [2007].
+\newblock Programming in {$\Omega$}mega.
+\newblock In \emph{Central-European Functional Programming School}, volume 5161
+  of \emph{Lecture Notes in Computer Science}, pages 158--227. Springer-Verlag.
+\newblock \doi{10.1007/978-3-540-88059-2_5}.
 
 \bibitem[{Swierstra(2008)}]{Swierstra-data-types-a-la-carte}
 \bibfnamefont{Wouter} \bibnamefont{Swierstra} [2008].
@@ -65,6 +77,7 @@
 \bibfnamefont{Philip} \bibnamefont{Wadler} [1989].
 \newblock Theorems for free!
 \newblock In \emph{Functional Programming Languages and Computer Architecture},
-  pages 347--359. ACM.
+  FPCA'89, pages 347--359. ACM.
+\newblock \doi{10.1145/99370.99404}.
 
 \end{thebibliography}

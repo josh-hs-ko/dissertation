@@ -39,7 +39,7 @@
   \bibnamefont{Cast{\'e}ran} [2004].
 \newblock \emph{Interactive Theorem Proving and Program Development ---
   Coq'Art: The Calculus of Inductive Constructions}.
-\newblock Texts in Theoretical Computer Science. Springer-Verlag.
+\newblock Springer-Verlag.
 \newblock \isbn{978-3540208549}.
 
 \bibitem[{Bird and de~Moor(1997)}]{Bird-AoP}
@@ -87,7 +87,7 @@
 \bibitem[{Coquand and Huet(1988)}]{Coquand-calculus-of-constructions}
 \bibfnamefont{Thierry} \bibnamefont{Coquand} and \bibfnamefont{G{\'e}rard}
   \bibnamefont{Huet} [1988].
-\newblock The calculus of constructions.
+\newblock The {C}alculus of {C}onstructions.
 \newblock \emph{Information and Computation}, 76(2--3):95--120.
 \newblock \doi{10.1016/0890-5401(88)90005-3}.
 
@@ -112,6 +112,12 @@
 \newblock In \emph{International Conference on Functional Programming},
   ICFP'12, pages 103--114. ACM.
 \newblock \doi{10.1145/2364527.2364544}.
+
+\bibitem[{Dijkstra(1976)}]{Dijkstra-discipline}
+\bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1976].
+\newblock \emph{A Discipline of Programming}.
+\newblock Prentice-Hall.
+\newblock \isbn{978-0132158718}.
 
 \bibitem[{Dummett(2000)}]{Dummett-intuitionism}
 \bibfnamefont{Michael} \bibnamefont{Dummett} [2000].
@@ -279,13 +285,6 @@
 \newblock A new view of guards.
 \newblock
   \urlentry{http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html}.
-
-\bibitem[{Reynolds(2000)}]{Reynolds-intrinsic-extrinsic-semantics}
-\bibfnamefont{John~C.} \bibnamefont{Reynolds} [2000].
-\newblock The meaning of types --- from intrinsic to extrinsic semantics.
-\newblock Basic Research in Computer Science (BRICS) Report Series RS-00-32,
-  Department of Computer Science, University of Aarhus.
-\newblock \urlentry{http://www.brics.dk/RS/00/32/}.
 
 \bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
 \bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}
