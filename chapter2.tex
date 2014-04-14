@@ -41,7 +41,7 @@ For a simple example, in type theory we can formulate the formation rule for con
 \begin{center}
 \AXC{|A : Set|}
 \AXC{|B : Set|}
-\BIC{|A ∧ B : Set|} \DP
+\BIC{|A ^^^∧ B : Set|} \DP
 \end{center}
 and the introduction rule
 \begin{center}
@@ -64,7 +64,7 @@ For instance, if a proof of~|P 2| is required, we can simply apply~|s| to~|z| tw
 This explanation justifies the following \key{elimination rule}
 \begin{center}
 \AXC{|P : Nat → Set|} \AXC{|z : P zero|} \AXC{|s : (n : Nat) → P n → P (suc n)|\qquad|n : Nat|}
-\TIC{|Nat-elim P z s n : P n|} \DP
+\TIC{|^^^Nat-elim P z s n : P n|} \DP
 \end{center}
 \sidenote{The type of~|s| illustrates \Agda's syntax for dependent function types --- the value~|n| of the first argument is referred to in the types of the second argument and the result.}
 The symbol |Nat-elim| symbolises the method described above, which, given |P|, |z|, and~|s|, transforms any natural number~|n| into an inhabitant of the set~|P n|.
@@ -107,21 +107,22 @@ data Nat : Set where
   zero  : Nat
   suc   : Nat → Nat
 \end{code}
-In type theory, computations on inductive datatypes are specified using eliminators like |Nat-elim|, whose style corresponds to \key{recursion schemes}~\citep{Meijer-bananas} in functional programming. (In particular, |Nat-elim| is a more informatively typed version of paramorphism on natural numbers~\citep{Meertens-paramorphisms}.)
+In type theory, computations on inductive datatypes are specified using eliminators like |Nat-elim|, whose style corresponds to \key{recursion schemes}~\citep{Meijer-bananas} in functional programming.
+(In particular, |Nat-elim| is a more informatively typed version of paramorphism on natural numbers~\citep{Meertens-paramorphisms}.)
 One reason for making elimination as the only option is that programs in type theory are required to terminate --- which is a consequence of the requirement that an inhabitant should be \emph{effectively} recognisable as belonging to a set, and results in decidable typechecking --- and using eliminators throughout is a straightforward way of enforcing termination.
 On the other hand, in functional programming, the \key{pattern matching} notation is widely used for defining programs on (inductive) datatypes (see, e.g., \citet[Section~5]{Hudak-history-of-Haskell}) in addition to recursion schemes.
 Pattern matching is vital to the clarity of functional programs because it not only allows a function to be intuitively defined by equations suggesting how the function computes, but also clearly conveys the programming strategy of splitting a problem into sub-problems by case analysis.
 
 When it comes to dependently typed programming, the situation becomes more complicated due to the presence of \key{inductive families}~\citep{Dybjer-inductive-families}, i.e., simultaneously inductively defined families of sets, like the following:
 \begin{code}
-data _≤N_ (m : Nat) : Nat → Set where
-  refl  : m ≤N m
-  step  : (n : Nat) → m ≤N n → m ≤N suc n
+data ^^^_≤N_ (m : Nat) : Nat → Set where
+  lrefl  : m ≤N m
+  step   : (n : Nat) → m ≤N n → m ≤N suc n
 \end{code}
 \sidenote{An \Agda\ name with underscores (like~|_≤N_|) can be applied to arguments either by prefixing (like ``|_≤N_ m n|'') or by substituting the arguments for the underscores with proper spacing (like ``|m ≤N n|'').}
-Reading the declaration logically, the types of the two constructors |refl| and |step| give the two proof rules for establishing that one natural number is less than or equal to another.
+Reading the declaration logically, the types of the two constructors |lrefl| and |step| give the two proof rules for establishing that one natural number is less than or equal to another.
 More generally, we read the declaration as a datatype parametrised by |m : Nat| \sidenote{as signified by its appearance right next to~|data _≤N_|} and indexed by~|Nat|.
-For any |m : Nat|, the type family |_≤N_ m : Nat → Set| as a whole is inductively populated: we have an inhabitant |refl| in the set |(_≤N_ m) m|, and whenever we have an inhabitant |p : (_≤N_ m) n| for some |n : Nat|, we can make a larger inhabitant |step n p| in another set |(_≤N_ m) (suc n)| in the family.
+For any |m : Nat|, the type family |_≤N_ m : Nat → Set| as a whole is inductively populated: we have an inhabitant |lrefl| in the set |(_≤N_ m) m|, and whenever we have an inhabitant |p : (_≤N_ m) n| for some |n : Nat|, we can make a larger inhabitant |step n p| in another set |(_≤N_ m) (suc n)| in the family.
 (From now on we usually refer to inductive families simply as datatypes, especially when emphasising their use in programming and de-emphasising the distinction with non-indexed datatypes like~|Nat|.)
 
 With inductive families, splitting a problem into sub-problems by case analysis in dependently typed programming often leads to nontrivial refinement of the goal type and the context, and such refinement can be tricky to handle with eliminators.
@@ -135,7 +136,7 @@ Below we look at an example of interactively constructing a program with pattern
 
 Suppose that we are asked to prove that |_≤N_|~is transitive, i.e., to construct the program
 \begin{code}
-trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
+^^^trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
 \end{code}
 \sidenote{The ``telescopic'' quantification ``|(x y z : Nat) →|'' is a shorthand for ``|(x : Nat) (y : Nat) (z : Nat) →|'', which, in turn, is a shorthand for ``|(x : Nat) → (y : Nat) → (z : Nat) →|''.}
 We define |trans| interactively by first putting pattern variables for the arguments on the left of the defining equation and then leaving an ``interaction point'' --- also called a ``goal'' --- on the right, which is numbered~0.
@@ -144,41 +145,41 @@ We define |trans| interactively by first putting pattern variables for the argum
 trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
 trans x y z p q = (goal(x ≤N z)(0))
 \end{code}
-We instruct \Agda\ to perform case analysis on~|q|, and there are two cases: |refl| and |step w r| where |r|~has type |y ≤N w|.
+We instruct \Agda\ to perform case analysis on~|q|, and there are two cases: |lrefl| and |step w r| where |r|~has type |y ≤N w|.
 The original Goal~0 is split into two sub-goals, and unification is triggered for each sub-goal.
 \begin{code}
 trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
-trans x  INF  z        z        p(vartype(x ≤N z))  refl                         = (goal(x ≤N z)(1))
+trans x  INF  z        z        p(vartype(x ≤N z))  lrefl                        = (goal(x ≤N z)(1))
 trans x       y   INF  (suc w)  p(vartype(x ≤N y))  (step w r(vartype(y ≤N w)))  = (goal(x ≤N suc w)(2))
 \end{code}
-In Goal~1, the type of |refl| demands that |y|~be unified with~|z|, and hence the pattern variable~|y| is replaced with a ``dot pattern''~|INF z| indicating that the value of~|y| is determined by unification to be~|z|.
+In Goal~1, the type of |lrefl| demands that |y|~be unified with~|z|, and hence the pattern variable~|y| is replaced with a ``dot pattern''~|INF z| indicating that the value of~|y| is determined by unification to be~|z|.
 Therefore, upon enquiry, \Agda\ tells us that the type of~|p| in the context --- which was originally |x ≤N y| --- is now |x ≤N z| (shown in superscript next to~|p|, which is not part of the \Agda\ program but only appears when interacting with \Agda).
 Similarly for Goal~|2|, |z|~is unified with |suc w| and the goal type is rewritten accordingly.
 We see that the case analysis has led to two sub-problems with different goal types and contexts, where Goal~1 is easily solvable as there is a term in the context with the right type, namely~|p|.
 \begin{code}
 trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
-trans x  INF  z       z        p                   refl                         = p
+trans x  INF  z       z        p                   lrefl                        = p
 trans x       y  INF  (suc w)  p(vartype(x ≤N y))  (step w r(vartype(y ≤N w)))  = (goal(x ≤N suc w)(2))
 \end{code}
 The second goal type |x ≤N suc w| looks like the conclusion in the type of the term |step w : x ≤N w → x ≤N suc w|, so we use this term to reduce Goal~2 to Goal~3, which now requires a term of type |x ≤N w|.
 \begin{code}
 trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
-trans x  INF  z       z        p                   refl                         = p
+trans x  INF  z       z        p                   lrefl                        = p
 trans x       y  INF  (suc w)  p(vartype(x ≤N y))  (step w r(vartype(y ≤N w)))  = step w (goal(x ≤N w)(3))
 \end{code}
 Now we see that the induction hypothesis term |trans x y w p r : x ≤N w| has the right type.
 Solving Goal~3 with this term completes the program.
 \begin{code}
 trans : (x y z : Nat) → x ≤N y → y ≤N z → x ≤N z
-trans x  INF  z       z        p refl        = p
+trans x  INF  z       z        p lrefl       = p
 trans x       y  INF  (suc w)  p (step w r)  = step w (trans x y w p r)
 \end{code}
 In contrast, if we stick to the default elimination approach in type theory, we would use the eliminator
 \begin{code}
-≤N-elim :  (m : Nat) (P : (n : Nat) → m ≤N n → Set) →
-           ((t : m ≤N m) → P m t) →
-           ((n : Nat) (t : m ≤N n) → P n t → P (suc n) (step n t)) →
-           (n : Nat) (t : m ≤N n) → P n t
+^^^≤N-elim :  (m : Nat) (P : (n : Nat) → m ≤N n → Set) →
+              ((t : m ≤N m) → P m t) →
+              ((n : Nat) (t : m ≤N n) → P n t → P (suc n) (step n t)) →
+              (n : Nat) (t : m ≤N n) → P n t
 \end{code}
 and write
 \begin{code}
@@ -207,28 +208,28 @@ data List (A : Set) : Set where
   []   : List A
   _∷_  : A → List A → List A
 \end{code}
-and (throughout this dissertation) let |Val : Set| be equipped with a decidable total ordering, i.e., there is a relation
+and (throughout this dissertation) let |^^^Val : Set| be equipped with a decidable total ordering, i.e., there is a relation
 \begin{code}
-_≤_ : Val → Val → Set
+^^^_≤_ : Val → Val → Set
 \end{code}
 with the following operations:
 \begin{code}
-≤-refl    : {x : Val} → x ≤ x
-≤-trans   : {x y z : Val} → x ≤ y → y ≤ z → x ≤ z
-_≤?_      : (x y : Val) → Dec (x ≤ y)
-≰-invert  : {x y : Val} → ¬ (x ≤ y) → y ≤ x
+^^^≤-refl    : {x : Val} → x ≤ x
+^^^≤-trans   : {x y z : Val} → x ≤ y → y ≤ z → x ≤ z
+^^^_≤?_      : (x y : Val) → Dec (x ≤ y)
+^^^≰-invert  : {x y : Val} → ¬ (x ≤ y) → y ≤ x
 \end{code}
 where |Dec| is the following datatype witnessing whether a set is inhabited or not:
 \begin{code}
-data Dec (A : Set) : Set where
-  yes  :    A  → Dec A
-  no   : ¬  A  → Dec A  -- |¬ A = A → ⊥|, where |⊥|~is the empty set
+data ^^^Dec (A : Set) : Set where
+  ^^^yes  :    A  → Dec A
+  ^^^no   : ¬  A  → Dec A  -- |¬ A = A → ⊥|, where |⊥|~is the empty set
 \end{code}
 \sidenote{Quantifications like |{x : Val}| are implicit arguments to a function.
 They can be omitted when applying the function, and \Agda\ will try to infer them.}
 The insertion function is then written as
 \begin{code}
-insert : Val → List Val → List Val
+^^^insert : Val → List Val → List Val
 insert y [] = y ∷ []
 insert y (x ∷ xs)  with y ≤? x
 insert y (x ∷ xs)  | yes  _ = y ∷ x ∷ xs
@@ -245,23 +246,23 @@ An important application of |with|-matching is \varcitet{McBride-view}{'s adapta
 Suppose that we wish to implement a snoc-list view for cons-lists, i.e., to say that a list is either empty or has the form |ys ++ (y ∷ [])| (where |_++_| is list append, a definition of which is shown in \autoref{sec:Desc}).
 We would define the following view type
 \begin{code}
-data SnocView {A : Set} : List A → Set where
-  nil   : SnocView []
+data ^^^SnocView {A : Set} : List A → Set where
+  snil  : SnocView []
   snoc  : (ys : List A) (y : A) → SnocView (ys ++ (y ∷ []))
 \end{code}
 and write a \key{covering function} for the view:
 \begin{code}
-snocView : {A : Set} (xs : List A) → SnocView xs
-snocView [] = nil
+^^^snocView : {A : Set} (xs : List A) → SnocView xs
+snocView [] = snil
 snocView (x ∷ xs)                    with snocView xs
-snocView (x ∷ INF [])                | nil        = snoc [] x
+snocView (x ∷ INF [])                | snil       = snoc [] x
 snocView (x ∷ INF (ys ++ (y ∷ [])))  | snoc ys y  = snoc (x ∷ ys) y
 \end{code}
 Note that the type of |snocView| ensures that every list is covered under one constructor of |SnocView|.
 Also, this is a nontrivial example of |with|-matching, because performing pattern matching on the result of |snocView xs| refines~|xs| in the context to either |[]|~or |ys ++ (y ∷ [])|, and the refinement is propagated to the goal type.
 Now, for example, the function |init| which removes the last element (if any) in a list can be implemented simply as
 \begin{code}
-init : {A : Set} → List A → List A
+^^^init : {A : Set} → List A → List A
 init xs                       with snocView xs
 init .[]                      | nil        = []
 init {-"."-}(ys ++ (y ∷ []))  | snoc ys y  = ys
@@ -295,8 +296,8 @@ The resulting type theory is called an \key{intensional type theory}; its charac
 Judgemental equality --- being a meta-level notion --- is not an entity inside the theory.
 To state equality between two terms as a proposition and have proof for that proposition inside the theory, we need \key{propositional equality}, which can be defined in \Agda\ by the following inductive family:
 \begin{code}
-data _≡_ {A : Set} (x : A) : A → Set where
-  refl : x ≡ x
+data ^^^_≡_ {A : Set} (x : A) : A → Set where
+  ^^^refl : x ≡ x
 \end{code}
 The canonical way to prove an equality proposition |x ≡ y| is |refl|, which is permitted when |x|~and~|y| are judgementally equal.
 Under contexts, however, it is possible to prove that two judgementally different terms are propositionally equal.
@@ -321,17 +322,17 @@ For example, in category theory (which we use in Chapters \ref{chap:categorical}
 (If, under the empty context, two pointwise propositionally equal functions are propositionally equal themselves, then by the reflection principle they are also judgementally equal, but the two functions can well have different intensions.)
 Of course, we can explicitly work with pointwise equality on functions, i.e., establishing and using properties formulated in terms of the relation
 \begin{code}
-_≐_ : {A B : Set} → (A → B) → (A → B) → Set
+^^^_≐_ : {A B : Set} → (A → B) → (A → B) → Set
 _≐_ {A} f g = (x : A) → f x ≡ g x
 \end{code}
 \sidenote{The implicit argument~|A| is explicitly displayed in curly braces on the left-hand side of the equation since we need to refer to it on the right-hand side.}
 Not being able to identify extensionally equal functions propositionally, however, means that we do not automatically get basic properties like
 \begin{code}
-cong : {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
+^^^cong : {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 \end{code}
 i.e., a function maps equal arguments to equal results, and
 \begin{code}
-subst : {A : Set} (P : A → Set) {x y : A} → x ≡ y → P x → P y
+^^^subst : {A : Set} (P : A → Set) {x y : A} → x ≡ y → P x → P y
 \end{code}
 i.e., inhabitants in an indexed set can be transported to another set with an equal index, for extensionally equal functions.
 We would need to prove such properties for every entity like |f|~and~|P| on a case-by-case basis, which quickly becomes tedious.
@@ -422,21 +423,21 @@ Below we use a slightly more \Agda-like adaptation of the notation.
 Index-first declarations of simple datatypes look almost like Haskell data declarations.
 For example, natural numbers are declared by
 \begin{code}
-indexfirst data Nat : Set where
-  Nat  offers  zero
-       or      suc (n : Nat)
+indexfirst data ^^^Nat : Set where
+  Nat  offers  ^^^zero
+       or      ^^^suc (n : Nat)
 \end{code}
 We use the keyword |indexfirst| to explicitly mark the declaration as an index-first one, distinguishing it from an \Agda\ datatype declaration.
 The only possible pattern of the datatype is |Nat|, which offers two constructors |zero| and |suc|, the latter taking a recursive argument named~|n|.
 We declare lists similarly, this time with a uniform parameter |A : Set|:
 \begin{code}
-indexfirst data List (A : Set) : Set where
+indexfirst data ^^^List (A : Set) : Set where
   List A  offers  []
           or      _∷_ (a : A) (as : List A)
 \end{code}
 The declaration of vectors is more interesting, fully exploiting the power of index-first datatypes:
 \begin{code}
-indexfirst data Vec (A : Set) : Nat → Set where
+indexfirst data ^^^Vec (A : Set) : Nat → Set where
   Vec A zero     offers  []
   Vec A (suc n)  offers  _∷_ (a : A) (as : Vec A n)
 \end{code}
@@ -445,7 +446,7 @@ The first case only offers the nil constructor~|[]|, and the second case only of
 Because the form of the index restricts constructor choice, the recursive structure of a vector |as : Vec A n| must follow that of~|n|, i.e., the number of cons nodes in~|as| must match the number of successor nodes in~|n|.
 We can also declare the bottom-up vector datatype in index-first style:
 \begin{code}
-indexfirst data Vec' (A : Set) : Nat → Set where
+indexfirst data ^^^Vec' (A : Set) : Nat → Set where
   Vec' A n  offers  nil (neq : n ≡ zero)
             or      cons  (a : A) {m : Nat}
                           (as : Vec' A m) (meq : n ≡ suc m)
@@ -464,15 +465,15 @@ Now we proceed to construct a universe for index-first datatypes.
 An inductive family of type |I → Set| is constructed by taking the least fixed point of a base endofunctor on |I → Set|.
 For example, to get index-first vectors, we would define a base functor (parametrised by |A : Set|)
 \begin{code}
-VecF A : (Nat → Set) → (Nat → Set)
+^^^VecF A : (Nat → Set) → (Nat → Set)
 VecF A X zero     =  ⊤
 VecF A X (suc n)  =  A × X n  -- |_×_| is cartesian product
 \end{code}
 and take its least fixed point.
-(|⊤|~is a singleton set whose only inhabitant is~``|tt|''.)
+(|^^^⊤|~is a singleton set whose only inhabitant is~``|^^^tt|''.)
 If we flip the order of the arguments of |VecF A|:
 \begin{code}
-VecF' A : Nat → (Nat → Set) → Set
+^^^VecF' A : Nat → (Nat → Set) → Set
 VecF' A zero     =  λ X → ⊤
 VecF' A (suc n)  =  λ X → A × X n
 \end{code}
@@ -489,23 +490,23 @@ Inhabitants of |RDesc I| will be called \key{response descriptions}.
 A function of type |I → RDesc I|, then, can be decoded to an endofunctor on |I → Set|, so the type |I → RDesc I| acts as a universe for index-first datatypes.
 We hence define
 \begin{code}
-Desc : Set → Set₁
+^^^Desc : Set → Set₁
 Desc I = I → RDesc I
 \end{code}
 with decoding function
 \begin{code}
-Ḟ : {I : Set} → Desc I → (I → Set) → (I → Set)
+^^^Ḟ : {I : Set} → Desc I → (I → Set) → (I → Set)
 Ḟ D X i = ⟦ D i ⟧ X
 \end{code}
 Inhabitants of type |Desc I| will be called \key{datatype descriptions}, or \key{descriptions} for short.
 Actual datatypes are manufactured from descriptions by the least fixed point operator:
 \begin{code}
-data μ' {I : Set} (D : Desc I) : I → Set where
-  con : Ḟ D (μ D) ⇉ μ D
+data ^^^μ {I : Set} (D : Desc I) : I → Set where
+  ^^^con : Ḟ D (μ D) ⇉ μ D
 \end{code}
 where |_⇉_| is defined by
 \begin{code}
-_⇉_ : {I : Set} → (I → Set) → (I → Set) → Set
+^^^_⇉_ : {I : Set} → (I → Set) → (I → Set) → Set
 _⇉_ {I} X Y = {i : I} → X i → Y i
 \end{code}
 
@@ -513,11 +514,11 @@ _⇉_ {I} X Y = {i : I} → X i → Y i
 
 \block{Notation}{dependent pairs and \Agda\ records}{Cartesian product is a special case of \key{|Σ|-types}, also known as \key{dependent pairs}, which are defined in \Agda\ as a record:
 \begin{code}
-record Σ (A : Set) (X : A → Set) : Set where
+record ^^^Σ (A : Set) (X : A → Set) : Set where
   constructor pair
   field
-    proj₁  : A
-    proj₂  : X proj₁
+    ^^^proj₁  : A
+    ^^^proj₂  : X proj₁
 
 infixr 4 pair
 
@@ -530,7 +531,7 @@ An inhabitant of |Σ A X| is a pair where the type of the second component depen
 record  case  proj₁  = a
         sep   proj₂  = x endcase
 \end{code}
-(where |a : A| and |x : X a|) --- a cartesian product |A × B| is thus a special case, which is defined as |Σ A ((lambda(_)) B)|.
+(where |a : A| and |x : X a|) --- a cartesian product |A ^^^× B| is thus a special case, which is defined as |Σ A ((lambda(_)) B)|.
 The |constructor| declaration gives rise to a constructor function
 \begin{code}
 pair : {A : Set} {X : A → Set} → (a : A) → X a → Σ A X
@@ -546,17 +547,17 @@ Finally, we can treat~|Σ| as a binder and write, e.g., |Σ A X| as |(Σ'(a ∶ 
 
 We now define the datatype of response descriptions --- which determines the syntax available for defining base functors --- and its decoding function:
 \begin{code}
-data RDesc (I : Set) : Set₁ where
+data ^^^RDesc (I : Set) : Set₁ where
   ṿ  :  (is : List I) → RDesc I
   σ  :  (S : Set) (D : S → RDesc I) → RDesc I
   
-⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
+^^^⟦_⟧ : {I : Set} → RDesc I → (I → Set) → Set
 ⟦  ṿ is   ⟧  X  =  Ṗ is X  -- see below
 ⟦  σ S D  ⟧  X  =  (Σ'(s ∶ S)) ⟦ D s ⟧ X
 \end{code}
 The operator~|Ṗ| computes the product of a finite number of types in a type family, whose indices are given in a list:
 \begin{code}
-Ṗ : {I : Set} → List I → (I → Set) → Set
+^^^Ṗ : {I : Set} → List I → (I → Set) → Set
 Ṗ  []        X  =  ⊤
 Ṗ  (i ∷ is)  X  =  X i × Ṗ is X
 \end{code}
@@ -567,11 +568,11 @@ Like~|Σ|, we sometimes regard~|σ| as a binder and write |(σ'(s ∶ S)) D s| f
 
 \block{Example}{natural numbers}{The datatype of natural numbers is considered to be an inductive family trivially indexed by~|⊤|, so the declaration of |Nat| corresponds to an inhabitant of |Desc ⊤|.
 \begin{code}
-data ListTag : Set where
+data ^^^ListTag : Set where
   `nil   : ListTag
   `cons  : ListTag
 
-NatD : Desc ⊤
+^^^NatD : Desc ⊤
 NatD tt = σ ListTag λ  case  `nil   mapsto  ṿ []
                        sep   `cons  mapsto  ṿ (tt ∷ []) endcase
 \end{code}
@@ -581,7 +582,7 @@ A pattern-matching lambda function \sidenote{which is syntactically distinguishe
 \block{Example}{lists}{The datatype of lists is parametrised by the element type.
 We represent parametrised descriptions simply as functions producing descriptions, so the declaration of lists corresponds to a function taking element types to descriptions.
 \begin{code}
-ListD : Set → Desc ⊤
+^^^ListD : Set → Desc ⊤
 ListD A tt = σ ListTag λ  case  `nil   mapsto  ṿ []
                           sep   `cons  mapsto  (σ'(_ ∶ A)) ṿ (tt ∷ []) endcase
 \end{code}
@@ -589,7 +590,7 @@ ListD A tt = σ ListTag λ  case  `nil   mapsto  ṿ []
 
 \block{Example}{vectors}{The datatype of vectors is parametrised by the element type and (nontrivially) indexed by |Nat|, so the declaration of vectors corresponds to
 \begin{code}
-VecD : Set → Desc Nat
+^^^VecD : Set → Desc Nat
 VecD A zero     = ṿ []
 VecD A (suc n)  = (σ'(_ ∶ A)) ṿ (n ∷ [])
 \end{code}
@@ -629,11 +630,11 @@ Index-first declarations will only be regarded in this dissertation as informal 
 \begin{code}
 mutual
 
-  fold : {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
+  ^^^fold : {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ⇉ X) → (μ D ⇉ X)
   fold {I} {D} f {i} (con ds) = f (mapFold D (D i) f ds)
 
-  mapFold :  {I : Set} (D : Desc I) (D' : RDesc I) →
-             {X : I → Set} → (Ḟ D X ⇉ X) → ⟦ D' ⟧ (μ D) → ⟦ D' ⟧ X
+  ^^^mapFold :  {I : Set} (D : Desc I) (D' : RDesc I) →
+                {X : I → Set} → (Ḟ D X ⇉ X) → ⟦ D' ⟧ (μ D) → ⟦ D' ⟧ X
   mapFold D (ṿ [])        f tt         = tt
   mapFold D (ṿ (i ∷ is))  f (d  , ds)  = fold f d , mapFold D (ṿ is) f ds
   mapFold D (σ S D')      f (s  , ds)  = s , mapFold D (D' s) f ds
@@ -656,14 +657,26 @@ fold {I} {D} f {i} (con ds) = f (mapRD (D i) (fold f) ds)
 \end{code}
 where the functorial mapping |mapRD| on response structures is defined by
 \begin{code}
-mapRD :  {I : Set} (D : RDesc I) →
-         {X Y : I → Set} (g : X ⇉ Y) → ⟦ D ⟧ X → ⟦ D ⟧ Y
+^^^mapRD :  {I : Set} (D : RDesc I) →
+            {X Y : I → Set} (g : X ⇉ Y) → ⟦ D ⟧ X → ⟦ D ⟧ Y
 mapRD (ṿ [])        g tt        = tt
 mapRD (ṿ (i ∷ is))  g (x , xs)  = g x , mapRD (ṿ is) g xs
 mapRD (σ S D)       g (s , xs)  = s , mapRD (D s) g xs
 \end{code}
 \Agda\ does not see that this definition of |fold| is terminating, however, since the termination checker does not expand the definition of |mapRD| to see that |fold f| is applied to structurally smaller arguments.
 To make termination obvious to \Agda, we instead define |fold| mutually recursively with |mapFold|, which is |mapRD| specialised by fixing its argument~|g| to |fold f|.
+
+\block{Example}{list length}{The function |length : {A : Set} → List A → Nat| can be defined in terms of the datatype-generic |fold|:
+\begin{code}
+^^^length : {A : Set} → List A → Nat
+length = fold length-alg
+\end{code}
+where the algebra |length-alg| is defined by
+\begin{code}
+^^^length-alg : {A : Set} → Ḟ (ListD A) (const Nat) ⇉ const Nat
+length-alg (`nil   ,          tt) = zero
+length-alg (`cons  , a , n ,  tt) = suc n
+\end{code}}
 
 It is helpful to form a two-dimensional image of our datatype manufacturing scheme:
 We manufacture a datatype by first defining a base functor, and then recursively duplicating the functorial structure by taking its least fixed point.
@@ -725,7 +738,7 @@ _++_ : {A : Set} {m n : Nat} → Vec A m → Vec A n → Vec A (m + n)
 The program for vector append looks exactly like the one for list append except for the more informative type, which makes it possible for the program to meet its specification --- the length of the result of append should be the sum of the lengths of the two input lists --- by construction.
 For list append, whose type uses the plain list datatype, we need to separately produce the following proof:
 \begin{code}
-append-length :
+^^^append-length :
   {A : Set} (xs ys : List A) → length (xs ++ ys) ≡ length xs + length ys
 append-length []        ys = refl
 append-length (x ∷ xs)  ys = cong suc (append-length xs ys)
@@ -775,41 +788,41 @@ The answer is yes, because there are isomorphisms between externalist and intern
 To illustrate, let us go through a small case study about upgrading the |insert| function on lists (\autoref{sec:with}) for vectors, ordered lists, and ordered vectors.
 The externalist would define vectors as a |Σ|-type,
 \begin{code}
-ExtVec : Set → Nat → Set
+^^^ExtVec : Set → Nat → Set
 ExtVec A n = (Σ'(xs ∶ List A)) length xs ≡ n
 \end{code}
 prove that |insert| increases the length of a list by one,
 \begin{code}
-insert-length :  (y : Val) {n : Nat} (xs : List Val) →
-                 length xs ≡ n → length (insert y xs) ≡ suc n
+^^^insert-length :  (y : Val) {n : Nat} (xs : List Val) →
+                    length xs ≡ n → length (insert y xs) ≡ suc n
 \end{code}
 and define insertion on vectors as
 \begin{code}
-insert-EV : Val → {n : Nat} → ExtVec Val n → ExtVec Val (suc n)
+^^^insert-EV : Val → {n : Nat} → ExtVec Val n → ExtVec Val (suc n)
 insert-EV y (xs , len) = insert y xs , insert-length y xs len
 \end{code}
 which processes the list and the length proof by |insert| and |insert-length| respectively.
 Similarly for ordered lists (indexed with a lower bound), the externalist would use the |Σ|-type
 \begin{code}
-ExtOrdList : Val → Set
+^^^ExtOrdList : Val → Set
 ExtOrdList b = (Σ'(xs ∶ List Val)) Ordered b xs
 \end{code}
 where the |Ordered| predicate is defined by
 \begin{code}
-indexfirst data Ordered : Val → List Val → Set where
+indexfirst data ^^^Ordered : Val → List Val → Set where
   Ordered b []        offers nil
   Ordered b (x ∷ xs)  offers cons (leq : b ≤ x) (ord : Ordered x xs)
 \end{code}
 Insertion on ordered lists is then
 \begin{code}
-insert-EO :  (y : Val) {b : Val} → ExtOrdList b →
-             {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdList b'
+^^^insert-EO :  (y : Val) {b : Val} → ExtOrdList b →
+                {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdList b'
 insert-EO y (xs , ord) b'≤y b'≤b = insert y xs , insert-ordered y xs ord b'≤y b'≤b
 \end{code}
 where |insert-ordered| proves that |insert| preserves ordering:
 \begin{code}
-insert-ordered :  (y : Val) {b : Val} (xs : List Val) → Ordered b xs →
-                  {b' : Val} → b' ≤ y → b' ≤ b → Ordered b' (insert y xs)
+^^^insert-ordered :  (y : Val) {b : Val} (xs : List Val) → Ordered b xs →
+                     {b' : Val} → b' ≤ y → b' ≤ b → Ordered b' (insert y xs)
 \end{code}
 Now the externalist has arrived at a modular list library (albeit a tiny one), which contains
 \begin{itemize}
@@ -819,13 +832,13 @@ Now the externalist has arrived at a modular list library (albeit a tiny one), w
 It is easy to mix all three modules and get ordered vectors and insertion on them.
 The |Σ|-type uses the pointwise conjunction of the two predicates,
 \begin{code}
-ExtOrdVec : Val → Nat → Set
+^^^ExtOrdVec : Val → Nat → Set
 ExtOrdVec b n = (Σ'(xs ∶ List Val)) Ordered b xs × length xs ≡ n
 \end{code}
 and insertion simply uses |insert-ordered| and |insert-length| to process the two proofs bundled with a list:
 \begin{code}
-insert-EOV :  (y : Val) {b : Val} {n : Nat} → ExtOrdVec b n →
-              {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdVec b' (suc n)
+^^^insert-EOV :  (y : Val) {b : Val} {n : Nat} → ExtOrdVec b n →
+                 {b' : Val} → b' ≤ y → b' ≤ b → ExtOrdVec b' (suc n)
 insert-EOV y (xs , ord , len) b'≤y b'≤b =  insert          y xs ,
                                            insert-ordered  y xs ord b'≤y b'≤b ,
                                            insert-length   y xs len
@@ -834,7 +847,7 @@ This is the kind of library we are looking for, except that the types are all ex
 The externalist and internalist types are not unrelated, however.
 For example, internalist and externalist vectors are related by the indexed family of \key{conversion isomorphisms}:
 \begin{code}
-Vec-iso A : (n : Nat) → Vec A n ≅ ExtVec A n
+^^^Vec-iso A : (n : Nat) → Vec A n ≅ ExtVec A n
 \end{code}
 Fixing |n : Nat|, the left-to-right direction of the isomorphism
 \begin{code}
@@ -857,13 +870,13 @@ is defined by the commutative diagram:
 \node             (Vec-Val-suc-n)    at (1,  0) {|Vec Val (suc n)|};
 \node[align=left] (ExtVec-Val-n)     at (0, -1) {|(Σ'(xs ∶ List Val))|\\~~|length xs ≡ n|};
 \node[align=left] (ExtVec-Val-suc-n) at (1, -1) {|(Σ'(xs ∶ List Val))|\\~~|length xs ≡ suc n|};
-\path[->] (Vec-Val-n)        edge node[above]{|insert-V y|}                                (Vec-Val-suc-n)
+\path[->] (Vec-Val-n)        edge node[above]{|insert-V y|}                             (Vec-Val-suc-n)
           (Vec-Val-n)        edge node[label on arrow]{|Iso.to (Vec-iso Val n)|}           (ExtVec-Val-n)
           (ExtVec-Val-n)     edge node[above]{|insert y *|} node[below]{|insert-length y _|} (ExtVec-Val-suc-n)
           (ExtVec-Val-suc-n) edge node[label on arrow]{|Iso.from (Vec-iso Val (suc n))|}   (Vec-Val-suc-n);
 \end{tikzpicture}
 \end{center}
-(The |_*_|~operator is defined by |(f * g) (x , y) = (f x , g y)|, and the underscore leaves out the term for \Agda\ to infer.)
+(The |^^^_*_|~operator is defined by |(f * g) (x , y) = (f x , g y)|, and the underscore leaves out the term for \Agda\ to infer.)
 Similarly, we can get insertion for internalist ordered lists and ordered vectors (definitions to appear in \autoref{chap:refinements-and-ornaments}) from the externalist library by suitable conversion isomorphisms of the same form as |Vec-iso|.
 It is due to these conversion isomorphisms between internalist and externalist representations that we can \key{analyse} internalist datatypes into externalist components, which can then be modularly processed.
 This analysis of internalist datatypes and its application to modular library structuring is explored in \autoref{chap:refinements-and-ornaments} (in particular, the insertion example is resolved in \autoref{sec:insertion}).

@@ -14,7 +14,7 @@ clsAlg O : Ḟ D (Inv' e) ↝ Inv' e
 \end{code}
 whose carrier type is defined by
 \begin{code}
-Inv' e : I → Set
+^^^Inv' e : I → Set
 Inv' e i = (Σ'(j ∶ J)) e j ≡ i
 \end{code}
 such that there are isomorphisms
@@ -82,9 +82,9 @@ or diagrammatically:
 \node(FDI) [below=1 of I] {|Ḟ D (Inv' proj₁)|};
 \draw[-> ] (FDX) edge node[left]{|R|} (X);
 \draw[-> ] (FDI) edge node[right]{\rlap{|clsAlg ⌈ algOD D R ⌉|}} (I);
-\draw[<->] (FDX) edge node(RDh)[below,xshift=15pt]{|Ṙ D (fun h)|} node(iso)[horizontal label on arrow,xshift=-35pt,yshift=-.25pt]{\,|≅|\,} (FDI)
+\draw[<->] (FDX) edge node(RDh)[below,xshift=15pt]{|Ṙ D (fun h)|} node(iso)[horizontal label on arrow,xshift=-35pt,yshift=-.25pt]{|≅*|} (FDI)
            (X)   edge (I);
-\node at (X -|| iso) [horizontal label on arrow,yshift=-.25pt]{\,|≅|\,};
+\node at (X -|| iso) [horizontal label on arrow,yshift=-.25pt]{|≅*|};
 \node at (X -|| RDh) [above]{|fun h|};
 \end{tikzpicture} \]
 Together with the completeness theorem, we see that |algOD| and |clsAlg| are, in some sense, inverse to each other up to isomorphism.
@@ -140,25 +140,25 @@ The container type is then isomorphic to the type of lists, whose elements are i
 Response descriptions can be regarded as a special case of indexed containers: values of fields constitute a shape, and sets of positions are restricted to \emph{enumerable} finite sets; consequently, |next s : P s → I| for any |s : S| can be represented by a |List I|, and there is no longer need to specify~|P|.
 We thus define the set of shapes derived from a response description by
 \begin{code}
-Ṡ : {I : Set} → RDesc I → Set
+^^^Ṡ : {I : Set} → RDesc I → Set
 Ṡ (ṿ is)   = ⊤
 Ṡ (σ S D)  = (Σ'(s ∶ S)) Ṡ (D s)
 \end{code}
 and the function |next| by
 \begin{code}
-next : {I : Set} (D : RDesc I) → Ṡ D → List I
+^^^next : {I : Set} (D : RDesc I) → Ṡ D → List I
 next (ṿ is)   tt        = is
 next (σ S D)  (s , ss)  = next (D s) ss
 \end{code}
 We can then express that a piece of horizontal data of type |⟦ D ⟧ X| can be separated into a shape and a series of contained elements via the following isomorphism:
 \begin{code}
-horizontal-iso :  {I : Set} (D : RDesc I) (X : I → Set) →
-                  ⟦ D ⟧ X ≅ Σ (Ṡ D) (flip Ṗ X ∘ next D)
+^^^horizontal-iso :  {I : Set} (D : RDesc I) (X : I → Set) →
+                     ⟦ D ⟧ X ≅ Σ (Ṡ D) (flip Ṗ X ∘ next D)
 \end{code}
 The implementation is just rearrangement of data --- for example, the left-to-right direction is defined by
 \begin{code}
-hori-decomp :  {I : Set} (D : RDesc I) (X : I → Set) →
-               ⟦ D ⟧ X → Σ (Ṡ D) (flip Ṗ X ∘ next D)
+^^^hori-decomp :  {I : Set} (D : RDesc I) (X : I → Set) →
+                  ⟦ D ⟧ X → Σ (Ṡ D) (flip Ṗ X ∘ next D)
 hori-decomp (ṿ is)   X xs        = tt , xs
 hori-decomp (σ S D)  X (s , xs)  = (pair s * id) (hori-decomp (D s) X xs)
 \end{code}
@@ -166,8 +166,8 @@ hori-decomp (σ S D)  X (s , xs)  = (pair s * id) (hori-decomp (D s) X xs)
 Back to the semantic equivalence of ornaments.
 Define a specialised version of |erase| on shapes:
 \begin{code}
-erase-Ṡ :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J}
-           (O : ROrn e D E) → Ṡ E → Ṡ D
+^^^erase-Ṡ :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J}
+              (O : ROrn e D E) → Ṡ E → Ṡ D
 erase-Ṡ (ṿ eqs)  tt        = tt
 erase-Ṡ (σ S O)  (s , ss)  = s ,  erase-Ṡ (O s)  ss
 erase-Ṡ (Δ T O)  (t , ss)  =      erase-Ṡ (O t)  ss
@@ -175,8 +175,8 @@ erase-Ṡ (∇ s O)  ss        = s ,  erase-Ṡ O      ss
 \end{code}
 This is the aspect of |erase| that we are interested in, and we can now define equivalence of ornaments as
 \begin{code}
-OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
-         Orn e D E → Orn f D E → Set
+^^^OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
+            Orn e D E → Orn f D E → Set
 OrnEq {I} {J} {e} {f} O P =
   (e ≐ f) × ((j : J) → erase-Ṡ (O (ok j)) ≊' erase-Ṡ (P (ok j)))
 \end{code}
@@ -193,7 +193,7 @@ We then apply~|t| to the assembled shape |ss : Ṡ E|, resulting in a shape |t s
 Finally, we have to use~|ṿ| to end the response ornament, which requires an index coherence proof of type |Ė e (next E ss) (next D (t ss))| for some |e : J → I| --- this is the extra condition that we need to impose on the shape transformation for deriving a response ornament.
 We thus define \key{horizontal transformations} as
 \begin{code}
-record HTrans {I J : Set} (e : J → I) (D : RDesc I) (E : RDesc J) : Set
+record ^^^HTrans {I J : Set} (e : J → I) (D : RDesc I) (E : RDesc J) : Set
   where
     constructor pair
     field
@@ -202,13 +202,13 @@ record HTrans {I J : Set} (e : J → I) (D : RDesc I) (E : RDesc J) : Set
 \end{code}
 The response ornaments derived by the above process are called \key{normal response ornaments}, which are defined by
 \begin{code}
-normROrn-∇ :  {I J : Set} {e : J → I} {D : RDesc I} {js : List J} →
-              (ss ∶ Ṡ D) → Ė e js (next D ss) → ROrn e D (ṿ js)
+^^^normROrn-∇ :  {I J : Set} {e : J → I} {D : RDesc I} {js : List J} →
+                 (ss ∶ Ṡ D) → Ė e js (next D ss) → ROrn e D (ṿ js)
 normROrn-∇ {D := ṿ is   } tt        eqs = ṿ eqs
 normROrn-∇ {D := σ S D  } (s , ss)  eqs = (∇'(s)) normROrn-∇ {D := D s} ss eqs
 
-normROrn :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
-            HTrans e D E → ROrn e D E
+^^^normROrn :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
+               HTrans e D E → ROrn e D E
 normROrn {E := ṿ js   } tr = normROrn-∇ (HTrans.t tr tt) (HTrans.c tr tt)
 normROrn {E := σ S E  } tr =
   (Δ'(s ∶ S)) normROrn {E := E s} (curry (HTrans.t tr) s , curry (HTrans.c tr) s)
@@ -222,11 +222,11 @@ Its objects are of type |Σ Set Desc| as in |Ōrn|, and its sets of morphisms ar
 \end{code}
 where |FHTrans| is the type of \key{families of horizontal transformations}, defined in the usual way:
 \begin{code}
-FHTrans : {I J : Set} → (J → I) → Desc I → Desc J → Set
+^^^FHTrans : {I J : Set} → (J → I) → Desc I → Desc J → Set
 FHTrans {I} {J} e D E = (j : J) → HTrans e (D (e j)) (E j)
 \end{code}
 Morphism equivalence is defined to be pointwise equality of the shape transformations extracted by |HTrans.t|, and identities and composition are defined in terms of functional identities and composition.
-We then have two functors |Erase : Functor Ōrn ḞHTrans| and |Normal : Functor ḞHTrans Ōrn| back and forth between the two categories: the object parts of both functors are identities, and for the morphism parts, |Erase| maps ornaments to componentwise |erase-Ṡ| (with suitable coherence proofs) and |Normal| maps families of horizontal transformations to normal ornaments (i.e., componentwise normal response ornaments).
+We then have two functors |^^^Erase : Functor Ōrn ḞHTrans| and |^^^Normal : Functor ḞHTrans Ōrn| back and forth between the two categories: the object parts of both functors are identities, and for the morphism parts, |Erase| maps ornaments to componentwise |erase-Ṡ| (with suitable coherence proofs) and |Normal| maps families of horizontal transformations to normal ornaments (i.e., componentwise normal response ornaments).
 For any |tr : HTrans e D E|, we can prove that
 \begin{code}
 erase-Ṡ (normROrn tr) ≐ HTrans.t tr
@@ -239,7 +239,7 @@ Switching to |ḞHTrans|, however, the proof becomes conceptually much simpler:
 Due to the isomorphism between |Ōrn| and |ḞHTrans|, it suffices to prove that the image of the square~(\ref{eq:pc-square}) under |Erase| in |ḞHTrans| is a pullback.
 We have the following functor |Shape| from |ḞHTrans| to |Fam|, which maps descriptions to indexed sets of shapes and discards index coherence proofs in horizontal transformations:
 \begin{code}
-Shape : Functor ḞHTrans Fam
+^^^Shape : Functor ḞHTrans Fam
 Shape = record
   case  object    = λ case (I , D   ) mapsto I  , (lambda(i)) Ṡ (D i)            endcase
   sep   morphism  = λ case (e , ts  ) mapsto e  , (lambda({j})) HTrans.t (ts j)  endcase
@@ -249,8 +249,8 @@ The functor can be proved to be \key{pullback-reflecting}: if the image of a squ
 (The proof proceeds by manipulating shape transformations in |Fam| and then constructing the missing index coherence proof.)
 The problem is thus reduced to proving that the square~(\ref{eq:pc-square}) mapped into |Fam| by |Shape ⋄ Erase| is a pullback, which boils down to the isomorphism
 \begin{code}
-pcROD-iso O P :  Ṡ (toRDesc (pcROD O P))
-                   ≅ (Σ'(p ∶ Ṡ E × Ṡ F)) erase-Ṡ O (proj₁ p) ≡ erase-Ṡ P (proj₂ p)
+^^^pcROD-iso O P :  Ṡ (toRDesc (pcROD O P))
+                      ≅ (Σ'(p ∶ Ṡ E × Ṡ F)) erase-Ṡ O (proj₁ p) ≡ erase-Ṡ P (proj₂ p)
 \end{code}
 with the two equations
 \begin{code}
@@ -288,9 +288,9 @@ Both equivalence and composition for natural transformations are componentwise.
 A categorical equivalence is then an isomorphism in this category of categories and functors.
 \end{itemize}
 \end{itemize}
-Fixing |D : Desc I|, the completeness theorem is a consequence of one direction of the \emph{object part} of an equivalence between |SliceCategory Ōrn (I , D)| --- which we denote by |Ōrn / (I , D)| from now on --- and the category |RAlg D| whose objects are relational |D|-algebras
+Fixing |D : Desc I|, the completeness theorem is a consequence of one direction of the \emph{object part} of an equivalence between |SliceCategory Ōrn (I , D)| --- which we denote by |Ōrn ^^^/ (I , D)| from now on --- and the category |^^^RAlg D| whose objects are relational |D|-algebras
 \begin{code}
-record RAlgebra D : Set₁ where
+record ^^^RAlgebra D : Set₁ where
   constructor pair
   field
     Carrier  : I → Set
@@ -300,12 +300,12 @@ and morphisms are algebra homomorphisms (on which we will elaborate later):
 The two functors forming the equivalence are
 \savecolumns
 \begin{code}
-ClsAlg  : Functor (Ōrn / (I , D)) (RAlg D)
+^^^ClsAlg  : Functor (Ōrn / (I , D)) (RAlg D)
 \end{code}
 and
 \restorecolumns
 \begin{code}
-AlgOrn  : Functor (RAlg D) (Ōrn / (I , D))
+^^^AlgOrn  : Functor (RAlg D) (Ōrn / (I , D))
 \end{code}
 and their object parts are respectively
 \[ \begin{tikzpicture}[x=2em, y=2em, baseline=(O.base), text height=1.5ex, text depth=.25ex]
@@ -338,7 +338,7 @@ The natural isomorphism between |AlgOrn ⋄ ClsAlg| and the identity functor on 
 \node(B) [below=1 of M] {|I , D|};
 \draw[->] (T)  edge node[below left ]{\llap{|proj₁ , ⌈ algOD D (clsAlg O) ⌉|}} (B)
           (T') edge node[below right]{|e , O|} (B);
-\draw[<->] (T) edge node[horizontal label on arrow,yshift=0pt]{\,|≅|\,} (T');
+\draw[<->] (T) edge node[horizontal label on arrow,yshift=0pt]{|≅*|} (T');
 \end{tikzpicture}
 \label{eq:AlgOrn-ClsAlg-inverse}
 \end{equation}
@@ -386,12 +386,12 @@ We continue with Goal~1, which requires an ornament from |⌊ algOD D S ⌋| to 
 Switching to the perspective of horizontal transformations, we should construct a shape transformation which essentially replaces a proof about~|R| with a proof about~|S| within a shape derived from algebraic ornamentation:
 For such shapes we have the following isomorphisms
 \begin{code}
-algROD-iso :  {I : Set} (D' : RDesc I) {X : I → Set} (P : ℘ (⟦ D' ⟧ X)) →
-              Ṡ (toRDesc (algROD D' P)) ≅ Σ (⟦ D' ⟧ X) P
+^^^algROD-iso :  {I : Set} (D' : RDesc I) {X : I → Set} (P : ℘ (⟦ D' ⟧ X)) →
+                 Ṡ (toRDesc (algROD D' P)) ≅ Σ (⟦ D' ⟧ X) P
 \end{code}
 whose implementation is, again, just rearrangement of data --- for example, the left-to-right direction is defined by
 \begin{code}
-algROD-decomp :
+^^^algROD-decomp :
   {I : Set} (D' : RDesc I) (X : I → Set) (P : ℘ (⟦ D' ⟧ X)) →
   Ṡ (toRDesc (algROD D P)) → Σ (⟦ D' ⟧ X) P
 algROD-decomp (ṿ is)    X P (xs , p , tt)  = xs , p
@@ -442,7 +442,7 @@ This is actually the only direction of the homomorphism condition that we should
           (FDY) edge node     [right] {|S|}           (Y)
           (X)   edge node(h)  [above] {|fun h|}       (Y)
           (FDX) edge node(RDh)[below] {|Ṙ D (fun h)|} (FDY);
-\node at (R -|| h) {|⊆|};
+\node at (R -|| h) {|⊆*|};
 \end{tikzpicture} \]
 (The reason for requiring only one direction will become clear when we consider the morphism part of |ClsAlg|.)
 In short, the morphism part of |AlgOrn| treats the input homomorphism condition as a proof transformer, and apply that transformer to the proof encapsulated in the input shape.
@@ -451,7 +451,7 @@ One of the functor laws we should prove for |AlgOrn| is that its morphism part p
 We thus see that proofs of the homomorphism condition should not be treated irrelevantly since they are used computation-relevantly in the shape transformations; we must take their behaviour into account when defining homomorphism equivalence.
 This brings us to the right notion of algebra homomorphisms, defined by
 \begin{code}
-record RAlgMorphism D (X , R) (Y , S) : Set₁ where
+record ^^^RAlgMorphism D (X , R) (Y , S) : Set₁ where
   constructor pair
   field
     h  : X ⇉ Y
@@ -463,7 +463,7 @@ At the beginning of this chapter, we saw in the example about the classifying al
 Before we move on to the natural isomorphisms, it still remains to define |ClsAlg|.
 In particular, we should define the function |clsAlg| used in its object part:
 \begin{code}
-clsAlg O : Ḟ D (Inv' e) ↝ Inv' e
+^^^clsAlg O : Ḟ D (Inv' e) ↝ Inv' e
 clsAlg O js (j , refl) =
   let  (ss , ps) = Iso.to (horizontal-iso (D (e j)) (Inv' e)) js
   in   (Σ'(ts ∶ Ṡ (E j)))  erase-Ṡ (O (ok j)) ts ≡ ss ×
@@ -497,7 +497,7 @@ The morphism part of |ClsAlg| can then be constructed:
           (FDY) edge node     [right] {|clsAlg P|}        (Y)
           (X)   edge node(h)  [above] {|fun (goal()(3))|} (Y)
           (FDX) edge node(RDh)[below] {|Ṙ D (fun _)|}     (FDY);
-\node at (R -|| h) {|(goal(⊆)(4))|};
+\node at (R -|| h) {|(goal(⊆*)(4))|};
 \end{tikzpicture} \]
 Goal~3 has type
 \begin{code}
@@ -561,7 +561,7 @@ Below we look at a consequence of the latter direction.
 In |RAlg D|, a construction of products is inspired by the \key{banana-split law}~\citep[page~88]{Fokkinga-thesis}, whose original, functional form is as follows:
 Define the functorial mapping |Ḟ-map D| by
 \begin{code}
-Ḟ-map D : {Z W : I → Set} → (Z ⇉ W) → (Ḟ D Z ⇉ Ḟ D W)
+^^^Ḟ-map D : {Z W : I → Set} → (Z ⇉ W) → (Ḟ D Z ⇉ Ḟ D W)
 Ḟ-map D f {i} = mapRD (D i) f
 \end{code}
 For any |f : Ḟ D X ⇉ X| and |g : Ḟ D Y ⇉ Y| we have
@@ -573,10 +573,10 @@ This composite algebra, when generalised straightforwardly to relations, gives r
 Let |R : Ḟ D X ↝ X| and |S : Ḟ D Y ↝ Y|.
 We define the ``banana-split algebra'' of |R|~and~|S| by
 \begin{code}
-BSAlg R S : Ḟ D (X ×' Y) ↝ (X ×' Y)
+^^^BSAlg R S : Ḟ D (X ×' Y) ↝ (X ×' Y)
 BSAlg R S xys (x , y) = R (Ḟ-map D proj₁ xys) x × S (Ḟ-map D proj₂ xys) y
 \end{code}
-where |(X ×' Y) i = X i × Y i|.
+where |(X ^^^×' Y) i = X i × Y i|.
 We can then construct the following span
 \[ \begin{tikzpicture}[x=10em, y=3em, baseline=(FDZ.base)]
 \node(Z)                  {|X ×' Y|};
@@ -592,8 +592,8 @@ We can then construct the following span
           (Z)   edge node(R)[above, yshift=-2pt] {|fun proj₂|}       (Y)
           (FDZ) edge node   [below]              {|Ṙ D (fun proj₁)|} (FDX)
           (FDZ) edge node   [below]              {|Ṙ D (fun proj₂)|} (FDY);
-\node at (T -|| L) {|⊇|};
-\node at (T -|| R) {|⊆|};
+\node at (T -|| L) {|⊇*|};
+\node at (T -|| R) {|⊆*|};
 \end{tikzpicture} \]
 where the homomorphism conditions are simply projections, and it is easy to prove that the span is a product.
 The categorical equivalence between |RAlg D| and |Ōrn / (I , D)| implies that the image of the product under |AlgOrn| is a pullback in |Ōrn|:
@@ -674,7 +674,7 @@ For the carriers, we need to show
 for every |j : J|, which is easy since the canonical form of~|p| is |(ok j , ok (e j , d))| for some |d : μ D (e j)|.
 Call the left-to-right direction of the isomorphism |wrap|:
 \begin{code}
-wrap : {j : J} → μ D (e j) → (Σ'(p ∶ e ⋈ outl)) π₁ p ≡ j
+^^^wrap : {j : J} → μ D (e j) → (Σ'(p ∶ e ⋈ outl)) π₁ p ≡ j
 wrap {j} d = (ok j , ok (e j , d)) , refl
 \end{code}
 For the algebras, however, we have to dig painfully into the definitions.

@@ -69,14 +69,14 @@ We introduce the first such definition --- categorical isomorphisms -- in \autor
 
 A first approximation of a category is a (directed multi-) \key{graph}, which consists of a set of objects (nodes) and a collection of sets of morphisms (edges) indexed with their source and target objects:
 \begin{code}
-record Graph {l m : Level} : Set (suc (l ⊔ m)) where
+record ^^^Graph {l m : Level} : Set (suc (l ⊔ m)) where
   field
     Object    :  Set l
     _==>_     :  Object → Object → Set m
 \end{code}
 For example, the underlying graph of the category |Fun| of (small) sets and (total) functions is
 \begin{code}
-Fun-graph : Graph
+^^^Fun-graph : Graph
 Fun-graph = record  case  Object  = Set
                     sep   _==>_   = (lambda(A B)) A → B endcase
 \end{code}
@@ -95,7 +95,7 @@ As stated in \autoref{sec:equality}, such equalities need to be explicitly manag
 Subsequently, functions defined between setoids need to be proved to respect the equivalences.
 The type of setoids can be defined as a record which contains a carrier set, an equivalence relation on the set, and the three laws for the equivalence relation:
 \begin{code}
-record Setoid {c d : Level} : Set (suc (c ⊔ d)) where
+record ^^^Setoid {c d : Level} : Set (suc (c ⊔ d)) where
   field
     Carrier  : Set c
     _≈_      : Carrier → Carrier → Set d
@@ -106,7 +106,7 @@ record Setoid {c d : Level} : Set (suc (c ⊔ d)) where
 \end{code}
 For example, we can define a setoid of functions that uses extensional equality:
 \begin{code}
-FunSetoid : Set → Set → Setoid
+^^^FunSetoid : Set → Set → Setoid
 FunSetoid A B = record  case  Carrier  =  A → B
                         sep   _≈_      =  _≐_
                         sep   proofs-of-laws endcase
@@ -116,7 +116,7 @@ Proofs of the three laws are omitted from the presentation.
 \begin{figure}
 \codefigure\small
 \begin{code}
-record Category {l m n : Level} : Set (suc (l ⊔ m ⊔ n)) where
+record ^^^Category {l m n : Level} : Set (suc (l ⊔ m ⊔ n)) where
   field
     Object    :  Set l
     Morphism  :  Object → Object → Setoid {m} {n}
@@ -137,7 +137,7 @@ record Category {l m n : Level} : Set (suc (l ⊔ m ⊔ n)) where
     cong-l  :  {X Y Z : Object} {f g : Y ==> Z} (h : X ==> Y) → f ≈ g → f · h ≈ g · h
     cong-r  :  {X Y Z : Object} (h : Y ==> Z) {f g : X ==> Y} → f ≈ g → h · f ≈ h · g
 
-record Functor {l m n l' m' n' : Level}
+record ^^^Functor {l m n l' m' n' : Level}
   (C : Category {l} {m} {n}) (D : Category {l'} {m'} {n'}) :
   Set (l ⊔ m ⊔ n ⊔ l' ⊔ m' ⊔ n') where
   field
@@ -162,7 +162,7 @@ The last two laws |cong-l| and |cong-r| require morphism composition to preserve
 \begin{figure}
 \codefigure\small\vskip-1\baselineskip
 \begin{code}
-Fam : Category
+^^^Fam : Category
 Fam = record
   case  Object    =  (Σ'(I ∶ Set)) I → Set
   sep   Morphism  =  λ case  (J , Y) (I , X) mapsto record
@@ -174,7 +174,7 @@ Fam = record
   sep   id   =  ((lambda(x)) x) , ((lambda({i} x)) x)
   sep   proofs-of-laws endcase
 
-FRef : Category
+^^^FRef : Category
 FRef = record
   case  Object    =  (Σ'(I ∶ Set)) I → Set
   sep   Morphism  =  λ case  (J , Y) (I , X) mapsto record
@@ -186,7 +186,7 @@ FRef = record
                                sep  proofs-of-laws endcase endcase
   sep   proofs-of-laws endcase
 
-Ōrn : Category
+^^^Ōrn : Category
 Ōrn = record
   case  Object    =  (Σ'(I ∶ Set)) Desc I
   sep   Morphism  =  λ case  (J , E) (I , D) mapsto record
@@ -203,7 +203,7 @@ FRef = record
 
 Now we can define the category |Fun| of sets and functions as
 \begin{code}
-Fun : Category
+^^^Fun : Category
 Fun = record  case  Object    =  Set
               sep   Morphism  =  FunSetoid
               sep   _·_  =  _∘_
@@ -214,20 +214,20 @@ Another important category that we will make use of is |Fam|~(\autoref{fig:concr
 An object in |Fam| has type |(Σ'(I ∶ Set)) I → Set|, i.e., it is a set~|I| and a family of sets indexed by~|I|;
 a morphism from |(J , Y)| to |(I , X)| is a function |e : J → I| and a family of functions from |Y j| to |X (e j)| for each |j : J|.
 Morphism composition is componentwise composition, and morphism equivalence is defined to be componentwise extensional equality.
-(The morphism equivalence is formulated with the help of McBride's ``John Major'' heterogeneous equality~|_≊_|~\citep{McBride-thesis} --- the equivalence~|_≊'_| is pointwise heterogeneous equality --- since given |y : Y j| for some |j : J|, the types of |u {j} y| and |u' {j} y| are not definitionally equal but only provably equal.)
+(The morphism equivalence is formulated with the help of McBride's ``John Major'' heterogeneous equality~|^^^_≊_|~\citep{McBride-thesis} --- the equivalence~|^^^_≊'_| is pointwise heterogeneous equality --- since given |y : Y j| for some |j : J|, the types of |u {j} y| and |u' {j} y| are not definitionally equal but only provably equal.)
 
 Categories are graphs with a compositional structure, and \key{functors} are transformations between categories that preserve the compositional structure.
 The definition of functors is shown in \autoref{fig:definitions-of-categories-and-functors}: a functor consists of two mappings, one on objects and the other on morphisms, where the morphism part preserves all structures on morphisms, including equivalence, identity, and composition.
 For example, we have two functors from |Fam| to |Fun|, one summing components together
 \begin{code}
-Com : Functor Fam Fun  -- the comprehension functor
+^^^Com : Functor Fam Fun  -- the comprehension functor
 Com = record  case  object    =  λ case (I  ,  X  ) mapsto Σ I X  endcase
               sep   morphism  =  λ case (e  ,  u  ) mapsto e * u  endcase
               sep   proofs-of-laws endcase
 \end{code}
 and the other extracting the index part.
 \begin{code}
-FamF : Functor Fam Fun  -- the family fibration functor
+^^^FamF : Functor Fam Fun  -- the family fibration functor
 FamF = record  case  object    =  λ case (I  ,  X  ) mapsto I  endcase
                sep   morphism  =  λ case (e  ,  u  ) mapsto e  endcase
                sep   proofs-of-laws endcase
@@ -247,7 +247,7 @@ We can then define the following two functors, forming an isomorphism of categor
 \begin{itemize}
 \item We have a forgetful functor |FRefF : Functor FRef Fam| which is identity on objects and componentwise |Refinement.forget| on morphisms (which preserves equivalence automatically):
 \begin{code}
-FRefF : Functor FRef Fam
+^^^FRefF : Functor FRef Fam
 FRefF = record
   case  object     = id
   sep   morphism   = λ case (e , rs) mapsto e , ((lambda(j)) Refinement.forget (rs (ok j))) endcase
@@ -256,7 +256,7 @@ FRefF = record
 Note that |FRefF| remains a familiar covariant functor rather than a contravariant one because of our choice of morphism direction.
 \item Conversely, there is a functor |FRefC : Functor Fam FRef| whose object part is identity and whose morphism part is componentwise |canonRef|:
 \begin{code}
-FRefC : Functor Fam FRef
+^^^FRefC : Functor Fam FRef
 FRefC = record
   {    object    =  id
   sep  morphism  =  λ case (e , u) mapsto e , λ case (ok j) mapsto canonRef (u {j}) endcase endcase
@@ -268,26 +268,26 @@ The two functors |FRefF| and |FRefC| are inverse to each other by definition.
 \begin{figure}
 \codefigure\small
 \begin{code}
-Ė-refl : (is : List I) → Ė id is is
+^^^Ė-refl : (is : List I) → Ė id is is
 Ė-refl []        = []
 Ė-refl (i ∷ is)  = refl ∷ Ė-refl is
 
-idROrn : (E : RDesc I) → ROrn id E E
+^^^idROrn : (E : RDesc I) → ROrn id E E
 idROrn (ṿ is)   = ṿ (Ė-refl is)
 idROrn (σ S E)  = (σ'(s ∶ S)) idROrn (E s)
 
-idOrn : {I : Set} (D : Desc I) → Orn id D D
+^^^idOrn : {I : Set} (D : Desc I) → Orn id D D
 idOrn {I} D (ok i) = idROrn (D i)
 
-Ė-trans :  {I J K : Set} {e : J → I} {f : K → J} →
-           {is : List I} {js : List J} {ks : List K} →
-           Ė e js is → Ė f ks js → Ė (e ∘ f) ks is
+^^^Ė-trans :  {I J K : Set} {e : J → I} {f : K → J} →
+              {is : List I} {js : List J} {ks : List K} →
+              Ė e js is → Ė f ks js → Ė (e ∘ f) ks is
 Ė-trans           []            []            =  []
 Ė-trans {e := e}  (eeq ∷ eeqs)  (feq ∷ feqs)  =  trans (cong e feq) eeq ∷ Ė-trans eeqs feqs
 
-scROrn :  {I J K : Set} {e : J → I} {f : K → J} →
-          {D : RDesc I} {E : RDesc J} {F : RDesc K} →
-          ROrn e D E → ROrn f E F → ROrn (e ∘ f) D F
+^^^scROrn :  {I J K : Set} {e : J → I} {f : K → J} →
+             {D : RDesc I} {E : RDesc J} {F : RDesc K} →
+             ROrn e D E → ROrn f E F → ROrn (e ∘ f) D F
 scROrn (ṿ eeqs)  (ṿ feqs)  = ṿ (Ė-trans eeqs feqs)
 scROrn (ṿ eeqs)  (Δ T P)   = (Δ'(t ∶ T))  scROrn (ṿ eeqs)  (P t)
 scROrn (σ S O)   (σ .S P)  = (σ'(s ∶ S))  scROrn (O s)     (P s)
@@ -298,9 +298,9 @@ scROrn (Δ T O)   (Δ U P)   = (Δ'(u ∶ U))  scROrn (Δ T O)   (P u)
 scROrn (Δ T O)   (∇ t P)   =              scROrn (O t)     P
 scROrn (∇ s O)   P         = (∇'(s))      scROrn O         P
 
-_⊙_ :  {I J K : Set} {e : J → I} {f : K → J} →
-       {D : Desc I} {E : Desc J} {F : Desc K} →
-       Orn e D E → Orn f E F → Orn (e ∘ f) D F
+^^^_⊙_ :  {I J K : Set} {e : J → I} {f : K → J} →
+          {D : Desc I} {E : Desc J} {F : Desc K} →
+          Orn e D E → Orn f E F → Orn (e ∘ f) D F
 _⊙_ {f := f} O P (ok k) = scROrn (O (ok (f k))) (P (ok k))
 \end{code}
 \caption{Definitions for identity ornaments and sequential composition of ornaments.}
@@ -317,9 +317,9 @@ OrnEq :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
 \end{code}
 such that it implies extensional equality of |e|~and~|f| and that of ornamental forgetful functions:
 \begin{code}
-OrnEq-forget :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
-                (O : Orn e D E) (P : Orn f D E) → OrnEq O P →
-                (e ≐ f) × ((j : J) → forget O {j} ≊' forget P {j})
+^^^OrnEq-forget :  {I J : Set} {e f : J → I} {D : Desc I} {E : Desc J} →
+                   (O : Orn e D E) (P : Orn f D E) → OrnEq O P →
+                   (e ≐ f) × ((j : J) → forget O {j} ≊' forget P {j})
 \end{code}
 The actual definition of |OrnEq| is deferred to \autoref{sec:ornaments-and-horizontal-transformations}.
 
@@ -330,7 +330,7 @@ Their definitions are shown in \autoref{fig:sequential-composition}.
 
 A functor |Ind : Functor Ōrn Fam| can then be constructed, which gives the ordinary semantics of descriptions and ornaments: the object part of |Ind| decodes a description |(I , D)| to its least fixed point |(I , μ D)|, and the morphism part translates an ornament |(e , O)| to the forgetful function |(e , forget O)|, the latter preserving equivalence by virtue of |OrnEq-forget|.
 \begin{code}
-Ind : Functor Ōrn Fam
+^^^Ind : Functor Ōrn Fam
 Ind = record  case  object    =  λ case (I , D  ) mapsto I , μ D       endcase
               sep   morphism  =  λ case (e , O  ) mapsto e , forget O  endcase
               sep   proofs-of-laws endcase
@@ -338,7 +338,7 @@ Ind = record  case  object    =  λ case (I , D  ) mapsto I , μ D       endcase
 
 To translate |Ōrn| to |FRef|, a naive way is to use the composite functor |FRefC ⋄ Ind : Functor Ōrn FRef|, where composition |F ⋄ G| of functors |F : Functor D E| and |G : Functor C D| is defined by
 \begin{code}
-F ⋄ G : Functor C E
+F ^^^⋄ G : Functor C E
 F ⋄ G = record  case  object    = object F ∘ object G
                 sep   morphism  = morphism F ∘ morphism G
                 sep   proofs-of-laws endcase
@@ -349,7 +349,7 @@ However, the whole point of incorporating |Ōrn| in the framework is that we can
 The functor |RSem| is extensionally equal to the above composite functor but intensionally different.
 While its object part still takes the least fixed point of a description, its morphism part is the refinement semantics of ornaments given in \autoref{sec:refinement-semantics}, whose promotion predicates are the optimised predicates and have a more efficient representation.
 \begin{code}
-RSem : Functor Ōrn Fam
+^^^RSem : Functor Ōrn Fam
 RSem = record  case  object    =  λ case (I , D) mapsto I , μ D      endcase
                sep   morphism  =  λ case (e , O) mapsto e , RSem' O  endcase
                sep   proofs-of-laws endcase
@@ -362,7 +362,7 @@ So far the categorical organisation offers no obvious benefits.
 It is for the ease of talking about mapping purely categorical structures between categories that we employ the categorical language.
 One simplest example of such purely categorical structures is \key{isomorphisms}: the type of isomorphisms between two objects |X|~and~|Y| in a category~|C| is defined by
 \begin{code}
-record Iso C X Y : Set _ where
+record ^^^Iso C X Y : Set _ where
   field
     to    : X ==> Y
     from  : Y ==> X
@@ -370,7 +370,7 @@ record Iso C X Y : Set _ where
     to-from-inverse  : to · from ≈ id
 \end{code}
 (We assume that, by introducing the category~|C| in the text, there is implicitly a statement |open Category C|, so |_==>_| refers to |Category._==>_ C| and so on.)
-The relation~|_≅_| we have been using is formally defined as |Iso Fun|.
+The relation~|^^^_≅_| we have been using is formally defined as |Iso Fun|.
 Isomorphisms are preserved by functors, i.e.,
 \begin{code}
 (F : Functor C D) → Iso C X Y → Iso D (object F X) (object F Y)
@@ -391,17 +391,17 @@ A morphism from~|X| to~|Y| is evidence that |Y|~is (non-strictly) ``better'' tha
 A ``strongly best'' solution is a \key{terminal object} in this category, meaning that it is ``uniquely evidently better'' than all objects in the category.
 Formally: an object~|Y| in a category~|C| is \key{terminal} when it satisfies the \key{universal property} that for every object~|X| there is a unique morphism from~|X| to~|Y|, i.e., the setoid |Morphism X Y| has a unique inhabitant:
 \begin{code}
-Terminal C Y : Set _
+^^^Terminal C Y : Set _
 Terminal C Y = (X : Object) → Singleton (Morphism X Y)
 \end{code}
 where |Singleton| is defined by
 \begin{code}
-Singleton : (S : Setoid) → Set _
+^^^Singleton : (S : Setoid) → Set _
 Singleton S = Setoid.Carrier S × ((s t : Setoid.Carrier S) → s ≈S t)
 \end{code}
 The uniqueness condition ensures that terminal objects are unique up to (a unique) isomorphism --- that is, if two objects are both terminal in~|C|, then there is an isomorphism between them:
 \begin{code}
-terminal-iso C : (X Y : Object) → Terminal C X → Terminal C Y → Iso C X Y
+^^^terminal-iso C : (X Y : Object) → Terminal C X → Terminal C Y → Iso C X Y
 terminal-iso C X Y tX tY =
   let  f : X ==> Y
        f = proj₁ (tY  X)
@@ -423,7 +423,7 @@ Below we construct the definition of categorical products step by step.
 Let |C|~be a category and |L|,~|R| two objects in~|C|.
 A \key{span} over |L|~and~|R| is defined by
 \begin{code}
-record Span C L R : Set _ where
+record ^^^Span C L R : Set _ where
   constructor threetuple
   field
     M  : Object
@@ -441,7 +441,7 @@ or diagrammatically:
 If we interpret a morphism |X ==> Y| as evidence that |X|~is more informative than~|Y|, then a span over |L|~and~|R| is essentially an object which is more informative than both |L|~and~|R|.
 Spans over the same objects can be ``compared'': define a morphism between two spans by
 \begin{code}
-record SpanMorphism C L R (s s' : Span C L R) : Set _ where
+record ^^^SpanMorphism C L R (s s' : Span C L R) : Set _ where
   constructor threetuple
   field
     m : Span.M s ==> Span.M s'
@@ -465,7 +465,7 @@ where the two triangles are required to commute (i.e., |triangle-l| and |triangl
 Thus a span~|s| is more informative than another span~|s'| when |Span.M s| is more informative than |Span.M s'| and the morphisms factorise appropriately.
 We can now form a category of spans over |L|~and~|R|:
 \begin{code}
-SpanCategory C L R : Category
+^^^SpanCategory C L R : Category
 SpanCategory C L R = record
     case  Object    = Span C L R
     sep   Morphism  =
@@ -478,7 +478,7 @@ SpanCategory C L R = record
 Note that the equivalence on span morphisms is defined to be the equivalence on the mediating morphism in~|C|, ignoring the two triangular commutativity proofs.
 A product of |L|~and~|R| is then a terminal object in this category:
 \begin{code}
-Product C L R : Span C L R → Set _
+^^^Product C L R : Span C L R → Set _
 Product C L R = Terminal (SpanCategory C L R)
 \end{code}
 In particular, a product of |L|~and~|R| contains the least informative object in~|C| that is more informative than both |L|~and~|R|.
@@ -493,7 +493,7 @@ A slice category is parametrised with an ambient category~|C| and an object~|B| 
 \begin{itemize}
 \item objects: all the morphisms in~|C| with target~|B|,
 \begin{code}
-record Slice C B : Set _ where
+record ^^^Slice C B : Set _ where
   constructor pair
   field
     T  : Object
@@ -502,7 +502,7 @@ record Slice C B : Set _ where
 and
 \item morphisms: mediating morphisms giving rise to commutative triangles,
 \begin{code}
-record SliceMorphism C B (s s' : Slice C B) : Set _ where
+record ^^^SliceMorphism C B (s s' : Slice C B) : Set _ where
   constructor pair
   field
     m : Slice.T s ==> Slice.T s'
@@ -530,7 +530,7 @@ or diagrammatically:
 \end{tikzpicture} \]
 The definitions above are assembled into the definition of slice categories in much the same way as span categories:
 \begin{code}
-SliceCategory C B : Category
+^^^SliceCategory C B : Category
 SliceCategory C B = record
     case  Object    = Slice C B
     sep   Morphism  =
@@ -549,7 +549,7 @@ The composite term ``product in a slice category'' has become a multi-layered co
 Let |C|~be an ambient category and |X|~an object in~|C|.
 We refer to spans over two slices |f|,~|g : Slice C X| alternatively as \key{squares} over |f|~and~|g|:
 \begin{code}
-Square C f g : Set _
+^^^Square C f g : Set _
 Square C f g = Span (SliceCategory C X) f g
 \end{code}
 since diagrammatically a square looks like
@@ -594,17 +594,17 @@ since diagrammatically a square looks like
 \end{tikzpicture} \]
 In a square~|q|, we will refer to the object |Slice.T (Span.M q)|, i.e., the node~|W| in the diagrams above, as the \key{vertex} of~|q|:
 \begin{code}
-vertex : Square C f g → Object
+^^^vertex : Square C f g → Object
 vertex = Slice.T ∘ Span.M
 \end{code}
 A product of |f|~and~|g| is alternatively referred to as a \key{pullback} of |f|~and~|g|; that is, it is a square over |f|~and~|g| satisfying
 \begin{code}
-Pullback C f g : Square C f g → Set _
+^^^Pullback C f g : Square C f g → Set _
 Pullback C f g = Product (SliceCategory C X) f g
 \end{code}
 Equivalently, if we define the \key{square category} over |f|~and~|g| as
 \begin{code}
-SquareCategory C f g : Category
+^^^SquareCategory C f g : Category
 SquareCategory C f g = SpanCategory (SliceCategory C X) f g
 \end{code}
 then a pullback of |f|~and~|g| is a terminal object in the square category over |f|~and~|g| --- indeed, |Product (SliceCategory C X) f g| is definitionally equal to |Terminal (SquareCategory C f g)|.
@@ -622,19 +622,19 @@ which is what we actually use in Sections \ref{sec:ornamental-conversion-isomorp
 Like isomorphisms, we can talk about preservation of pullbacks: any functor |F : Functor C D| maps a square in~|C| into one in~|D|; if the resulting square in~|D| is a pullback whenever the input square in~|C| is, then |F| is said to be \key{pullback-preserving}.
 Formally:
 \begin{code}
-Pullback-Preserving F :
+^^^Pullback-preserving F :
   {B : Category.Object C} {f g : Slice C B} (s : Square C f g) →
   Pullback C f g s → Pullback D  (object (SliceMap F) f) (object (SliceMap F) g)
                                  (object (SquareMap F) s)
 \end{code}
 where
 \begin{code}
-SliceMap   :  (F : Functor C D) →
-              Functor (SliceCategory C B) (SliceCategory D (object F B))
-SquareMap  :  (F : Functor C D) →
-              Functor  (SquareCategory C f g)
-                       (SquareCategory D  (object (SliceMap F) f)
-                                          (object (SliceMap F) g))
+^^^SliceMap   :  (F : Functor C D) →
+                 Functor (SliceCategory C B) (SliceCategory D (object F B))
+^^^SquareMap  :  (F : Functor C D) →
+                 Functor  (SquareCategory C f g)
+                          (SquareCategory D  (object (SliceMap F) f)
+                                             (object (SliceMap F) g))
 \end{code}
 are straightforward liftings of functors on ambient categories to functors on slice and square categories.
 Unlike isomorphisms, pullbacks are not preserved by all functors, but the functors |Ind : Functor Ōrn Fam| and |Com : Functor Fam Fun| are pullback-preserving, which we use below.
@@ -661,8 +661,8 @@ For any |O : Orn e D E| and |P : Orn f D F| where |D : Desc I|, |E : Desc J|, an
 We assert that the square is a pullback by marking its vertex with ``\smash{\begin{tikzpicture}[scale=3.75] \draw[ultra thick] (.03, .355) -- (.1, .355) -- (.1, .425); \end{tikzpicture}}\,''.
 The \Agda\ term for the square is
 \begin{code}
-pc-square O P : Square Ōrn (slice (J , E) (e , O)) (slice (K , F) (f , P))
-pc-square O P =  ((e ⋈ f , ⌊ O ⊗ P ⌋) , (pull, ⌈ O ⊗ P ⌉)) ,
+^^^pc-square O P : Square Ōrn ((J , E) , (e , O)) ((K , F) , (f , P))
+pc-square O P =  ((e ⋈ f , ⌊ O ⊗ P ⌋) , (pull , ⌈ O ⊗ P ⌉)) ,
                  ((π₁  , diffOrn-l  O P) , (goal()(0))) ,
                  ((π₂  , diffOrn-r  O P) , (goal()(1)))
 \end{code}
@@ -752,7 +752,7 @@ The same situation happens for the following pullback square:
 \end{equation}
 Since singleton ornamentation does not add information to a datatype, the vertical slice on the right-hand side
 \begin{code}
-s = slice (Σ (Σ I (μ D)) (μ ⌊ S ⌋)) (proj₁ * forget ⌈ S ⌉)
+s = (Σ (Σ I (μ D)) (μ ⌊ S ⌋)) , (proj₁ * forget ⌈ S ⌉)
 \end{code}
 retains all information like an identity function, and thus behaves like a ``multiplicative unit'' (viewing pullbacks as products of slices): any (compatible) slice~|s'| alone gives rise to a product of |s|~and~|s'|.
 In particular, we can use the bottom-left type |Σ J (μ E)| as the vertex of the pullback.
@@ -920,7 +920,7 @@ where $X \boxtimes Y$, $X \boxtimes Z$, $Y \boxtimes Z$, and $(X \boxtimes Y) \b
 What we get out of this instantiation of the lemma is a pullback in |SliceCategory Fam (I , μ D)| rather than |Fam|.
 This is easy to fix, since there is a forgetful functor from any |SliceCategory C B| to~|C|:
 \begin{code}
-SliceF : Functor (SliceCategory C B) C
+^^^SliceF : Functor (SliceCategory C B) C
 SliceF = record  case  object    = Slice.T
                  sep   morphism  = SliceMorphism.m
                  sep   proofs-of-laws endcase

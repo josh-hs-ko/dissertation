@@ -23,14 +23,14 @@ Though lacking a directly executable semantics, most relational programs can sti
 To emphasise the computational interpretation of relations, we will mainly model a relation between sets |A|~and~|B| as a function sending each inhabitant of~|A| to a \emph{subset} of~|B|.
 We define subsets by
 \begin{code}
-℘ : Set → Set₁
+^^^℘ : Set → Set₁
 (Power A) = A → Set
 \end{code}
 That is, a subset |s : (Power A)| is a characteristic function that assigns a type to each inhabitant of~|A|, and |a : A| is considered to be a member of~|s| if the type |s a : Set| is inhabited.
 We may regard |(Power A)| as the type of computations that nondeterministically produce an inhabitant of~|A|.
 A simple example is
 \begin{code}
-any : {A : Set} → (Power A)
+^^^any : {A : Set} → (Power A)
 any = const ⊤
 \end{code}
 The subset |any : (Power A)| associates the unit type~|⊤| with every inhabitant of~|A|.
@@ -39,13 +39,13 @@ While |℘|~cannot be made into a conventional monad~\citep{Moggi-monads, Wadler
 \begin{itemize}
 \item The monadic unit is defined as
 \begin{code}
-return : {A : Set} → A → (Power A)
+^^^return : {A : Set} → A → (Power A)
 return = _≡_
 \end{code}
 The subset |return a : (Power A)| for some |a : A| simplifies to |(lambda(a')) a ≡ a'|, so |a|~is the only member of the subset.
 \item The monadic bind is defined as
 \begin{code}
-_>>=_ : {A B : Set} → (Power A) → (A → (Power B)) → (Power B)
+^^^_>>=_ : {A B : Set} → (Power A) → (A → (Power B)) → (Power B)
 _>>=_ {A} s f = (lambda(b)) (Σ'(a ∶ A)) s a × f a b
 \end{code}
 If |s : (Power A)| and |f : A → (Power B)|, then the subset |s >>= f : (Power B)| is the disjoint union of all the subsets |f a : (Power B)| where |a|~ranges over the inhabitants of~|A| that belong to~|s|; that is, an inhabitant |b : B| is a member of |s >>= f| exactly when there exists some |a : A| belonging to~|s| such that |b|~is a member of |f a|.
@@ -53,19 +53,19 @@ If |s : (Power A)| and |f : A → (Power B)|, then the subset |s >>= f : (Power 
 (We omit the proofs that the two combinators satisfy the (relative) monad laws up to pointwise isomorphism.)
 On top of |return| and |_>>=_|\kern1pt, the functorial map on~|℘| is defined as
 \begin{code}
-_<$> : {A B : Set} → (A → B) → (Power A) → (Power B)
+^^^_<$> : {A B : Set} → (A → B) → (Power A) → (Power B)
 f <$> s = s >>= (lambda(a)) return (f a)
 \end{code}
 and we also define a two-argument version for convenience:
 \begin{code}
-_<$>² : {A B C : Set} → (A → B → C) → (Power A) → (Power B) → (Power C)
+^^^_<$>² : {A B C : Set} → (A → B → C) → (Power A) → (Power B) → (Power C)
 f <$>² s t = s >>= (lambda(a)) t >>= (lambda(b)) return (f a b)
 \end{code}
 (The notation is a reference to applicative functors~\citep{McBride-Applicative}, allowing us to think of functorial maps of~|℘| as applications of pure functions to effectful arguments.)
 
 We define a relation between two families of sets as a family of relations between corresponding sets in the families:
 \begin{code}
-_↝_ : {I : Set} → (I → Set) → (I → Set) → Set₁
+^^^_↝_ : {I : Set} → (I → Set) → (I → Set) → Set₁
 _↝_ {I} X Y = {i : I} → X i → (Power (Y i))
 \end{code}
 which is the usual generalisation of~|_⇉_| to allow nondeterminacy.
@@ -73,28 +73,28 @@ Below we define several relational operators that we will need.
 \begin{itemize}
 \item Since functions are deterministic relations, we have the following combinator |fun| that lifts functions to relations using |return|.
 \begin{code}
-fun : {I : Set} {X Y : I → Set} → (X ⇉ Y) → (X ↝ Y)
+^^^fun : {I : Set} {X Y : I → Set} → (X ⇉ Y) → (X ↝ Y)
 fun f x = return (f x)
 \end{code}
 \item The identity relation is just the identity function lifted by |fun|.
 \begin{code}
-idR : {I : Set} {X : I → Set} → (X ↝ X)
+^^^idR : {I : Set} {X : I → Set} → (X ↝ X)
 idR = fun id
 \end{code}
 \item Composition of relations is easily defined with |_>>=_|\,: computing |R • S| on input~|x| is first computing |S x| and then feeding the result to~|R|.
 \begin{code}
-_•_ : {I : Set} {X Y Z : I → Set} → (Y ↝ Z) → (X ↝ Y) → (X ↝ Z)
+^^^_•_ : {I : Set} {X Y Z : I → Set} → (Y ↝ Z) → (X ↝ Y) → (X ↝ Z)
 (R • S) x = S x >>= R
 \end{code}
 \item Some relations do not carry obvious computational meaning, but can still be defined pointwise, like the \key{meet} of two relations:
 \begin{code}
-_∩_ : {I : Set} {X Y : I → Set} → (X ↝ Y) → (X ↝ Y) → (X ↝ Y)
+^^^_∩_ : {I : Set} {X Y : I → Set} → (X ↝ Y) → (X ↝ Y) → (X ↝ Y)
 (R ∩ S) x y = R x y × S x y
 \end{code}
 \item Unlike a function, which distinguishes between input and output, inherently a relation treats its domain and codomain symmetrically.
 This is reflected by the presence of the following \key{converse} operator:
 \begin{code}
-_º : {I : Set} {X Y : I → Set} → (X ↝ Y) → (Y ↝ X)
+^^^_º : {I : Set} {X Y : I → Set} → (X ↝ Y) → (Y ↝ X)
 (R º) y x = R x y
 \end{code}
 A relation can thus be ``run backwards'' simply by taking its converse.
@@ -102,13 +102,13 @@ The nondeterministic and bidirectional nature of relations makes them a powerful
 \begin{figure}
 \codefigure
 \begin{code}
-mapR :  {I : Set} (D : RDesc I) {X Y : I → Set} →
-        (X ↝ Y) → ⟦ D ⟧ X → (Power(⟦ D ⟧ Y))
+^^^mapR :  {I : Set} (D : RDesc I) {X Y : I → Set} →
+           (X ↝ Y) → ⟦ D ⟧ X → (Power(⟦ D ⟧ Y))
 mapR (ṿ [])        R tt        =  return tt
 mapR (ṿ (i ∷ is))  R (x , xs)  =  pair <$>² (R x) (mapR (ṿ is) R xs)
 mapR (σ S D)       R (s , xs)  =  (pair s) <$> (mapR (D s) R xs)
 
-Ṙ :  {I : Set} (D : Desc I) {X Y : I → Set} → (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
+^^^Ṙ :  {I : Set} (D : Desc I) {X Y : I → Set} → (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
 Ṙ D R {i} = mapR (D i) R
 \end{code}
 \caption{Definition for relators.}
@@ -132,15 +132,15 @@ For example, if |D = ListD A|, then |Ṙ (ListD A)| is, up to isomorphism,
 
 Laws and theorems about relational programs are formulated with relational inclusion:
 \begin{code}
-_⊆_ : {I : Set} {X Y : I → Set} (X ↝ Y) → (X ↝ Y) → Set
+^^^_⊆_ : {I : Set} {X Y : I → Set} (X ↝ Y) → (X ↝ Y) → Set
 _⊆_ {I} R S = {i : I} → (x : X i) (y : Y i) → R x y → S x y
 \end{code}
 or equivalence of relations, i.e., two-way inclusion:
 \begin{code}
-_≃_ : {I : Set} {X Y : I → Set} (R S : X ↝ Y) → Set
+^^^_≃_ : {I : Set} {X Y : I → Set} (R S : X ↝ Y) → Set
 R ≃ S = (R ⊆ S) × (R ⊇ S)
 \end{code}
-where |R ⊇ S| is defined to be |S ⊆ R| as usual.
+where |R ^^^⊇ S| is defined to be |S ⊆ R| as usual.
 For example, a relator preserves identity and composition, i.e.,
 \begin{flalign*}
 &\hskip\mathindent |Ṙ D idR ≃ idR| \qquad\text{and}\qquad |Ṙ D (R • S) ≃ Ṙ D R • Ṙ D S| &
@@ -171,7 +171,7 @@ plus = fun (λ case (x , y , tt) mapsto x + y endcase) : Ḟ D (const Nat) ↝ c
 \end{code}
 Then |plus| is monotonic on
 \begin{code}
-leq = (lambda(x y)) y ≤ x : const Nat ↝ const Nat
+^^^leq = (lambda(x y)) y ≤ x : const Nat ↝ const Nat
 \end{code}
 which maps a natural number~|x| to any natural number~|y| that is at most~|x|.
 Pointwise, the monotonicity statement expands to
@@ -187,11 +187,11 @@ In the context of optimisation problems, monotonicity can be used to capture the
 \begin{code}
 mutual
 
-  foldR :  {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ↝ X) → (μ D ↝ X)
+  ^^^foldR :  {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ↝ X) → (μ D ↝ X)
   foldR {I} {D} R {i} (con ds) = mapFoldR D (D i) R ds >>= R
 
-  mapFoldR :  {I : Set} (D : Desc I) (D' : RDesc I) →
-              {X : I → Set} → (Ḟ D X ↝ X) → ⟦ D' ⟧ (μ D) → (Power(⟦ D' ⟧ X))
+  ^^^mapFoldR :  {I : Set} (D : Desc I) (D' : RDesc I) →
+                 {X : I → Set} → (Ḟ D X ↝ X) → ⟦ D' ⟧ (μ D) → (Power(⟦ D' ⟧ X))
   mapFoldR D (ṿ [])        R tt         = return tt
   mapFoldR D (ṿ (i ∷ is))  R (d  , ds)  = pair <$>²  ((cata(R)) d)
                                                      (mapFoldR D (ṿ is) f ds)
@@ -215,9 +215,9 @@ foldR {⊤} {ListD A} :  {X : ⊤ → Set} →
 \end{code}
 The functional and relational fold operators are related by the following lemma:
 \begin{code}
-fun-preserves-fold :  {I : Set} (D : Desc I) {X : I → Set} →
-                      (f : Ḟ D X ⇉ X) {i : I} (d : μ D i) (x : X i) →
-                      fun (fold f) d x ≅ (cata(fun f)) d x
+^^^fun-preserves-fold :  {I : Set} (D : Desc I) {X : I → Set} →
+                         (f : Ḟ D X ⇉ X) {i : I} (d : μ D i) (x : X i) →
+                         fun (fold f) d x ≅ (cata(fun f)) d x
 \end{code}
 which is a strengthened version of |fun (fold f) ≃ (cata(fun f))|.
 
@@ -232,7 +232,7 @@ Let
 be a relational algebra for lists.
 We can define a datatype of ``algebraically ornamented lists'' as
 \begin{code}
-indexfirst data AlgList A R : X → Set where
+indexfirst data ^^^AlgList A R : X → Set where
   AlgList A R x  offers  nil (rnil : R (`nil , tt) x)
                  or      cons  (a : A) (x' : X) (rcons : R (`cons , a , x' , tt) x)
                                (as : AlgList A R x')
@@ -240,7 +240,7 @@ indexfirst data AlgList A R : X → Set where
 There is an ornament from lists to algebraically ornamented lists which marks the fields |rnil|, |x'|, and |rcons| in |AlgList| as additional and refines the index of the recursive position from~|tt| to~|x'|.
 The optimised predicate~(\autoref{sec:optimised-predicates}) for this ornament is
 \begin{code}
-indexfirst data AlgListP A R : X → List A → Set where
+indexfirst data ^^^AlgListP A R : X → List A → Set where
   AlgListP A R x []        offers  nil (rnil : R (`nil , tt) x)
   AlgListP A R x (a ∷ as)  offers  cons  (x' : X) (rcons : R (`cons , a , x' , tt) x)
                                          (p : AlgListP A R x' as)
@@ -252,12 +252,7 @@ Thus we get the conversion isomorphisms
 \label{eq:AlgList}
 \end{flalign}
 That is, an algebraic list is exactly a plain list and a proof that the list folds to~|x| using the algebra~|R|.
-The traditional bottom-up vector datatype is a special case of |AlgList|: Let |length-alg| be the ornamental algebra derived from the ornament from natural numbers to lists (so |length = fold length-alg|).
-\begin{code}
-length-alg :  Ḟ (ListD A) (const Nat) ⇉ const Nat
-length-alg = ornAlg ⌈ NatD-ListD A ⌉
-\end{code}
-Then |AlgList A (fun length-alg)| is exactly |Vec' A| in \autoref{sec:index-first-datatypes}.
+The traditional bottom-up vector datatype is a special case of |AlgList|: the datatype |AlgList A (fun length-alg)|, where |length-alg| is the algebra for |length|, is exactly |Vec' A| in \autoref{sec:index-first-datatypes}.
 By~(\ref{eq:AlgList}) we have
 \begin{code}
 (n : Nat) → Vec' A n ≅ (Σ'(as ∶ List A)) (cata(fun length-alg)) as n
@@ -271,14 +266,14 @@ by |fun-preserves-fold|.
 \begin{figure}
 \codefigure
 \begin{code}
-algROD :  {I : Set} (D : RDesc I) {X : I → Set} →
-          ℘ (⟦ D ⟧ X) → ROrnDesc (Σ I X) proj₁ D
+^^^algROD :  {I : Set} (D : RDesc I) {X : I → Set} →
+             ℘ (⟦ D ⟧ X) → ROrnDesc (Σ I X) proj₁ D
 algROD (ṿ is)   {X}     P =  (Δ'(xs ∶ Ṗ is X)) (Δ'(_ ∶ P xs))
                                ṿ (Ṗ-map ((lambda({i} x)) ok (i , x)) is xs)
 algROD (σ S D)  {-""-}  P =  (σ'(s ∶ S)) algROD (D s) (curry P s)
 
-algOD :  {I : Set} (D : Desc I) {X : I → Set} →
-         (Ḟ D X ↝ X) → OrnDesc (Σ I X) proj₁ D
+^^^algOD :  {I : Set} (D : Desc I) {X : I → Set} →
+            (Ḟ D X ↝ X) → OrnDesc (Σ I X) proj₁ D
 algOD D R (ok (i , x)) = algROD (D i) ((R º) x)
 \end{code}
 \caption{Definitions for algebraic ornamentation.}
@@ -299,7 +294,7 @@ The optimised predicate for |⌈ algOD D R ⌉| is pointwise isomorphic to |(cat
 which is proved by induction on~|d|.
 These isomorphisms give rise to a swap family
 \begin{code}
-algOD-FSwap D R : FSwap (RSem' ⌈ algOD D R ⌉)
+^^^algOD-FSwap D R : FSwap (RSem' ⌈ algOD D R ⌉)
 \end{code}
 such that |Swap.P (algOD-FSwap D R (ok (i , x))) = (lambda(d)) (cata(R)) d x|, so we arrive at the following conversion isomorphisms
 \begin{flalign}
@@ -361,8 +356,8 @@ Since algebraically ornamented datatypes are datatypes with constraints expresse
 \begin{figure}
 \codefigure
 \begin{code}
-new-Σ :  (I : Set) {A : Set} {X : I → Set} →
-         ((i : I) → Upgrade A (X i)) → Upgrade A (Σ I X)
+^^^new-Σ :  (I : Set) {A : Set} {X : I → Set} →
+            ((i : I) → Upgrade A (X i)) → Upgrade A (Σ I X)
 new-Σ I u = record  case  P  = (lambda(a)) (Σ'(i ∶ I)) Upgrade.P (u i) a
                     sep   C  = λ case a (i , x) mapsto Upgrade.C (u i) a x      endcase
                     sep   u  = λ case a (i , p) mapsto i , Upgrade.u (u i) a p  endcase
@@ -370,7 +365,7 @@ new-Σ I u = record  case  P  = (lambda(a)) (Σ'(i ∶ I)) Upgrade.P (u i) a
 
 syntax new-Σ I (λ i → u) = (newSigma(i ∶ I)) u
 
-_×⁺_ : {X Y : Set} → Upgrade X Y → (Z : Set) → Upgrade X (Y × Z)
+^^^_×⁺_ : {X Y : Set} → Upgrade X Y → (Z : Set) → Upgrade X (Y × Z)
 u ×⁺ Z = record  case  P  = (lambda(x)) Upgrade.P u x × Z
                  sep   C  = λ case x (y , z) mapsto Upgrade.C u x y      endcase
                  sep   u  = λ case x (p , z) mapsto Upgrade.u u x p , z  endcase
@@ -388,7 +383,7 @@ fcond-⊆ : R • S ⊆ T • Ṙ D R
 Expanding the conclusion of~(\ref{eq:fusion-subseteq}) pointwise: if |d : μ D i| folds to |x : X i| with~|S|, which is ``relaxed'' to |y : Y i| by~|R|, then |d|~folds to~|y| with~|T|.
 This can be translated to a conversion function from a datatype algebraically ornamented with~|S| to one with~|T|:
 \begin{code}
-fusion-conversion-⊆ D R S T fcond-⊆ :
+^^^fusion-conversion-⊆ D R S T fcond-⊆ :
   {i : I} (x : X i) → μ ⌊ algOD D S ⌋ (i , x) →
   (y : Y i) → R x y → μ ⌊ algOD D T ⌋ (i , y)
 \end{code}
@@ -432,7 +427,7 @@ fcond-⊇ : R • S ⊇ T • Ṙ D R
 \end{code}
 we should be able to construct the conversion function
 \begin{code}
-fusion-conversion-⊇ D R S T fcond-⊇ :
+^^^fusion-conversion-⊇ D R S T fcond-⊇ :
   {i : I} (y : Y i) → μ ⌊ algOD D T ⌋ (i , y) →
   (Σ'(x ∶ X i)) μ ⌊ algOD D S ⌋ (i , x) × R x y
 \end{code}
@@ -449,10 +444,10 @@ in which we need two new combinators to deal with upgrading to product types, wh
 For a simple application, suppose that we need a ``bounded'' vector datatype, i.e., lists indexed with an upper bound on their length.
 A quick thought might lead to this definition
 \begin{code}
-BVec : Set → Nat → Set
+^^^BVec : Set → Nat → Set
 BVec A m = μ ⌊ algOD (ListD A) (geq • fun length-alg) ⌋ (tt , m)
 \end{code}
-where |geq = leq º : const Nat ↝ const Nat| maps a natural number~|x| to any natural number that is at least~|x|.
+where |^^^geq = leq º : const Nat ↝ const Nat| maps a natural number~|x| to any natural number that is at least~|x|.
 The conversion isomorphisms~(\ref{eq:algOD}) specialise for |BVec| to
 \begin{code}
 BVec A m ≅ (Σ'(as ∶ List A)) (cata(geq • fun length-alg)) as m
@@ -519,12 +514,12 @@ foldl f x (a ∷ as)  = foldl f (f x a) as
 \end{code}
 The connection to the conventional fold (and thus algebraic ornamentation) is not lost, however --- it is well known that a left fold can be alternatively implemented as a right fold by turning a list into a chain of functions of type |X → X| transforming the initial value to the final result:
 \begin{code}
-foldl-alg :  {A X : Set} → (X → A → X) →
-             Ḟ (ListD A) (const (X → X)) ⇉ const (X → X)
+^^^foldl-alg :  {A X : Set} → (X → A → X) →
+                Ḟ (ListD A) (const (X → X)) ⇉ const (X → X)
 foldl-alg f (`nil   ,          tt) = id
 foldl-alg f (`cons  , a , h ,  tt) = h ∘ flip f a
 
-foldl : {A X : Set} → (X → A → X) → X → List A → X
+^^^foldl : {A X : Set} → (X → A → X) → X → List A → X
 foldl f x as = fold (foldl-alg f) as x
 \end{code}
 The left fold can thus be linked to the relational fold by
@@ -548,7 +543,7 @@ g : const X ⇉ Ḟ (ListD B) (const X)
 \end{code}
 which together satisfy a \key{streaming condition} that we will see later, the streaming algorithm we implement, which takes as input the initial value |x : X| for the left fold, should be included in the following metamorphic relation:
 \begin{code}
-meta f g x = (cata(fun g º)) º • fun (foldl f x) : const (List A) ↝ const (List B)
+^^^meta f g x = (cata(fun g º)) º • fun (foldl f x) : const (List A) ↝ const (List B)
 \end{code}
 
 Next we devise a type for the streaming algorithm that fully guarantees its correctness.
@@ -564,7 +559,7 @@ stream f g :  (x : X) {h : X → X} →
 \end{code}
 from which we can extract
 \begin{code}
-stream' f g : X → List A → List B
+^^^stream' f g : X → List A → List B
 \end{code}
 which is guaranteed to satisfy
 \begin{code}
@@ -613,15 +608,15 @@ Operationally, we maintain a state of type~|X| (and hence require an initial sta
 Since we want |stream f g| to be as productive as possible, we should always try to produce elements of~|B| with~|g| first, and only try to consume elements of~|A| with~|f| when |g|~produces nothing.
 In \Agda:
 \begin{code}
-stream f g :  (x : X) {h : X → X} →
-              AlgList A (fun (foldl-alg f)) h → AlgList B (fun g º) (h x)
+^^^stream f g :  (x : X) {h : X → X} →
+                 AlgList A (fun (foldl-alg f)) h → AlgList B (fun g º) (h x)
 stream f g x      as                      with g x      | inspect g x
 stream f g x {h}  as                      | next' b x'  | [ gxeq ] =  cons b (h x') (goal()(0))
                                                                         (stream f g x' as)
 stream f g x      (nil        refl     )  | nothing     | [ gxeq ] =  nil gxeq
 stream f g x      (cons a h'  refl as  )  | nothing     | [ gxeq ] =  stream f g (f x a) as
 \end{code}
-We match~|g x| with either of the two patterns |next' b x' = (`cons , b , x' , tt)| and |nothing = (`nil , tt)|.
+We match~|g x| with either of the two patterns |^^^next' b x' = (`cons , b , x' , tt)| and |^^^nothing = (`nil , tt)|.
 \begin{itemize}
 \item If the result is |next' b x'|, we should emit~|b| and and use |x'| as the new state; the recursively computed algebraic list is indexed with~|h x'|, and we are left with a proof obligation of type |g (h x) ≡ next' b (h x')| at Goal~0; we will come back to this proof obligation later.
 \item If the result is |nothing|, we should attempt to consume from the input list.
@@ -667,13 +662,13 @@ From the initial state~|x|, we can either
 and we need to prove that the outcomes are the same: doing production using~|g| and consumption using~|h| in whichever order should emit the same element and reach the same final state.
 This cannot be true in general, so we should impose some commutativity condition on |f|~and~|g|, which is called the \key{streaming condition}:
 \begin{code}
-StreamingCondition f g : Set
+^^^StreamingCondition f g : Set
 StreamingCondition f g =
   (a : A) (b : B) (x x' : X) → g x ≡ next' b x' → g (f x a) ≡ next' b (f x' a)
 \end{code}
 The streaming condition is commutativity of one step of production and consumption, whereas the proof obligation at Goal~0 is commutativity of one step of production and multiple steps of consumption (of the entire list), so we perform a straightforward induction to extend the streaming condition along the axis of consumption:
 \begin{code}
-streaming-lemma :
+^^^streaming-lemma :
   (b : B) (x x' : X) → g x ≡ next' b x' →
   {h : X → X} → AlgList A (fun (foldl-alg f)) h → g (h x) ≡ next' b (h x')
 streaming-lemma b x x' eq (nil       refl     ) = eq
@@ -695,15 +690,15 @@ The structure of |stream| already matches that of \citeauthor{Bird-arithmetic-co
 
 Suppose that we have an unlimited number of 1-penny, 2-pence, and 5-pence coins, modelled by the following datatype:
 \begin{code}
-data Coin : Set where
-  onep   : Coin
-  twop   : Coin
-  fivep  : Coin
+data ^^^Coin : Set where
+  ^^^onep   : Coin
+  ^^^twop   : Coin
+  ^^^fivep  : Coin
 \end{code}
 Given |n : Nat|, the \key{minimum coin change problem} asks for the least number of coins that make up |n|~pence.
 We can give a relational specification of the problem with the following ``minimisation'' operator:
 \begin{code}
-min_•Λ_ : {I : Set} {-"\kern-1pt"-} {X Y : I → Set} {-"\kern-1pt"-} (R : Y ↝ Y) {-"\kern-1pt"-} (S : X ↝ Y) → (X ↝ Y)
+^^^min_•Λ_ : {I : Set} {-"\kern-1pt"-} {X Y : I → Set} {-"\kern-1pt"-} (R : Y ↝ Y) {-"\kern-1pt"-} (S : X ↝ Y) → (X ↝ Y)
 min_•Λ_ {Y := Y} R S {i} x y = S x y × ((y' : Y i) → S x y' → R y' y)
 \end{code}
 An input |x : X i| for some |i : I| is mapped by |min R •Λ S| to |y : Y i| if |y|~is a possible result in |S x : (Power (Y i))| and is the smallest such result under~|R|, in the sense that any~|y'| in~|S x : (Power (Y i))| must satisfy |R y' y|.
@@ -713,47 +708,47 @@ We use bags of coins as the type of solutions, and represent them as decreasingl
 (This is a deliberate choice to make the derivation work, but one would naturally be led to this representation having attempted to apply the \key{Greedy Theorem}, which will be introduced shortly.)
 If we define the ordering on coins as
 \begin{code}
-_≤C_ : Coin → Coin → Set
+^^^_≤C_ : Coin → Coin → Set
 c ≤C d = value c ≤ value d
 \end{code}
 where the values of the coins are defined by
 \begin{code}
-value : Coin → Nat
+^^^value : Coin → Nat
 value  onep   =  1
 value  twop   =  2
 value  fivep  =  5
 \end{code}
 then the datatype of coin bags we use is
 \begin{code}
-CoinBagOD : OrnDesc Coin ! (ListD Coin)
+^^^CoinBagOD : OrnDesc Coin ! (ListD Coin)
 CoinBagOD = OrdListOD Coin (flip _≤C_)
 -- specialising |Val| to |Coin| and |_≤_| to |flip _≤C_|
 
-indexfirst data CoinBag : Coin → Set where
+indexfirst data ^^^CoinBag : Coin → Set where
   CoinBag c  offers  nil
              or      cons  (d : Coin) (leq : d ≤C c) (b : CoinBag d)
 \end{code}
 The total value of a coin bag is the sum of the values of the coins in the bag, which is computed by a (functional) fold:
 \begin{code}
-total-value-alg : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ⇉ const Nat
+^^^total-value-alg : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ⇉ const Nat
 total-value-alg (`nil   ,              tt) = 0
 total-value-alg (`cons  , d , _ , n ,  tt) = value d + n
 
-total-value : CoinBag ⇉ const Nat
+^^^total-value : CoinBag ⇉ const Nat
 total-value = fold total-value-alg
 \end{code}
 and the number of coins in a coin bag is computed by an ornamental forgetful function shrinking ordered lists to natural numbers:
 \begin{code}
-size-alg : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ⇉ const Nat
+^^^size-alg : Ḟ ⌊ CoinBagOD ⌋ (const Nat) ⇉ const Nat
 size-alg = ornAlg (NatD-ListD Coin ⊙ ⌈ CoinBagOD ⌉)
 
-size : CoinBag ⇉ const Nat
+^^^size : CoinBag ⇉ const Nat
 size = fold size-alg
 -- which is definitionally |forget (NatD-ListD Coin ⊙ ⌈ CoinBagOD ⌉)|
 \end{code}
 The specification of the minimum coin change problem can now be written as
 \begin{code}
-min-coin-change : const Nat ↝ CoinBag
+^^^min-coin-change : const Nat ↝ CoinBag
 min-coin-change = min (fun size º • leq • fun size) •Λ (fun total-value º)
 \end{code}
 Intuitively, given an input |n : Nat|, the relation |fun total-value º| computes an arbitrary coin bag whose total value is~|n|, so |min-coin-change| first computes the set of all such coin bags and then chooses from the set a coin bag whose size is smallest.
@@ -823,7 +818,7 @@ min R •Λ ((cata(S)) º)
 That is, given an input value |x : X i| for some |i : I|, we choose a minimum under~|R| among all those elements of |μ D i| that computes to~|x| through~|(cata(S))|.
 The Greedy Theorem states that, if the initial algebra
 \begin{code}
-α = fun con : Ḟ D (μ D) ↝ μ D
+^^^α = fun con : Ḟ D (μ D) ↝ μ D
 \end{code}
 is monotonic on~|R|, i.e.,
 \begin{code}
@@ -843,37 +838,37 @@ Here we offer an intuitive explanation:
 The monotonicity condition states that if |ds : Ḟ D (μ D) i| for some |i : I| is better than |ds' : Ḟ D (μ D) i| under |Ṙ D R|, i.e., |ds|~and~|ds'| are equal except that the recursive positions of~|ds| are all better than the corresponding recursive positions of~|ds'| under~|R|, then |con ds : μ D i| would be better than |con ds' : μ D i| under~|R|.
 This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
 The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem that has significant influence on the quality of solutions:
-Suppose that there are two decompositions |xs| and |xs' : Ḟ D X i| of some problem |x : X i| for some |i : I|, i.e., both |xs|~and~|xs'| are in |S º x : (Power (Ḟ D X i))|, and assume that |xs|~is better than~|xs'| under~|Q|.
+Suppose that there are two decompositions |xs| and |xs' : Ḟ D X i| of some problem |x : X i| for some |i : I|, i.e., both |xs|~and~|xs'| are in |(S º) x : (Power (Ḟ D X i))|, and assume that |xs|~is better than~|xs'| under~|Q|.
 Then for any solution resulting from~|xs'| (computed by |α • Ṙ D ((cata(S)) º)|) there always exists a better solution resulting from~|xs|, so ignoring~|xs'| would only rule out worse solutions.
 The greedy condition thus guarantees that we will arrive at an optimal solution by always choosing the best decomposition, which is done by |min Q •Λ (S º) : X ↝ Ḟ D X|.
 
 \begin{figure}
 \codefigure\fontsize{10.6pt}{0pt}
 \begin{code}
-data CoinOrderedView : Coin → Coin → Set where
-  oneponep    : CoinOrderedView  onep   onep
-  oneptwop    : CoinOrderedView  onep   twop
-  onepfivep   : CoinOrderedView  onep   fivep
-  twoptwop    : CoinOrderedView  twop   twop
-  twopfivep   : CoinOrderedView  twop   fivep
-  fivepfivep  : CoinOrderedView  fivep  fivep
+data ^^^CoinOrderedView : Coin → Coin → Set where
+  ^^^oneponep    : CoinOrderedView  onep   onep
+  ^^^oneptwop    : CoinOrderedView  onep   twop
+  ^^^onepfivep   : CoinOrderedView  onep   fivep
+  ^^^twoptwop    : CoinOrderedView  twop   twop
+  ^^^twopfivep   : CoinOrderedView  twop   fivep
+  ^^^fivepfivep  : CoinOrderedView  fivep  fivep
 
-view-ordered-coin : (c d : Coin) → c ≤C d → CoinOrderedView c d
+^^^view-ordered-coin : (c d : Coin) → c ≤C d → CoinOrderedView c d
 
-data CoinBag'View : {c : Coin} {n : Nat} {l : Nat} → CoinBag' c n l → Set where
-  empty       :  {c : Coin} → CoinBag'View {c} {0} {0} bnil
-  oneponep    :  {m l : Nat} {lep : onep ≤C onep}
-                 (b : CoinBag' onep m l) → CoinBag'View {onep} {1 + m} {1 + l} (bcons onep lep b)
-  oneptwop    :  {m l : Nat} {lep : onep ≤C twop}
-                 (b : CoinBag' onep m l) → CoinBag'View {twop} {1 + m} {1 + l} (bcons onep lep b)
-  twoptwop    :  {m l : Nat} {lep : twop ≤C twop}
-                 (b : CoinBag' twop m l) → CoinBag'View {twop} {2 + m} {1 + l} (bcons twop lep b)
-  onepfivep   :  {m l : Nat} {lep : onep ≤C fivep}
-                 (b : CoinBag' onep m l) → CoinBag'View {fivep} {1 + m} {1 + l} (bcons onep lep b)
-  twopfivep   :  {m l : Nat} {lep : twop ≤C fivep}
-                 (b : CoinBag' twop m l) → CoinBag'View {fivep} {2 + m} {1 + l} (bcons twop lep b)
-  fivepfivep  :  {m l : Nat} {lep : fivep ≤C fivep}
-                 (b : CoinBag' fivep m l) → CoinBag'View {fivep} {5 + m} {1 + l} (bcons fivep lep b)
+data ^^^CoinBag'View : {c : Coin} {n : Nat} {l : Nat} → CoinBag' c n l → Set where
+  ^^^empty       :  {c : Coin} → CoinBag'View {c} {0} {0} bnil
+  ^^^oneponep    :  {m l : Nat} {lep : onep ≤C onep}
+                    (b : CoinBag' onep m l) → CoinBag'View {onep} {1 + m} {1 + l} (bcons onep lep b)
+  ^^^oneptwop    :  {m l : Nat} {lep : onep ≤C twop}
+                    (b : CoinBag' onep m l) → CoinBag'View {twop} {1 + m} {1 + l} (bcons onep lep b)
+  ^^^twoptwop    :  {m l : Nat} {lep : twop ≤C twop}
+                    (b : CoinBag' twop m l) → CoinBag'View {twop} {2 + m} {1 + l} (bcons twop lep b)
+  ^^^onepfivep   :  {m l : Nat} {lep : onep ≤C fivep}
+                    (b : CoinBag' onep m l) → CoinBag'View {fivep} {1 + m} {1 + l} (bcons onep lep b)
+  ^^^twopfivep   :  {m l : Nat} {lep : twop ≤C fivep}
+                    (b : CoinBag' twop m l) → CoinBag'View {fivep} {2 + m} {1 + l} (bcons twop lep b)
+  ^^^fivepfivep  :  {m l : Nat} {lep : fivep ≤C fivep}
+                    (b : CoinBag' fivep m l) → CoinBag'View {fivep} {5 + m} {1 + l} (bcons fivep lep b)
 
 view-CoinBag' : {c : Coin} {n l : Nat} (b : CoinBag' c n l) → CoinBag'View b
 \end{code}
@@ -884,9 +879,9 @@ view-CoinBag' : {c : Coin} {n l : Nat} (b : CoinBag' c n l) → CoinBag'View b
 \begin{sidewaysfigure}
 \codefigure\fontsize{10pt}{0pt}\setlength{\blanklineskip}{-3.5pt}
 \begin{code}
-greedy-lemma :  (c d : Coin) → c ≤C d → (m n : Nat) → value c + m ≡ value d + n →
+^^^greedy-lemma :  (c d : Coin) → c ≤C d → (m n : Nat) → value c + m ≡ value d + n →
 
-                (l : Nat) (b : CoinBag' c m l) → (Σ'(l' ∶ Nat)) CoinBag' d n l' × (l' ≤ l)
+                   (l : Nat) (b : CoinBag' c m l) → (Σ'(l' ∶ Nat)) CoinBag' d n l' × (l' ≤ l)
 
 greedy-lemma          c               d      c≤d  {-""-}   m                n        eq             l                   b  with view-ordered-coin c d c≤d
 
@@ -957,19 +952,19 @@ It is nontrivial to prove the greedy condition by relational calculation.
 Here we offer instead a brute-force yet conveniently expressed case analysis by pattern matching.
 Define a new datatype |CoinBag'| by composing two algebraic ornaments on |⌊ CoinBagOD ⌋| in parallel:
 \begin{code}
-CoinBag'OD : OrnDesc (proj₁ ⋈ proj₁) pull ⌊ CoinBagOD ⌋
+^^^CoinBag'OD : OrnDesc (proj₁ ⋈ proj₁) pull ⌊ CoinBagOD ⌋
 CoinBag'OD =  ⌈ algOD ⌊ CoinBagOD ⌋ (fun total-value-alg) ⌉ ⊗
               ⌈ algOD ⌊ CoinBagOD ⌋ (fun size-alg) ⌉
 
-CoinBag' : Coin → Nat → Nat → Set
+^^^CoinBag' : Coin → Nat → Nat → Set
 CoinBag' = μ ⌊ CoinBag'OD ⌋ (ok (c , n) , ok (c , l))
 \end{code}
 whose two constructors can be specialised to
 \begin{code}
-bnil   :  {c : Coin} → CoinBag' c 0 0
+^^^bnil   :  {c : Coin} → CoinBag' c 0 0
 
-bcons  :  {c : Coin} {n l : Nat} → (d : Coin) → d ≤C c →
-          CoinBag' d n l → CoinBag' c (value d + n) (1 + l)
+^^^bcons  :  {c : Coin} {n l : Nat} → (d : Coin) → d ≤C c →
+             CoinBag' d n l → CoinBag' c (value d + n) (1 + l)
 \end{code}
 By predicate swapping using the modularity isomorphisms (\autoref{sec:predicate-swapping}) and |fun-preserves-fold|, |CoinBag'| is characterised by the isomorphisms
 \begin{flalign}
@@ -1001,7 +996,8 @@ The bag must contain |onep| as its first coin; let the rest of the bag be |b : C
 At this point \Agda\ can deduce that |l| must be |1 + l''|.
 Now we can return |b| as the result after the upper bound on its coins is relaxed from |onep| to |twop|, which is done by
 \begin{code}
-relax {-"\kern-1.5pt"-} : {-"\kern-1.5pt"-} {c d : Coin} {-"\kern-1.5pt"-} {n l : Nat} → c ≤C d → CoinBag' c n l → CoinBag' d n l
+^^^cb'-relax :
+  {c d : Coin} {n l : Nat} → c ≤C d → CoinBag' c n l → CoinBag' d n l
 \end{code}
 \item The remaining Goal~6 is the most interesting one:
 The input bag has type |CoinBag' twop (3 + n) l|, which in this case contains two 2-pence coins, and the rest of the bag is |b : CoinBag' twop k l''|.
@@ -1034,25 +1030,25 @@ which will help us to construct the final internalist program.
 
 As planned, we synthesise a new datatype by ornamenting |CoinBag| using the algebra~|R| derived above:
 \begin{code}
-GreedyBagOD : OrnDesc (Coin × Nat) proj₁ ⌊ CoinBagOD ⌋
+^^^GreedyBagOD : OrnDesc (Coin × Nat) proj₁ ⌊ CoinBagOD ⌋
 GreedyBagOD = algOD ⌊ CoinBagOD ⌋ R
 
-GreedyBag : Coin → Nat → Set
+^^^GreedyBag : Coin → Nat → Set
 GreedyBag c n = μ ⌊ GreedyBagOD ⌋ (c , n)
 \end{code}
 whose two constructors can be given the following types:
 \begin{code}
-gnil   :  {c : Coin} {n : Nat} →
-          total-value-alg (`nil , tt) ≡ n →
-          (  (ns : Ḟ ⌊ CoinBagOD ⌋ (const Nat)) →
-               total-value-alg ns ≡ n → Q ns (`nil , tt)) →
-          GreedyBag c n
+^^^gnil   :  {c : Coin} {n : Nat} →
+             total-value-alg (`nil , tt) ≡ n →
+             (  (ns : Ḟ ⌊ CoinBagOD ⌋ (const Nat)) →
+                  total-value-alg ns ≡ n → Q ns (`nil , tt)) →
+             GreedyBag c n
 
-gcons  :  {c : Coin} {n : Nat} (d : Coin) (d≤c : d ≤C c) →
-          {n' : Nat} → total-value-alg (`cons , d , d≤c , n') ≡ n →
-          (  (ns : Ḟ ⌊ CoinBagOD ⌋ (const Nat)) →
-               total-value-alg ns ≡ n → Q ns (`cons , d , d≤c , n')) →
-          GreedyBag d n' → GreedyBag c n
+^^^gcons  :  {c : Coin} {n : Nat} (d : Coin) (d≤c : d ≤C c) →
+             {n' : Nat} → total-value-alg (`cons , d , d≤c , n') ≡ n →
+             (  (ns : Ḟ ⌊ CoinBagOD ⌋ (const Nat)) →
+                  total-value-alg ns ≡ n → Q ns (`cons , d , d≤c , n')) →
+             GreedyBag d n' → GreedyBag c n
 \end{code}
 and implement the greedy algorithm by
 \begin{code}
@@ -1068,7 +1064,7 @@ Each of the two constructors has two additional proof obligations coming from th
 \end{itemize}
 We thus obtain a simplified version of |gnil|:
 \begin{code}
-gnil' : {c : Coin} → GreedyBag c 0
+^^^gnil' : {c : Coin} → GreedyBag c 0
 \end{code}
 \item For |gcons|,
 \begin{itemize}
@@ -1076,7 +1072,7 @@ gnil' : {c : Coin} → GreedyBag c 0
 \item for the second obligation, any~|ns| satisfying |total-value-alg ns ≡ value d + n'| must be of the form |(`cons , e , e≤c , m' , tt)| for some |e : Coin|, |e≤c : e ≤C c|, and |m' : Nat| since the right-hand side |value d + n'| of the equality is non-zero, and |Q|~maps~|ns| to |(`cons , d , d≤c , n' , tt)| if |e ≤C d|, so |d|~should be the largest ``usable'' coin if this obligation is to be discharged.
 We say that |d : Coin| is \key{usable} with respect to some |c : Coin| and |n : Nat| if |d|~is bounded above by~|c| and can be part of a solution to the problem for |n|~pence:
 \begin{code}
-UsableCoin : Nat → Coin → Coin → Set
+^^^UsableCoin : Nat → Coin → Coin → Set
 UsableCoin n c d = (d ≤C c) × ((Σ'(n' ∶ Nat)) value d + n' ≡ n)
 \end{code}
 The obligation can then be rewritten as
@@ -1088,22 +1084,22 @@ This obligation is the only one that cannot be trivially discharged, since it re
 \end{itemize}
 We thus specialise |gcons| to
 \begin{code}
-gcons' :  {c : Coin} (d : Coin) → d ≤C c →
-          {n' : Nat} →
-          ((e : Coin) → UsableCoin (value d + n') c e → e ≤C d) →
-          GreedyBag d n' → GreedyBag c (value d + n')
+^^^gcons' :  {c : Coin} (d : Coin) → d ≤C c →
+             {n' : Nat} →
+             ((e : Coin) → UsableCoin (value d + n') c e → e ≤C d) →
+             GreedyBag d n' → GreedyBag c (value d + n')
 \end{code}
 \end{itemize}
 Because of |gcons'|, we are directed to implement a function |maximum-coin| that computes the largest usable coin with respect to any |c : Coin| and non-zero |n : Nat|:
 \begin{code}
-maximum-coin :
+^^^maximum-coin :
   (c : Coin) (n : Nat) → n > 0 →
   (Σ'(d ∶ Coin))  UsableCoin n c d × ((e : Coin) → UsableCoin n c e → e ≤C d)
 \end{code}
 This takes some theorem proving but is overall a typical \Agda\ exercise in dealing with natural numbers and ordering.
 Finally, the greedy algorithm is implemented as the following internalist program, which repeatedly uses |maximum-coin| to find the largest usable coin and unfolds a |GreedyBag|:
 \begin{code}
-greedy : (c : Coin) (n : Nat) → GreedyBag c n
+^^^greedy : (c : Coin) (n : Nat) → GreedyBag c n
 greedy c n = <-rec P f n c
   where
     P : Nat → Set
@@ -1117,19 +1113,19 @@ greedy c n = <-rec P f n c
 \end{code}
 In |greedy|, the combinator
 \begin{code}
-<-rec :  (P : Nat → Set) →
-         ((n : Nat) → ((n' : Nat) → n' < n → P n') → P n) →
-         (n : Nat) → P n
+^^^<-rec :  (P : Nat → Set) →
+            ((n : Nat) → ((n' : Nat) → n' < n → P n') → P n) →
+            (n : Nat) → P n
 \end{code}
 is for well-founded recursion on~|_<_|\,, and the function
 \begin{code}
-compare-with-zero : (n : Nat) → ZeroView n
+^^^compare-with-zero : (n : Nat) → ZeroView n
 \end{code}
 is a covering function for the view
 \begin{code}
-data ZeroView : Nat → Set where
-  is-zero     :  ZeroView 0
-  above-zero  :  {n : Nat} → n > 0 → ZeroView n
+data ^^^ZeroView : Nat → Set where
+  ^^^is-zero     :  ZeroView 0
+  ^^^above-zero  :  {n : Nat} → n > 0 → ZeroView n
 \end{code}
 At Goal~8, \Agda\ deduces that |n|~is |value d + n'| and demands that we prove |n' < value d + n'| in order to make the recursive call, which is easily discharged since |value d > 0|.
 
