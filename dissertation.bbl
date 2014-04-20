@@ -1,4 +1,4 @@
-\begin{thebibliography}{88}
+\begin{thebibliography}{87}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -26,13 +26,6 @@
 \newblock In \emph{IFIP TC2/WG2.1 Working Conference on Generic Programming},
   pages 1--20. Kluwer, B.V.
 \newblock \doi{10.1007/978-0-387-35672-3_1}.
-
-\bibitem[{Altenkirch et~al.(2005)Altenkirch, McBride, and
-  McKinna}]{Altenkirch-why-dependent-types-matter}
-\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
-  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
-\newblock Why dependent types matter.
-\newblock \urlentry{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
 
 \bibitem[{Altenkirch et~al.(2007)Altenkirch, McBride, and
   Swierstra}]{Altenkirch-OTT}
@@ -464,6 +457,13 @@
 \newblock \emph{Journal of Functional Programming}, 18(1):1--13.
 \newblock \doi{10.1017/S0956796807006326}.
 
+\bibitem[{McKinna(2006)}]{McKinna-why-dependent-types-matter}
+\bibfnamefont{James} \bibnamefont{McKinna} [2006].
+\newblock Why dependent types matter.
+\newblock In \emph{Principles of Programming Languages}, POPL'06, page~1. ACM.
+\newblock \doi{10.1145/1111037.1111038}.
+\newblock \urlentry{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
+
 \bibitem[{Meertens(1992)}]{Meertens-paramorphisms}
 \bibfnamefont{Lambert} \bibnamefont{Meertens} [1992].
 \newblock Paramorphisms.
@@ -558,13 +558,6 @@
 \newblock A new view of guards.
 \newblock
   \urlentry{http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html}.
-
-\bibitem[{Reynolds(2000)}]{Reynolds-intrinsic-extrinsic-semantics}
-\bibfnamefont{John~C.} \bibnamefont{Reynolds} [2000].
-\newblock The meaning of types --- from intrinsic to extrinsic semantics.
-\newblock Basic Research in Computer Science (BRICS) Report Series RS-00-32,
-  Department of Computer Science, University of Aarhus.
-\newblock \urlentry{http://www.brics.dk/RS/00/32/}.
 
 \bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
 \bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}

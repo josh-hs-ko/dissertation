@@ -10,7 +10,6 @@
 \usepackage{subfiles}
 \def\biblio{%
   \renewcommand{\emph}{\textit}%
-  \renewcommand{\MakeUppercase}{\relax}%
   \bibliographystyle{dissertation}%
   \bibliography{../bib}%
   \listoftodos}
@@ -23,6 +22,8 @@
 \renewcommand{\sectionautorefname}{Section}
 \renewcommand{\subsectionautorefname}{Section}
 \renewcommand{\figureautorefname}{Figure}
+
+\usepackage{bookmark}
 
 \usepackage[square]{natbib}
 \newcommand{\varcitet}[2]{\citeauthor{#1}#2~\citeyearpar{#1}}
@@ -42,27 +43,35 @@
 \usepackage{microtype}
 
 \usepackage{fancyhdr}
-\pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~#1}{\textbf{\thechapter}~~~#1}}
-\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~#1}}
-\fancyhf{}
-\fancyhead[LE, RO]{\thepage}
-\fancyhead[RE]{\leftmark}
-\fancyhead[LO]{\rightmark}
+\fancypagestyle{frontmatter}{%
+    \fancyhf{}%
+    \fancyhead[RE, LO]{\leftmark}%
+}
+\fancypagestyle{mainmatter}{%
+    \renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~##1}{\textbf{\thechapter}~~~##1}}%
+    \renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~##1}}%
+    \fancyhf{}%
+    \fancyhead[LE, RO]{\thepage}%
+    \fancyhead[RE]{\leftmark}%
+    \fancyhead[LO]{\rightmark}%
+}
 \makeatletter
 \renewcommand{\tableofcontents}{%
-    \chapter*{\contentsname%
-        \@mkboth{\contentsname}{\contentsname}}%
+    \hypertarget{tableofcontents}{}\bookmark[dest=tableofcontents]{Contents}%
+    \chapter*{\contentsname\markboth{Contents}{Contents}}%
+    \thispagestyle{empty}%
     \@starttoc{toc}%
     }
 \makeatother
 \setlength{\headheight}{14.5pt}
+\renewcommand{\MakeUppercase}{\relax}
 
-\usepackage{tocbibind}
+\usepackage[nottoc]{tocbibind}
 
 \usepackage[labelfont=bf,labelsep=quad,font=small]{caption}
 \usepackage{rotating}
 \newcommand{\codefigure}{\setlength{\mathindent}{0em}}
+\newcommand{\size}[2]{{\fontsize{#1}{0pt}\selectfont #2}}
 
 \usepackage{graphicx}
 
@@ -203,15 +212,21 @@
 \def\subfileheadercorrection{}
 
 \frontmatter
+\pagestyle{frontmatter}
 
 \subfile{titlepage}
 
-%\chapter{Acknowledgements}
+\subfile{abstract}
+\cleardoublepage
+\restoregeometry
 
-{\renewcommand{\MakeUppercase}{\relax}
-\tableofcontents}
+%\subfile{acknowledgements}
+%\cleardoublepage
+
+\tableofcontents
 
 \mainmatter
+\pagestyle{mainmatter}
 
 \subfile{processed-chapter1}
 \subfile{processed-chapter2}

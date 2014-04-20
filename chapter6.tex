@@ -215,7 +215,7 @@ normROrn {E := σ S E  } tr =
 \end{code}
 The top-level function |normROrn| exhausts all fields of~|E| by~|Δ|, partially applying the transformation along the way, and then |normROrn-∇| takes over and inserts values obtained from the result of the transformation into fields of~|D| by~|∇|, ending with the placement of the index coherence proof.
 
-We can now easily arrange a category |ḞHTrans| of descriptions and horizontal transformations, which is isomorphic to |Ōrn|.
+We can now easily arrange a category |^^^ḞHTrans| of descriptions and horizontal transformations, which is isomorphic to |Ōrn|.
 Its objects are of type |Σ Set Desc| as in |Ōrn|, and its sets of morphisms are
 \begin{code}
 λ case (J , E) (I , D) mapsto (Σ'(e : J → I)) FHTrans e D E endcase

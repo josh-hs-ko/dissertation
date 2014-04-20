@@ -745,7 +745,7 @@ append-length (x ∷ xs)  ys = cong suc (append-length xs ys)
 \end{code}
 But by switching to the vector datatype, the proof dissolves into the typing of the program and needs no separate handling.
 This is possible because list append and the proof |append-length| share the same structure; consequently, by careful type design, the vector append program alone is able to carry both of them simultaneously.
-We propose to call this programming style \key{internalism}, suggesting that inductive proofs are internalised in programs whose types involve inductive families, while the traditional proving-after-programming style is called \key{externalism}.
+We propose to call this programming style \key{internalism}, suggesting that proofs are internalised in programs, while the traditional proving-after-programming style is called \key{externalism}.
 Externalism is necessary when we wish to show that an existing program satisfies additional properties, especially when the proofs are complicated and do not follow the structure of the program.
 On the other hand, writing a (simply typed) program and an externalist proof following the structure of the program is like stating the same thing twice: even though the programmer knows the meaning of the program, they has to first state the meaningless symbol manipulation aspect and then explain its meaning via a separate proof, doubling the effort.
 In contrast, internalism is programming with informative datatypes so as to give precise description of meaningful computations, so explanations via separate proofs become unnecessary.

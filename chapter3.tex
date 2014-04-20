@@ -135,7 +135,7 @@ The coherence-based definition, however, can be more easily generalised for func
 \subsection{Upgrades}
 \label{sec:upgrades}
 
-Refinements are less useful when we move on to function types, however.
+Refinements are less useful when we move on to function types.
 A presupposition here is that we want refinement relationship between function types to be compositional --- for example, we are interested in stating how the function type |List Nat → List Nat| refines the function type |Nat → Nat| in terms of the refinement |Nat-List Nat : Refinement Nat (List Nat)| (which states that the underlying natural number of a list is its length): a function |f : Nat → Nat| underlies another function |g : List Nat → List Nat| exactly when |g|~transforms the underlying natural number in the same way as~|f|, i.e., |length (g xs) ≡ f (length xs)| for all |xs : List Nat|.
 It is not possible to have such a refinement between the two function types, though:
 Having such a refinement means, in particular, that we can extract an underlying function from any |g : List Nat → List Nat|, but the behaviour of~|g| may depend essentially on the list elements, which is not available to a function taking a natural number.
@@ -1490,8 +1490,8 @@ insT t (one u  h)  = zero (insT (link t u) h)
 Conceptually, |incr| puts a $1$-digit into the least significant position of a binary number, triggering a series of carries, i.e., summing $1$-digits of smaller ranks into $1$-digits of larger ranks; |insT| follows the pattern of |incr|, but since $1$-digits now have to store a binomial tree of matching rank, |insT| takes an additional binomial tree as input and |link|s binomial trees of smaller ranks into binomial trees of larger ranks whenever carrying happens.
 Having defined |insT|, inserting a single element into a binomial heap of type |BHeap 0| is then inserting, by |insT|, a rank-$0$ binomial tree (i.e., a single node) storing the element into the heap.
 \begin{code}
-^^^insert : Val → BHeap 0 → BHeap 0
-insert x = insT (con (x , tt))
+ins : Val → BHeap 0 → BHeap 0
+ins x = insT (con (x , tt))
 \end{code}
 
 It is apparent that the program structure of |insT| strongly resembles that of |incr| --- they manipulate the list-of-binary-digits structure in the same way.

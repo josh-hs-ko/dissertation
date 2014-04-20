@@ -846,29 +846,29 @@ The greedy condition thus guarantees that we will arrive at an optimal solution 
 \codefigure\fontsize{10.6pt}{0pt}
 \begin{code}
 data ^^^CoinOrderedView : Coin → Coin → Set where
-  ^^^oneponep    : CoinOrderedView  onep   onep
-  ^^^oneptwop    : CoinOrderedView  onep   twop
-  ^^^onepfivep   : CoinOrderedView  onep   fivep
-  ^^^twoptwop    : CoinOrderedView  twop   twop
-  ^^^twopfivep   : CoinOrderedView  twop   fivep
-  ^^^fivepfivep  : CoinOrderedView  fivep  fivep
+  oneponep    : CoinOrderedView  onep   onep
+  oneptwop    : CoinOrderedView  onep   twop
+  onepfivep   : CoinOrderedView  onep   fivep
+  twoptwop    : CoinOrderedView  twop   twop
+  twopfivep   : CoinOrderedView  twop   fivep
+  fivepfivep  : CoinOrderedView  fivep  fivep
 
 ^^^view-ordered-coin : (c d : Coin) → c ≤C d → CoinOrderedView c d
 
 data ^^^CoinBag'View : {c : Coin} {n : Nat} {l : Nat} → CoinBag' c n l → Set where
-  ^^^empty       :  {c : Coin} → CoinBag'View {c} {0} {0} bnil
-  ^^^oneponep    :  {m l : Nat} {lep : onep ≤C onep}
-                    (b : CoinBag' onep m l) → CoinBag'View {onep} {1 + m} {1 + l} (bcons onep lep b)
-  ^^^oneptwop    :  {m l : Nat} {lep : onep ≤C twop}
-                    (b : CoinBag' onep m l) → CoinBag'View {twop} {1 + m} {1 + l} (bcons onep lep b)
-  ^^^twoptwop    :  {m l : Nat} {lep : twop ≤C twop}
-                    (b : CoinBag' twop m l) → CoinBag'View {twop} {2 + m} {1 + l} (bcons twop lep b)
-  ^^^onepfivep   :  {m l : Nat} {lep : onep ≤C fivep}
-                    (b : CoinBag' onep m l) → CoinBag'View {fivep} {1 + m} {1 + l} (bcons onep lep b)
-  ^^^twopfivep   :  {m l : Nat} {lep : twop ≤C fivep}
-                    (b : CoinBag' twop m l) → CoinBag'View {fivep} {2 + m} {1 + l} (bcons twop lep b)
-  ^^^fivepfivep  :  {m l : Nat} {lep : fivep ≤C fivep}
-                    (b : CoinBag' fivep m l) → CoinBag'View {fivep} {5 + m} {1 + l} (bcons fivep lep b)
+  empty       :  {c : Coin} → CoinBag'View {c} {0} {0} bnil
+  oneponep    :  {m l : Nat} {lep : onep ≤C onep}
+                 (b : CoinBag' onep m l) → CoinBag'View {onep} {1 + m} {1 + l} (bcons onep lep b)
+  oneptwop    :  {m l : Nat} {lep : onep ≤C twop}
+                 (b : CoinBag' onep m l) → CoinBag'View {twop} {1 + m} {1 + l} (bcons onep lep b)
+  twoptwop    :  {m l : Nat} {lep : twop ≤C twop}
+                 (b : CoinBag' twop m l) → CoinBag'View {twop} {2 + m} {1 + l} (bcons twop lep b)
+  onepfivep   :  {m l : Nat} {lep : onep ≤C fivep}
+                 (b : CoinBag' onep m l) → CoinBag'View {fivep} {1 + m} {1 + l} (bcons onep lep b)
+  twopfivep   :  {m l : Nat} {lep : twop ≤C fivep}
+                 (b : CoinBag' twop m l) → CoinBag'View {fivep} {2 + m} {1 + l} (bcons twop lep b)
+  fivepfivep  :  {m l : Nat} {lep : fivep ≤C fivep}
+                 (b : CoinBag' fivep m l) → CoinBag'View {fivep} {5 + m} {1 + l} (bcons fivep lep b)
 
 view-CoinBag' : {c : Coin} {n l : Nat} (b : CoinBag' c n l) → CoinBag'View b
 \end{code}
@@ -957,7 +957,7 @@ CoinBag'OD =  ⌈ algOD ⌊ CoinBagOD ⌋ (fun total-value-alg) ⌉ ⊗
               ⌈ algOD ⌊ CoinBagOD ⌋ (fun size-alg) ⌉
 
 ^^^CoinBag' : Coin → Nat → Nat → Set
-CoinBag' = μ ⌊ CoinBag'OD ⌋ (ok (c , n) , ok (c , l))
+CoinBag' c n l = μ ⌊ CoinBag'OD ⌋ (ok (c , n) , ok (c , l))
 \end{code}
 whose two constructors can be specialised to
 \begin{code}
@@ -1045,9 +1045,9 @@ whose two constructors can be given the following types:
              GreedyBag c n
 
 ^^^gcons  :  {c : Coin} {n : Nat} (d : Coin) (d≤c : d ≤C c) →
-             {n' : Nat} → total-value-alg (`cons , d , d≤c , n') ≡ n →
+             {n' : Nat} → total-value-alg (`cons , d , d≤c , n' , tt) ≡ n →
              (  (ns : Ḟ ⌊ CoinBagOD ⌋ (const Nat)) →
-                  total-value-alg ns ≡ n → Q ns (`cons , d , d≤c , n')) →
+                  total-value-alg ns ≡ n → Q ns (`cons , d , d≤c , n' , tt)) →
              GreedyBag d n' → GreedyBag c n
 \end{code}
 and implement the greedy algorithm by

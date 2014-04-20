@@ -9,13 +9,6 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
-\bibitem[{Altenkirch et~al.(2005)Altenkirch, McBride, and
-  McKinna}]{Altenkirch-why-dependent-types-matter}
-\bibfnamefont{Thorsten} \bibnamefont{Altenkirch}, \bibfnamefont{Conor}
-  \bibnamefont{McBride}, and \bibfnamefont{James} \bibnamefont{McKinna} [2005].
-\newblock Why dependent types matter.
-\newblock \urlentry{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
-
 \bibitem[{Bird and de~Moor(1997)}]{Bird-AoP}
 \bibfnamefont{Richard} \bibnamefont{Bird} and \bibfnamefont{Oege}
   \bibnamefont{de~Moor} [1997].
@@ -146,6 +139,13 @@
 \newblock Ornamental algebras, algebraic ornaments.
 \newblock
   \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/pub/OAAO/LitOrn.pdf}.
+
+\bibitem[{McKinna(2006)}]{McKinna-why-dependent-types-matter}
+\bibfnamefont{James} \bibnamefont{McKinna} [2006].
+\newblock Why dependent types matter.
+\newblock In \emph{Principles of Programming Languages}, POPL'06, page~1. ACM.
+\newblock \doi{10.1145/1111037.1111038}.
+\newblock \urlentry{http://www.cs.nott.ac.uk/~txa/publ/ydtm.pdf}.
 
 \bibitem[{Nordstr{\"o}m et~al.(1990)Nordstr{\"o}m, Peterson, and
   Smith}]{Nordstrom-programming}

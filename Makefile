@@ -1,3 +1,4 @@
+LaTeX = pdflatex
 lhs2TeX = /Users/joshko/Library/Haskell/bin/lhs2TeX
 
 all: dissertation
@@ -6,10 +7,16 @@ clean:
 	cat .gitignore | xargs echo rm -f | sh
 
 dissertation: titlepage.tex processed-agda-preamble.tex processed-chapter1.tex processed-chapter2.tex processed-chapter3.tex processed-chapter4.tex processed-chapter5.tex processed-chapter6.tex processed-chapter7.tex
-	pdflatex dissertation
+	$(LaTeX) dissertation
 
 titlepage: titlepage.tex
-	pdflatex titlepage
+	$(LaTeX) titlepage
+
+abstract: abstract.tex
+	$(LaTeX) abstract
+
+acknowledgements: acknowledgements.tex
+	$(LaTeX) acknowledgements
 
 processed-agda-preamble.tex: agda-preamble.tex
 	$(lhs2TeX) --agda agda-preamble.tex -o processed-agda-preamble.tex
@@ -24,7 +31,7 @@ dissertation.defs: chapter1.tex chapter2.tex chapter3.tex chapter4.tex chapter5.
 	$(lhs2TeX) --agda --collect-def chapter7.tex >> dissertation.defs
 
 chapter1: processed-chapter1.tex
-	pdflatex -jobname chapter1 processed-chapter1
+	$(LaTeX) -jobname chapter1 processed-chapter1
 
 processed-chapter1.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter1.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter1\'.tex
@@ -36,7 +43,7 @@ processed-chapter1.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter1\'.tex
 
 chapter2: processed-chapter2.tex
-	pdflatex -jobname chapter2 processed-chapter2
+	$(LaTeX) -jobname chapter2 processed-chapter2
 
 processed-chapter2.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter2.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter2\'.tex
@@ -48,7 +55,7 @@ processed-chapter2.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter2\'.tex
 
 chapter3: processed-chapter3.tex
-	pdflatex -jobname chapter3 processed-chapter3
+	$(LaTeX) -jobname chapter3 processed-chapter3
 
 processed-chapter3.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter3.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter3\'.tex
@@ -60,7 +67,7 @@ processed-chapter3.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter3\'.tex
 
 chapter4: processed-chapter4.tex
-	pdflatex -jobname chapter4 processed-chapter4
+	$(LaTeX) -jobname chapter4 processed-chapter4
 
 processed-chapter4.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter4.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter4\'.tex
@@ -72,7 +79,7 @@ processed-chapter4.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter4\'.tex
 
 chapter5: processed-chapter5.tex
-	pdflatex -jobname chapter5 processed-chapter5
+	$(LaTeX) -jobname chapter5 processed-chapter5
 
 processed-chapter5.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter5.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter5\'.tex
@@ -84,7 +91,7 @@ processed-chapter5.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter5\'.tex
 
 chapter6: processed-chapter6.tex
-	pdflatex -jobname chapter6 processed-chapter6
+	$(LaTeX) -jobname chapter6 processed-chapter6
 
 processed-chapter6.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter6.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter6\'.tex
@@ -96,7 +103,7 @@ processed-chapter6.tex: dissertation.tex processed-agda-preamble.tex dissertatio
 	rm -f processed-chapter6\'.tex
 
 chapter7: processed-chapter7.tex
-	pdflatex -jobname chapter7 processed-chapter7
+	$(LaTeX) -jobname chapter7 processed-chapter7
 
 processed-chapter7.tex: dissertation.tex processed-agda-preamble.tex dissertation.defs chapter7.tex
 	echo "\\documentclass[dissertation]{subfiles}\n\n" > processed-chapter7\'.tex
