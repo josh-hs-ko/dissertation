@@ -1,7 +1,9 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
@@ -27,7 +29,8 @@
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
   \bibfnamefont{Conor} \bibnamefont{McBride} [2013].
 \newblock A categorical treatment of ornaments.
-\newblock To appear in \textit{{L}ogic in {C}omputer {S}cience}.
+\newblock In \emph{Logic in Computer Science}, LICS'13, pages 530--539. IEEE.
+\newblock \doi{10.1109/LICS.2013.60}.
 
 \bibitem[{Gambino and Kock(2010)}]{Gambino-polynomial-functors}
 \bibfnamefont{Nicola} \bibnamefont{Gambino} and \bibfnamefont{Joachim}
@@ -42,6 +45,12 @@
 \newblock \emph{Theoretical Computer Science}, 89(1):107--136.
 \newblock \doi{10.1016/0304-3975(90)90108-T}.
 
+\bibitem[{Jacobs(1999)}]{Jacobs-categorical-logic-and-type-theory}
+\bibfnamefont{Bart} \bibnamefont{Jacobs} [1999].
+\newblock \emph{Categorical Logic and Type Theory}.
+\newblock Elsevier B.V.
+\newblock \isbn{978-0444508539}.
+
 \bibitem[{Ko and Gibbons(2013)}]{Ko-pcOrn}
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
   \bibnamefont{Gibbons} [2013].
@@ -53,6 +62,7 @@
 \bibfnamefont{Saunders} \bibnamefont{Mac~Lane} [1998].
 \newblock \emph{Categories for the Working Mathematician}.
 \newblock Springer-Verlag, second edition.
+\newblock \isbn{978-0387984032}.
 
 \bibitem[{McBride(1999)}]{McBride-thesis}
 \bibfnamefont{Conor} \bibnamefont{McBride} [1999].

@@ -1,8 +1,10 @@
 \documentclass[12pt,oneside]{book}
 
 \usepackage{ifthen}
+\newboolean{final}
+\setboolean{final}{false}
 \newboolean{draft}
-\setboolean{draft}{true}
+\setboolean{draft}{false}
 
 \usepackage[a4paper]{geometry}
 \setlength{\marginparwidth}{2.75cm}
@@ -43,18 +45,13 @@
 \usepackage{microtype}
 
 \usepackage{fancyhdr}
-\fancypagestyle{frontmatter}{%
-    \fancyhf{}%
-    \fancyhead[RE, LO]{\leftmark}%
-}
-\fancypagestyle{mainmatter}{%
-    \renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~##1}{\textbf{\thechapter}~~~##1}}%
-    \renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~##1}}%
-    \fancyhf{}%
-    \fancyhead[LE, RO]{\thepage}%
-    \fancyhead[RE]{\leftmark}%
-    \fancyhead[LO]{\rightmark}%
-}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{\thechapter}~~~#1}{\textbf{\thechapter}~~~#1}}%
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection}~~~#1}}%
+\fancyhf{}%
+\fancyhead[LE, RO]{\thepage}%
+\fancyhead[RE]{\leftmark}%
+\fancyhead[LO]{\rightmark}%
 \makeatletter
 \renewcommand{\tableofcontents}{%
     \hypertarget{tableofcontents}{}\bookmark[dest=tableofcontents]{Contents}%
@@ -149,20 +146,31 @@
 %\newtagform{bold}[\textbf]{(}{)}
 %\usetagform{bold}
 
-\ifthenelse{\boolean{draft}}{%
-
-  \usepackage{datetime}%
-  \usepackage[UKenglish]{isodate}%
-  \cleanlookdateon%
-  \newcommand{\timestamp}{Draft compiled at \currenttime, \today}%
-
-  \usepackage[color=yellow,textsize=footnotesize]{todonotes}%
-
-}{% else
+\ifthenelse{\boolean{final}}{%
 
   \newcommand{\timestamp}{Hilary 2014}%
 
   \usepackage[disable]{todonotes}%
+
+}{ %else \boolean{final}
+
+  \usepackage{datetime}%
+  \usepackage[UKenglish]{isodate}%
+  \cleanlookdateon%
+
+  \ifthenelse{\boolean{draft}}{%
+
+    \newcommand{\timestamp}{Draft compiled at \currenttime, \today}%
+
+    \usepackage[color=yellow,textsize=footnotesize]{todonotes}%
+
+  }{% else \boolean{draft}
+
+    \newcommand{\timestamp}{\today}%
+
+    \usepackage[disable]{todonotes}%
+
+  }
 
 }
 
@@ -212,10 +220,10 @@
 \def\subfileheadercorrection{}
 
 \frontmatter
-\pagestyle{frontmatter}
 
 \subfile{titlepage}
 
+\newgeometry{top=3.5cm}
 \subfile{abstract}
 \cleardoublepage
 \restoregeometry
@@ -226,7 +234,6 @@
 \tableofcontents
 
 \mainmatter
-\pagestyle{mainmatter}
 
 \subfile{processed-chapter1}
 \subfile{processed-chapter2}

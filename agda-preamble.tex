@@ -276,8 +276,10 @@
 %link ⌈ ⌈_⌉
 %format ⌉ = "\kern-.2em\rceil"
 %link ⌉ ⌈_⌉
-%format T⌈ = ⌈
+%format T⌊ = ⌊
+%link T⌊ ⌊_⌋T
 %format ⌋T = ⌋ "_{\kern-.5ptT}"
+%link ⌋T ⌊_⌋T
 %format ⌊_⌋ = "\lfloor" _ "\kern\underscorespace" "\rfloor"
 %format TDesc = "\constructor{TDesc}"
 %format _⊕_ = _ ⊕ "\kern-\underscorespace" _
@@ -475,6 +477,7 @@
 %format BTree = "\constructor{BTree}"
 %format Bin = "\constructor{Bin}"
 %format one = "\constructor{one}"
+%format (TIMES(m)(n)) = m "\times" n
 %format Boolean = "\constructor{Boolean}"
 %format BHeap = "\constructor{BHeap}"
 %format BHeap' = "\constructor{BHeap}^\prime"

@@ -37,9 +37,9 @@ Correspondingly, we expect that
 are extensionally equal.
 That is, the sequential compositional structure of ornaments corresponds to the compositional structure of forgetful functions.
 We wish to state such correspondences in concise terms.
-\item While parallel composition of ornaments~(\autoref{sec:parallel-composition}) has a sensible definition, it is defined by case analysis at the microscopic level of individual fields.
+\item While parallel composition of ornaments~(\autoref{sec:parallel-composition}) has a sensible definition, it is defined by case analysis at the \emph{microscopic} level of individual fields.
 Such a microscopic definition is difficult to comprehend, and so are any subsequent definitions and proofs.
-It is desirable to have a macroscopic characterisation of parallel composition, so the nature of parallel composition is immediately clear, and subsequent definitions and proofs can be done in a more abstract manner.
+It is desirable to have a \emph{macroscopic} characterisation of parallel composition, so the nature of parallel composition is immediately clear, and subsequent definitions and proofs can be done in a more abstract manner.
 \item The ornamental conversion isomorphisms~(\autoref{sec:optimised-predicates}) and the modularity isomorphisms~(\autoref{sec:predicate-swapping}) were left unimplemented.
 Both sets of isomorphisms are about the optimised predicates~(\autoref{sec:optimised-predicates}), which are defined in terms of parallel composition with singleton ornamentation~(\autoref{sec:ornamental-descriptions}).
 We thus expect that the existence of these isomorphisms can be explained in terms of properties of parallel composition and singleton ornamentation.
@@ -211,7 +211,7 @@ Fun = record  case  Object    =  Set
               sep   proofs-of-laws endcase
 \end{code}
 Another important category that we will make use of is |Fam|~(\autoref{fig:concrete-categories}), the category of indexed families of sets and indexed families of functions, which is useful for talking about componentwise structures.
-An object in |Fam| has type |(Σ'(I ∶ Set)) I → Set|, i.e., it is a set~|I| and a family of sets indexed by~|I|;
+An object in |Fam| has type |(Σ'(I ∶ Set)) I → Set|, i.e., it is a set~|I| and a family of sets indexed by~|I| \sidenote{forming this |Σ|-type requires a universe-polymorphic revision of the definition of~|Σ|};
 a morphism from |(J , Y)| to |(I , X)| is a function |e : J → I| and a family of functions from |Y j| to |X (e j)| for each |j : J|.
 Morphism composition is componentwise composition, and morphism equivalence is defined to be componentwise extensional equality.
 (The morphism equivalence is formulated with the help of McBride's ``John Major'' heterogeneous equality~|^^^_≊_|~\citep{McBride-thesis} --- the equivalence~|^^^_≊'_| is pointwise heterogeneous equality --- since given |y : Y j| for some |j : J|, the types of |u {j} y| and |u' {j} y| are not definitionally equal but only provably equal.)
@@ -237,7 +237,7 @@ Proofs of the functor laws are omitted from the presentation.
 \subsection{Categories and functors for refinements and ornaments}
 \label{sec:concrete-categories}
 
-Some constructions in \autoref{chap:refinements-and-ornaments} can now be organised under several categories (shown in \autoref{fig:concrete-categories}) and functors.
+Some constructions in \autoref{chap:refinements-and-ornaments} can now be organised under several categories (whose definitions are shown in \autoref{fig:concrete-categories}) and functors.
 For a start, we already saw that refinements are interesting only because of their intensional contents; extensionally they amount only to their forgetful functions.
 This is reflected in an \emph{isomorphism} of categories between the category |Fam| and the category |FRef| of type families and refinement families (i.e., there are two functors back and forth inverse to each other).
 An object in |FRef| is an indexed family of sets as in |Fam|, and a morphism from |(J , Y)| to |(I , X)| consists of a function |e : J → I| on the indices and a refinement family of type |FRefinement e X Y|.
@@ -358,8 +358,7 @@ RSem = record  case  object    =  λ case (I , D) mapsto I , μ D      endcase
 \subsection{Isomorphisms}
 \label{sec:isomorphisms}
 
-So far the categorical organisation offers no obvious benefits.
-It is for the ease of talking about mapping purely categorical structures between categories that we employ the categorical language.
+So far the categorical organisation offers no obvious benefits, because we have not started talking about mapping purely categorical structures between categories, which is our main reason for employing the categorical language.
 One simplest example of such purely categorical structures is \key{isomorphisms}: the type of isomorphisms between two objects |X|~and~|Y| in a category~|C| is defined by
 \begin{code}
 record ^^^Iso C X Y : Set _ where
@@ -371,9 +370,9 @@ record ^^^Iso C X Y : Set _ where
 \end{code}
 (We assume that, by introducing the category~|C| in the text, there is implicitly a statement |open Category C|, so |_==>_| refers to |Category._==>_ C| and so on.)
 The relation~|^^^_≅_| we have been using is formally defined as |Iso Fun|.
-Isomorphisms are preserved by functors, i.e.,
+Isomorphisms are preserved by functors, i.e., for any |F : Functor C D| we have
 \begin{code}
-(F : Functor C D) → Iso C X Y → Iso D (object F X) (object F Y)
+Iso C X Y → Iso D (object F X) (object F Y)
 \end{code}
 which is proved by mapping all objects, morphisms, compositions, and equivalences in~|C| appearing in the input isomorphism into~|D| by~|F|.
 This fact immediately tells us, for example, that when two ornaments are inverse to each other, so are their forgetful functions, by taking |F = Ind|.
@@ -488,7 +487,7 @@ In particular, a product of |L|~and~|R| contains the least informative object in
 We thus aim to characterise parallel composition as a product of two compatible ornaments.
 This means that ornaments should be the objects of some category, but so far we only know that ornaments are morphisms of the category |Ōrn|.
 We are thus directed to construct a category whose objects are morphisms in an ambient category~|C|, so when we use |Ōrn| as the ambient category, parallel composition can be characterised as a product in the derived category.
-Such a category is in general a \key{comma category}~\citep[\S\,II.6]{MacLane-categories}, whose objects are morphisms in the ambient category with arbitrary source and target objects, but here we should restrict ourselves to a special case called a \key{slice category}, since we seek to form products of only compatible ornaments (whose less informative end coincide) rather than arbitrary ones.
+Such a category is in general a ``comma category''~\citep[\S\,II.6]{MacLane-categories}, whose objects are morphisms in the ambient category with arbitrary source and target objects, but here we should restrict ourselves to a special case called a \key{slice category}, since we seek to form products of only compatible ornaments (whose less informative end coincide) rather than arbitrary ones.
 A slice category is parametrised with an ambient category~|C| and an object~|B| in~|C|, and has
 \begin{itemize}
 \item objects: all the morphisms in~|C| with target~|B|,
@@ -673,7 +672,7 @@ A proof sketch of~(\ref{eq:pc-square}) is deferred to \autoref{sec:ornaments-and
 The pullback property~(\ref{eq:pc-square}) by itself is not too useful in this chapter, though: |Ōrn| is a quite restricted category, so a universal property established in |Ōrn| has limited applicability.
 Instead, we are more interested in the following two pullback properties: the image of~(\ref{eq:pc-square}) under |Ind| in |Fam|:
 \begin{equation}
-\begin{tikzpicture}[scale=5, baseline=(D.base)]
+\kern5.1pt\begin{tikzpicture}[scale=5, baseline=(D.base)]
 \node(D) at (1, 0) {|I , μ D|};
 \node(E) at (0, 0) {|J , μ E|};
 \node(F) at (1, .5) {|K , μ F|};
@@ -721,7 +720,7 @@ We restate the ornamental conversion isomorphisms as follows: for any ornament |
 μ E j ≅ (Σ'(x ∶ μ D (e j))) OptP O (ok j) x
 \end{code}
 for all |j : J|.
-Since the optimised predicates |OptP O| are defined by parallel composition of |O|~and the singleton ornament |S = singletonOD D|, the isomorphism expands to
+Since the optimised predicates |OptP O| are defined by parallel composition of |O|~and the singleton ornamentation |S = singletonOD D|, the isomorphism expands to
 \begin{flalign}
 &\hskip\mathindent |μ E j ≅ (Σ'(x ∶ μ D (e j))) μ ⌊ O ⊗ ⌈ S ⌉ ⌋ (ok j , ok (e j , x))| &
 \label{eq:rep-iso}
@@ -949,20 +948,20 @@ Compared to the constructions of the isomorphisms using datatype-generic inducti
 Also, the categorical constructions are impervious to change of representation of the universes of descriptions and ornaments; modification to the universes only affects constructions logically prior to the pullback property~(\ref{eq:Fam-pullback}).
 This statement is empirically verified --- the representation of the universes really had to be changed once after carrying out the categorical constructions, but the consequences of this change of representation were limited.
 
-\citet{Dagand-categorical-ornaments} provided a purely categorical treatment of ornaments using fibred category theory, which is quite independent of the development in this chapter, though.
-They established correspondences between descriptions and polynomial functors~\citep{Gambino-polynomial-functors} and between ornaments and cartesian morphisms, and sketched how several operations on ornaments correspond to certain categorical notions (including pullbacks), all of which are ultimately based on the abstract notion of locally cartesian closed categories.
+\citet{Dagand-categorical-ornaments} provided a purely categorical treatment of ornaments using fibred category theory~\citep{Jacobs-categorical-logic-and-type-theory}, which is quite independent of the development in this chapter, though.
+They established correspondences between descriptions and ``polynomial functors''~\citep{Gambino-polynomial-functors} and between ornaments and ``cartesian morphisms'', and sketched how several operations on ornaments correspond to certain categorical notions (including pullbacks), all of which are ultimately based on the abstract notion of locally cartesian closed categories.
 Methodologically, there is a notable difference between their work and the categorical development in this dissertation: \citeauthor{Dagand-categorical-ornaments} distinguish ``software'' (e.g., descriptions and ornaments) and ``mathematics'' (e.g., polynomial functors and cartesian morphisms) and then make a connection between them, so they can use mathematical notions as inspiration for software constructs.
 In the light of the propositions-as-types principle, though, a further step should be taken: rather than merely making a connection between software artifacts that have the necessary level of detail and mathematical objects that possess desired abstract properties, we should design the software artifacts such that they satisfy the abstract properties themselves, all expressed in one uniform language, so the detail of the artifacts can be effectively managed by reasoning in terms of the abstract properties.
 In this spirit, category theory is regarded in this dissertation as merely providing an additional set of abstractions formulated within type theory, as opposed to being an independent formalism.
 (As a consequence, the reasoning is still essentially type-theoretical, rather than insisting on purely categorical arguments.)
 Ornaments are complex, but the complexity is necessary (as justified in \autoref{sec:ornament-refinement-discussion}) and hence can only be somehow managed rather than being neglected by turning attention to similar mathematical objects.
-Fortunately, ornaments themselves exhibit useful categorical structure that can be expressed type-theoretically, so we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure without switching to a different formalism.
+Fortunately, ornaments themselves exhibit useful categorical structure that can be expressed type-theoretically, so we are able to tame the complexity of ornaments by reasoning abstractly in terms of this categorical structure without switching to a fundamentally different formalism.
 
 The results of this chapter are completely formalised in \Agda.
 The setoid approach to managing morphism equivalence works reasonably well, being able to express extensional equality (e.g., in |Fun| and |Fam|), proof irrelevance (e.g., in |SpanCategory| and |SliceCategory|), and layered definitions of equality (e.g., morphism equivalence in |SquareCategory| is ultimately defined in terms of morphism equivalence in the ambient category).
-The approach works only because the formalised theory is still simple enough, though: for example, isomorphisms of categories in general cannot be defined sensibly, since that requires us to turn sets of objects into setoids as well, and then the setoids of morphisms have to be indexed by setoids and proved to respect equalities of the latter, which quickly becomes unmanageable.
+However, the approach works only because the formalised theory is still simple enough: for example, isomorphisms of categories in general cannot be defined sensibly, since that requires us to turn sets of objects into setoids as well, and then the setoids of morphisms have to be indexed by setoids and proved to respect equalities of the latter, which quickly becomes unmanageable.
 Our modelling of categories is able to evade this problem because both of the isomorphisms of categories in this dissertation (one is between |Ōrn| and |FRef|, and the other will appear in \autoref{sec:ornaments-and-horizontal-transformations}) use identities as their object parts.
-As for formalisation of proofs, while the purely categorical lemmas can be encoded by equational reasoning combinators with a reasonable amount of effort, formalisation in general is rather difficult due to \Agda's intensionality and lack of a tactic language for constructing proofs efficiently, which together result in the need to manually construct proof terms that require complicated handling of equalities.
+As for formalisation of proofs, while the purely categorical lemmas can be encoded by equational reasoning combinators with a reasonable amount of effort, formalisation in general is rather difficult due to \Agda's intensionality and lack of a tactic language for constructing proofs efficiently, which together result in the need of manually constructing proof terms that require complicated handling of equalities.
 Also, not all the reasoning presented can be faithfully encoded: For the last two steps of the argument in \autoref{sec:ornamental-conversion-isomorphisms}, it is possible to formalise the lemma and the change of variables individually and chain them together, but the resulting isomorphisms would have a very complicated definition containing plenty of suspended |subst|s.
 If these isomorphisms are used to construct the refinement family in the morphism part of |RSem|, it would be terribly difficult to prove that the morphism part of |RSem| preserves equivalence.
 The actual formalisation circumvents the problem by fusing the lemma and the change of variables into one step to get a clean \Agda\ definition such that |RSem| preserves equivalence automatically.

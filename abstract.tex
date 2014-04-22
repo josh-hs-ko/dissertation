@@ -2,7 +2,8 @@
 
 \begin{document}
 
-\newgeometry{bottom=4cm}
+\newgeometry{top=3.5cm}
+
 \thispagestyle{empty}
 
 \hypertarget{abstract}{}\bookmark[dest=abstract]{Abstract}
@@ -25,12 +26,13 @@ Hilary 2014
 Based on a natural unification of logic and computation, Martin-Löf's \textit{intuitionistic type theory} can be regarded simultaneously as a computationally meaningful higher-order logic system and an expressively typed functional programming language, in which proofs and programs are treated as the same entities.
 Two modes of programming can then be distinguished: in \textit{externalism}, we construct a program separately from its correctness proof with respect to a given specification, whereas in \textit{internalism}, we encode the specification in a sophisticated type such that any program inhabiting the type also encodes a correctness proof, and we can use type information as a guidance on program construction.
 Internalism is particularly effective in the presence of \textit{inductive families}, whose design can have a strong influence on program structure.
-Techniques and mechanisms for facilitating internalist programming are still relatively lacking, however.
+Techniques and mechanisms for facilitating internalist programming are still lacking, however.
 
 This dissertation proposes that internalist programming can be facilitated by exploiting an interconnection between internalism and externalism, expressed as isomorphisms between inductive families into which data structure invariants are encoded and their simpler variants paired with predicates expressing those invariants.
 The interconnection has two directions: one \textit{analysing} inductive families into simpler variants and predicates, and the other \textit{synthesising} inductive families from simpler variants and specific predicates.
 They respectively give rise to two applications, one achieving a modular structure of internalist libraries, and the other bridging internalist programming with relational specifications and program derivation.
-Theoretically, the key datatype-generic mechanisms supporting the applications --- \textit{parallel composition of ornaments} and \textit{relational algebraic ornamentation} --- are further characterised in terms of lightweight category theory.
+The datatype-generic mechanisms supporting the applications are based on McBride's \textit{ornaments}.
+Theoretically, the key ornamental constructs --- \textit{parallel composition of ornaments} and \textit{relational algebraic ornamentation} --- are further characterised in terms of lightweight category theory.
 A significant number of the results are completely formalised in the \Agda\ programming language.
 
 \end{document}

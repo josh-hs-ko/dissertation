@@ -1,4 +1,4 @@
-\begin{thebibliography}{43}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -188,6 +188,13 @@
 \newblock Clarendon Press.
 \newblock \isbn{978-0198538356}.
 
+\bibitem[{Martin-L{\"o}f(1975)}]{ML-TT73}
+\bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1975].
+\newblock An intuitionistic theory of types: Predicative part.
+\newblock In \emph{Logic Colloquium '73}, volume~80 of \emph{Studies in Logic
+  and the Foundations of Mathematics}, pages 73--118. Elsevier B.V.
+\newblock \doi{10.1016/S0049-237X(08)71945-1}.
+
 \bibitem[{Martin-L{\"o}f(1984{\natexlab{a}})}]{ML-constructive-math-programming}
 \bibfnamefont{Per} \bibnamefont{Martin-L{\"o}f} [1984{\natexlab{a}}].
 \newblock Constructive mathematics and computer programming.
@@ -229,6 +236,12 @@
 \newblock A polynomial testing principle.
 \newblock
   \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf}.
+
+\bibitem[{McBride(2014)}]{McBride-pivotal}
+\bibfnamefont{Conor} \bibnamefont{McBride} [2014].
+\newblock How to keep your neighbours in order.
+\newblock
+  \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/Pivotal.pdf}.
 
 \bibitem[{McBride and McKinna(2004)}]{McBride-view}
 \bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{James}

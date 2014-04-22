@@ -5,9 +5,9 @@ This chapter turns to the \key{synthetic} direction of the interconnection betwe
 As stated in \autoref{sec:externalism-and-internalism}, internalist types can be hard to read and write, and it would be helpful to be able to switch to an alternative language for understanding and deriving internalist types.
 The alternative language adopted in this chapter is the \key{relational} language~(\autoref{sec:relations}), of which \citet{Bird-AoP} gave an authoritative account.
 Unlike the datatype declaration language, using relations we can give concise yet computationally intuitive specifications, which are amenable to manipulation by algebraic laws and theorems.
-A particularly expressive relational construction is the \key{relational fold}, and when fixing a basic datatype and casting the relational fold as the externalist predicate, we can synthesise a corresponding internalist datatype on the other side of the conversion isomorphism.
+A particularly expressive relational construction is \key{relational folds}, and when fixing a basic datatype and casting a relational fold as the externalist predicate, we can synthesise a corresponding internalist datatype on the other side of the conversion isomorphism.
 More specifically, every relational algebra gives rise to an \key{algebraic ornamentation}~(\autoref{sec:algOD}), whose optimised predicate~(\autoref{sec:optimised-predicates}) can be swapped~(\autoref{sec:predicate-swapping}) for the relational fold with the algebra.
-Specifications involving relational folds can then be met by constructing internalist programs whose types involve corresponding algebraic ornamented datatypes.
+Specifications involving relational folds can then be met by constructing internalist programs whose types involve corresponding algebraically ornamented datatypes.
 Several examples are given in \autoref{sec:internalism-examples}, followed by some discussion in \autoref{sec:algebraic-discussion}.
 
 \section{Relational programming in \Agda}
@@ -51,7 +51,7 @@ _>>=_ {A} s f = (lambda(b)) (Σ'(a ∶ A)) s a × f a b
 If |s : (Power A)| and |f : A → (Power B)|, then the subset |s >>= f : (Power B)| is the disjoint union of all the subsets |f a : (Power B)| where |a|~ranges over the inhabitants of~|A| that belong to~|s|; that is, an inhabitant |b : B| is a member of |s >>= f| exactly when there exists some |a : A| belonging to~|s| such that |b|~is a member of |f a|.
 \end{itemize}
 (We omit the proofs that the two combinators satisfy the (relative) monad laws up to pointwise isomorphism.)
-On top of |return| and |_>>=_|\kern1pt, the functorial map on~|℘| is defined as
+On top of |return| and |_>>=_|\,, the functorial map on~|℘| is defined as
 \begin{code}
 ^^^_<$> : {A B : Set} → (A → B) → (Power A) → (Power B)
 f <$> s = s >>= (lambda(a)) return (f a)
@@ -81,7 +81,7 @@ fun f x = return (f x)
 ^^^idR : {I : Set} {X : I → Set} → (X ↝ X)
 idR = fun id
 \end{code}
-\item Composition of relations is easily defined with |_>>=_|\,: computing |R • S| on input~|x| is first computing |S x| and then feeding the result to~|R|.
+\item Composition of relations~|_•_| is easily defined with |_>>=_|\,: computing |R • S| on input~|x| is first computing |S x| and then feeding the result to~|R|.
 \begin{code}
 ^^^_•_ : {I : Set} {X Y Z : I → Set} → (Y ↝ Z) → (X ↝ Y) → (X ↝ Z)
 (R • S) x = S x >>= R
@@ -102,16 +102,16 @@ The nondeterministic and bidirectional nature of relations makes them a powerful
 \begin{figure}
 \codefigure
 \begin{code}
-^^^mapR :  {I : Set} (D : RDesc I) {X Y : I → Set} →
+^^^mapRDR :  {I : Set} (D : RDesc I) {X Y : I → Set} →
            (X ↝ Y) → ⟦ D ⟧ X → (Power(⟦ D ⟧ Y))
-mapR (ṿ [])        R tt        =  return tt
-mapR (ṿ (i ∷ is))  R (x , xs)  =  pair <$>² (R x) (mapR (ṿ is) R xs)
-mapR (σ S D)       R (s , xs)  =  (pair s) <$> (mapR (D s) R xs)
+mapRDR (ṿ [])        R tt        =  return tt
+mapRDR (ṿ (i ∷ is))  R (x , xs)  =  pair <$>² (R x) (mapRDR (ṿ is) R xs)
+mapRDR (σ S D)       R (s , xs)  =  (pair s) <$> (mapRDR (D s) R xs)
 
 ^^^Ṙ :  {I : Set} (D : Desc I) {X Y : I → Set} → (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
-Ṙ D R {i} = mapR (D i) R
+Ṙ D R {i} = mapRDR (D i) R
 \end{code}
-\caption{Definition for relators.}
+\caption{Definitions for relators.}
 \label{fig:relators}
 \end{figure}
 \item We will also need \key{relators}, i.e., functorial maps on relations:
@@ -133,7 +133,7 @@ For example, if |D = ListD A|, then |Ṙ (ListD A)| is, up to isomorphism,
 Laws and theorems about relational programs are formulated with relational inclusion:
 \begin{code}
 ^^^_⊆_ : {I : Set} {X Y : I → Set} (X ↝ Y) → (X ↝ Y) → Set
-_⊆_ {I} R S = {i : I} → (x : X i) (y : Y i) → R x y → S x y
+_⊆_ {I} R S = {i : I} (x : X i) (y : Y i) → R x y → S x y
 \end{code}
 or equivalence of relations, i.e., two-way inclusion:
 \begin{code}
@@ -251,7 +251,7 @@ Thus we get the conversion isomorphisms
 &\hskip\mathindent |(x : X) → AlgList A R x ≅ (Σ'(as ∶ List A)) (cata(R)) as x| &
 \label{eq:AlgList}
 \end{flalign}
-That is, an algebraic list is exactly a plain list and a proof that the list folds to~|x| using the algebra~|R|.
+That is, an algebraically ornamented list is exactly a plain list and a proof that the list folds to~|x| using the algebra~|R|.
 The traditional bottom-up vector datatype is a special case of |AlgList|: the datatype |AlgList A (fun length-alg)|, where |length-alg| is the algebra for |length|, is exactly |Vec' A| in \autoref{sec:index-first-datatypes}.
 By~(\ref{eq:AlgList}) we have
 \begin{code}
@@ -300,21 +300,21 @@ such that |Swap.P (algOD-FSwap D R (ok (i , x))) = (lambda(d)) (cata(R)) d x|, s
 \begin{flalign}
 &\hskip\mathindent |(i : I) (x : X i) → μ ⌊ algOD D R ⌋ (i , x) ≅ (Σ'(d ∶ μ D i)) (cata(R)) d x| \label{eq:algOD} &
 \end{flalign}
-We get back |AlgList| by defining |AlgList A R x = μ ⌊ algOD (ListD A) R ⌋ (tt , x)|.
+|AlgList| is obtained by defining |AlgList A R x = μ ⌊ algOD (ListD A) R ⌋ (tt , x)|.
 The definition of |algOD|, shown in \autoref{fig:algOD}, is an adaptation and generalisation of \varcitet{McBride-ornaments}{'s original definition of functional algebraic ornamentation}.
-Roughly speaking, it retains (in the |σ|~case of |algROD|) all the fields of the base description and inserts (in the |ṿ|~case of |algROD|) before every~|ṿ|
+Roughly speaking, it retains (in the |σ|~case of |algROD|) all the fields of the basic description and inserts (in the |ṿ|~case of |algROD|) before every~|ṿ|
 \begin{itemize}
 \item a new field of indices for the recursive positions (e.g., the field~|x'| in |AlgList|) and
 \item another new field requesting a proof that
 \begin{itemize}
 \item the indices supplied in the previous field and 
-\item the values for the fields originally in the base description
+\item the values for the fields originally in the basic description
 \end{itemize}
 compute to the targeted index through~|R| (e.g., the fields |rnil| and |rcons| in |AlgList|).
 \end{itemize}
 
 Algebraic ornamentation is a convenient method for adding new indices to inductive families.
-(We will see in \autoref{chap:equivalence} that it is actually a canonical way to refine inductive families by ornamentation.)
+(We will see in \autoref{chap:equivalence} that it is actually a canonical way of refining inductive families by ornamentation.)
 Most importantly, the conversion isomorphisms~(\ref{eq:algOD}) state clearly what the new indices mean in terms of relations.
 We can thus easily translate relational expressions into internalist types for type-directed programming, as demonstrated in the next section.
 
@@ -363,7 +363,7 @@ new-Σ I u = record  case  P  = (lambda(a)) (Σ'(i ∶ I)) Upgrade.P (u i) a
                     sep   u  = λ case a (i , p) mapsto i , Upgrade.u (u i) a p  endcase
                     sep   c  = λ case a (i , p) mapsto Upgrade.c (u i) a p      endcase endcase
 
-syntax new-Σ I (λ i → u) = (newSigma(i ∶ I)) u
+syntax new-Σ I ((lambda(i)) u) = (newSigma(i ∶ I)) u
 
 ^^^_×⁺_ : {X Y : Set} → Upgrade X Y → (Z : Set) → Upgrade X (Y × Z)
 u ×⁺ Z = record  case  P  = (lambda(x)) Upgrade.P u x × Z
@@ -492,7 +492,7 @@ which relaxes a vector of length~|n| to a bounded vector whose length is bounded
 BVec A m → (Σ'(n ∶ Nat)) Vec A n × (n ≤ m)
 \end{code}
 which converts a bounded vector whose length is at most~|m| to a vector of length precisely~|n| and guarantees that |n|~is at most~|m|.
-Both conversions preserve the underlying list.
+Both conversions preserve the underlying list by construction.
 
 \subsection{The Streaming Theorem for list metamorphisms}
 \label{sec:metamorphism-streaming}
@@ -551,7 +551,7 @@ Next we devise a type for the streaming algorithm that fully guarantees its corr
 \begin{code}
 (cata(fun g º)) º • fun ((lambda(h)) h x) • (cata(fun (foldl-alg f)))
 \end{code}
-Inspecting the above relation, we see that a conforming program takes a |List A| that folds to some |h : X → X| with |fun (foldl-alg f)| and computes a |List B| that folds to |h x : X| with |fun g º|.
+Inspecting the above relation, we see that a conforming program takes a |List A| that folds to some |h : X → X| with |fun (foldl-alg f)| and unfolds a |List B| from |h x : X| with~|fun g| (i.e., computes a |List B| that folds to |h x| with |fun g º|).
 We thus implement the streaming algorithm by
 \begin{code}
 stream f g :  (x : X) {h : X → X} →
@@ -577,17 +577,17 @@ production-iso :
 (where |consumption-iso| has been simplified by |fun-preserves-fold|).
 Given |x : X|, what |stream' f g x| does is
 \begin{itemize}
-\item lifting the input |as : List A| to an algebraic list of type
+\item lifting the input |as : List A| to an algebraically ornamented list of type
 \begin{code}
 AlgList A (fun (foldl-alg f)) (fold (foldl-alg f) as)
 \end{code}
 using the right-to-left direction of |consumption-iso (fold (foldl-alg f) as)| (with the equality proof obligation discharged trivially by~|refl|),
-\item transforming this algebraic list to a new one of type
+\item transforming this algebraically ornamented list to a new one of type
 \begin{code}
 AlgList B (fun g º) (foldl f x as)
 \end{code}
 using |stream f g x|, and
-\item demoting the new algebraic list to |List B| using the left-to-right direction of |production-iso (foldl f x as)|.
+\item demoting the new algebraically ornamented list to |List B| using the left-to-right direction of |production-iso (foldl f x as)|.
 \end{itemize}
 The use of |production-iso| in the last step ensures that the result |stream' f g x as : List B| satisfies
 \begin{code}
@@ -618,7 +618,7 @@ stream f g x      (cons a h'  refl as  )  | nothing     | [ gxeq ] =  stream f g
 \end{code}
 We match~|g x| with either of the two patterns |^^^next' b x' = (`cons , b , x' , tt)| and |^^^nothing = (`nil , tt)|.
 \begin{itemize}
-\item If the result is |next' b x'|, we should emit~|b| and and use |x'| as the new state; the recursively computed algebraic list is indexed with~|h x'|, and we are left with a proof obligation of type |g (h x) ≡ next' b (h x')| at Goal~0; we will come back to this proof obligation later.
+\item If the result is |next' b x'|, we should emit~|b| and use |x'| as the new state; the recursively computed algebraically ornamented list is indexed with~|h x'|, and we are left with a proof obligation of type |g (h x) ≡ next' b (h x')| at Goal~0; we will come back to this proof obligation later.
 \item If the result is |nothing|, we should attempt to consume from the input list.
 \begin{itemize}
 \item If the input list is empty, implying that the index~|h| of its type is just~|id|, both production and consumption have ended, so we return an empty list.
@@ -695,8 +695,8 @@ data ^^^Coin : Set where
   ^^^twop   : Coin
   ^^^fivep  : Coin
 \end{code}
-Given |n : Nat|, the \key{minimum coin change problem} asks for the least number of coins that make up |n|~pence.
-We can give a relational specification of the problem with the following ``minimisation'' operator:
+The \key{minimum coin change problem} asks for the least number of coins that make up |n|~pence for any given |n : Nat|.
+We can give a relational specification of the problem with the following \key{minimisation} operator:
 \begin{code}
 ^^^min_•Λ_ : {I : Set} {-"\kern-1pt"-} {X Y : I → Set} {-"\kern-1pt"-} (R : Y ↝ Y) {-"\kern-1pt"-} (S : X ↝ Y) → (X ↝ Y)
 min_•Λ_ {Y := Y} R S {i} x y = S x y × ((y' : Y i) → S x y' → R y' y)
@@ -836,7 +836,7 @@ The Greedy Theorem essentially reduces a \emph{global} optimisation problem (as 
 The theorem admits an elegant calculational proof, which can be faithfully reprised in \Agda.
 Here we offer an intuitive explanation:
 The monotonicity condition states that if |ds : Ḟ D (μ D) i| for some |i : I| is better than |ds' : Ḟ D (μ D) i| under |Ṙ D R|, i.e., |ds|~and~|ds'| are equal except that the recursive positions of~|ds| are all better than the corresponding recursive positions of~|ds'| under~|R|, then |con ds : μ D i| would be better than |con ds' : μ D i| under~|R|.
-This implies that, when solving the optimisation problem, better solutions to subproblems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to subproblems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
+This implies that, when solving the optimisation problem, better solutions to sub-problems would lead to a better solution to the original problem, so the \key{principle of optimality} applies --- to reach an optimal solution, it suffices to find optimal solutions to sub-problems, and we are entitled to use the converse of a fold to find optimal solutions recursively.
 The greedy condition further states that there is an ordering~|Q| on the ways of decomposing the problem that has significant influence on the quality of solutions:
 Suppose that there are two decompositions |xs| and |xs' : Ḟ D X i| of some problem |x : X i| for some |i : I|, i.e., both |xs|~and~|xs'| are in |(S º) x : (Power (Ḟ D X i))|, and assume that |xs|~is better than~|xs'| under~|Q|.
 Then for any solution resulting from~|xs'| (computed by |α • Ṙ D ((cata(S)) º)|) there always exists a better solution resulting from~|xs|, so ignoring~|xs'| would only rule out worse solutions.
@@ -870,7 +870,7 @@ data ^^^CoinBag'View : {c : Coin} {n : Nat} {l : Nat} → CoinBag' c n l → Set
   fivepfivep  :  {m l : Nat} {lep : fivep ≤C fivep}
                  (b : CoinBag' fivep m l) → CoinBag'View {fivep} {5 + m} {1 + l} (bcons fivep lep b)
 
-view-CoinBag' : {c : Coin} {n l : Nat} (b : CoinBag' c n l) → CoinBag'View b
+^^^view-CoinBag' : {c : Coin} {n l : Nat} (b : CoinBag' c n l) → CoinBag'View b
 \end{code}
 \caption{Two views for proving |greedy-lemma|.}
 \label{fig:greedy-lemma-views}
@@ -980,7 +980,7 @@ greedy-lemma :  (c d : Coin) → c ≤C d →
                 (l : Nat) (b : CoinBag' c m l) →
                 (Σ'(l' ∶ Nat)) CoinBag' d n l' × (l' ≤ l)
 \end{code}
-That is, given a problem (i.e., a value to be represented by coins), if |c : Coin| is a choice of decomposition (i.e., the first coin used) no better than |d : Coin| (i.e., |c ≤C d| --- recall that we prefer larger denominations), and |b : CoinBag' c m l| is a solution of size~|l| to the remaining subproblem~|m| resulting from choosing~|c|, then there is a solution to the remaining subproblem~|n| resulting from choosing~|d| whose size~|l'| is no greater than~|l|.
+That is, given a problem (i.e., a value to be represented by coins), if |c : Coin| is a choice of decomposition (i.e., the first coin used) no better than |d : Coin| (i.e., |c ≤C d| --- recall that we prefer larger denominations), and |b : CoinBag' c m l| is a solution of size~|l| to the remaining sub-problem~|m| resulting from choosing~|c|, then there is a solution to the remaining sub-problem~|n| resulting from choosing~|d| whose size~|l'| is no greater than~|l|.
 We define two views~(\autoref{sec:with}) to aid the analysis, whose datatypes and covering functions are shown in \autoref{fig:greedy-lemma-views}:
 \begin{itemize}
 \item the first view analyses a proof of |c ≤C d| and exhausts all possibilities of |c|~and~|d|, and
@@ -1108,7 +1108,7 @@ greedy c n = <-rec P f n c
     f          n               rec  c  with compare-with-zero n 
     f {-"."-}  0               rec  c  | is-zero = gnil'
     f          n               rec  c  | above-zero n>z   with maximum-coin c n n>z
-    f {-"."-}  (value d + n')  rec  c  | above-zero n>z   |  d , (d≤c , n' , refl) , guc = {-"\quad"-}
+    f {-"."-}  (value d + n')  rec  c  | above-zero n>z   |  d , (d≤c , n' , refl) , guc =
                                                              gcons' d d≤c guc (rec n' (goal()(8)) d)
 \end{code}
 In |greedy|, the combinator
@@ -1138,10 +1138,11 @@ All of the above are not fundamental differences between the work presented in t
 In short, the focus of \name{AoPA} is on traditional relational program derivation (expressed in a dependently typed language), whereas our emphasis is on internalist programming (aided by relational programming).
 
 Algebraic ornamentation was originally proposed by \citet{McBride-ornaments}, which deals with functions only.
-Generalising algebraic ornamentation to a relational setting allows us to write more specifications (like the one given by the Streaming Theorem, which involves converses) and employ more powerful theorems (like the Greedy Theorem, which involves minimisation).
-We will show in \autoref{chap:equivalence} that this generalisation is in fact a ``maximal'' one: any datatype obtained via ornamentation can be obtained via relational algebraic ornamentation up to isomorphism.
+Generalising algebraic ornamentation to a relational setting allows us to write more specifications (like the one given by the Streaming Theorem in \autoref{sec:metamorphism-streaming}, which involves converses) and employ more powerful theorems (like the Greedy Theorem in \autoref{sec:minimum-coin-change}, which involves minimisation).
+In particular, since relational coalgebras coincide with the converses of algebras, we are no longer tied to the bottom-up view of datatype indices and can switch to the top-down view --- for example, in the internalist implementation of the Streaming Theorem, we can think of the output list as being \emph{unfolded} from the index of its type.
+We will show in \autoref{chap:equivalence} that the generalisation is in fact a ``maximal'' one: any datatype obtained via ornamentation can be obtained via relational algebraic ornamentation up to isomorphism.
 \citet{Atkey-refining-inductive-types} also investigated algebraic ornamentation via a fibrational, syntax-free perspective.
-While their ``partial refinement'' (which generalises functional algebraic ornamentation) is subsumed by relational algebraic ornamentation (since relational algebras allow partiality), they were able to go beyond inductive families to indexed inductive-recursive datatypes, which are out of the scope of this dissertation.
+While their ``partial refinement'' (which generalises functional algebraic ornamentation) is subsumed by relational algebraic ornamentation (since relational algebras allow partiality), they were able to go beyond inductive families to indexed inductive-recursive datatypes~\citep{Dybjer-indexed-induction-recursion}, which are out of the scope of this dissertation.
 
 Let us contemplate the interplay between internalist programming and relational programming, especially the one in \autoref{sec:minimum-coin-change}.
 As mentioned in \autoref{sec:externalism-and-internalism}, internalist programs can encode more semantic information, including correctness proofs; we can thus write programs that directly explain their own meaning.
@@ -1156,4 +1157,4 @@ In relational program derivation, we identify important forms of relational prog
 By applying the laws and theorems, we massage a relational specification into a known form which corresponds to a proof obligation that can be expressed in an internalist type, enabling transition to internalist programming.
 For example, we now know that a relational fold can be turned into an inductive family for internalist programming by algebraic ornamentation.
 Thus, given a relational specification, we might seek to massage it into a relational fold when that possibility is pointed out by known laws and theorems (e.g., the Greedy Theorem).
-To sum up, we get a hybrid methodology that leads us from relational specifications towards internalist types for type-directed programming, providing hints in the form of relational algebraic laws and theorems, and this is made possible by going through the synthetic direction of the interconnection between internalism and externalism, synthesising internalist types from relational expressions via algebraic ornamentation.
+To sum up, we get a hybrid methodology that leads us from relational specifications towards internalist types for type-directed programming, providing hints on internalist type design in the form of relational algebraic laws and theorems.

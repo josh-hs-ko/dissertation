@@ -32,7 +32,7 @@ R : Ḟ (ListD Val) (Inv' !) ↝ Inv' !  -- where |! : Val → ⊤|
 R (`nil   ,                    tt) (b , refl) = ⊤
 R (`cons  , x , (b' , refl) ,  tt) (b , refl) = (b ≤ x) × (b' ≡ x)
 \end{code}
-The nil case says that the empty list can be mapped to any~|b| (since any |b : Val| is a lower bound of the empty list); for the cons case, where |x : Val| is the head element of a non-empty list and |b'|~is a possible result of folding the tail (i.e., |b' : Val| is a lower bound of the tail), the list can be mapped to~|b| if |b : Val| is a lower bound of~|x| and |x|~is exactly~|b'|.
+The nil case says that the empty list can be mapped to any |b : Val| (since any~|b| is a lower bound of the empty list); for the cons case, where |x : Val| is the head element of a nonempty list and |b' : Val| is a possible result of folding the tail (i.e., |b'|~is a lower bound of the tail), the list can be mapped to |b : Val| if |b|~is a lower bound of~|x| and |x|~is exactly~|b'|.
 The type of proofs that a list~|xs| folds with~|R| to some~|b| is isomorphic to |Ordered b xs|, and hence
 \begin{code}
 AlgList Val R (b , refl)  ≅ (Σ'(xs ∶ List Val)) (cata(R)) xs (b , refl)  {-""-}
@@ -117,7 +117,7 @@ and the other uses
 \end{code}
 the latter swapping the order of the middle two independent markings,
 \end{itemize}
-then they describe precisely the same relationship between the pair of descriptions.
+then they describe precisely the same relationship between the pair of descriptions and are considered equal extensionally.
 Since the direct semantics of ornaments is decoded componentwise by |erase|, we might define |OrnEq| as pointwise equality of |erase|, which requires a rather tricky type to express.
 However, it turns out that we can focus on only one aspect of |erase|: fixing two response descriptions related by at least one response ornament, the two response descriptions necessarily have the same pattern of recursive positions and |erase| always copies the values at the positions, so the only behaviour of |erase| that can vary with response ornaments is how the values of the \emph{fields} are transformed.
 This suggests that, in an inhabitant of |⟦ D ⟧ X| where |D : RDesc I| and |X : I → Set|, we can separate the values of the fields from the values at the recursive positions, and focus on how |erase| acts on the first part.
@@ -180,7 +180,7 @@ This is the aspect of |erase| that we are interested in, and we can now define e
 OrnEq {I} {J} {e} {f} O P =
   (e ≐ f) × ((j : J) → erase-Ṡ (O (ok j)) ≊' erase-Ṡ (P (ok j)))
 \end{code}
-which can be proved to imply pointwise equality of |forget O| and |forget P| by (datatype-generic) induction on their input:
+which can be proved to imply pointwise equality of |forget O| and |forget P|:
 With the help of |horizontal-iso|, the general |erase| can be seen as first separating a piece of horizontal data into a shape and a series of recursive values, processing the shape by |erase-Ṡ|, and combining the resulting shape with the recursive values.
 Since the real work is done by |erase-Ṡ|, requiring extensional equality of |erase-Ṡ| is sufficient.
 This argument is then extended vertically by induction.
@@ -220,7 +220,7 @@ Its objects are of type |Σ Set Desc| as in |Ōrn|, and its sets of morphisms ar
 \begin{code}
 λ case (J , E) (I , D) mapsto (Σ'(e : J → I)) FHTrans e D E endcase
 \end{code}
-where |FHTrans| is the type of \key{families of horizontal transformations}, defined in the usual way:
+where |FHTrans| is the type of \key{families of horizontal transformations}:
 \begin{code}
 ^^^FHTrans : {I J : Set} → (J → I) → Desc I → Desc J → Set
 FHTrans {I} {J} e D E = (j : J) → HTrans e (D (e j)) (E j)
@@ -258,7 +258,7 @@ erase-Ṡ (diffROrn-l  O P) ≐ proj₁  ∘ proj₁ ∘ Iso.to (pcROD-iso O P)
 erase-Ṡ (diffROrn-r  O P) ≐ proj₂  ∘ proj₁ ∘ Iso.to (pcROD-iso O P)
 \end{code}
 for any |O : ROrn e D E| and |P : ROrn f D F|, provable by induction on |O|~and~|P|.
-(The isomorphism and equations allow us to prove that the derived square in |Fam| is isomorphic to the componentwise set-theoretic pullback, and thus the square itself is also a pullback.)
+The isomorphism and equations allow us to prove that the derived square in |Fam| is isomorphic to the componentwise set-theoretic pullback, and thus the square itself is also a pullback.
 
 \section{Ornaments and relational algebras}
 \label{sec:ornaments-and-relational-algebras}
@@ -270,7 +270,7 @@ The definition of categorical equivalence is unfolded below:
 \begin{itemize}
 \item A natural isomorphism between two functors |F| , |G : Functor C D| is an isomorphism in the \key{functor category} from~|C| to~|D|, whose objects are functors from~|C| to~|D| and morphisms are \key{natural transformations}.
 \begin{itemize}
-\item[\raisebox{2pt}{\scalebox{.4}{$\blacksquare$}}] A natural transformation from~|F| to~|G| is a way of relating the image of~|C| under~|F| to the image of~|C| under~|G|:
+\item[\raisebox{1.5pt}{\scalebox{.5}{$\blacksquare$}}] A natural transformation from~|F| to~|G| is a way of relating the image of~|C| under~|F| to the image of~|C| under~|G|:
 it consists of a morphism |φ X : object F X =D=> object G X| for each object~|X| in~|C|, which we call the \emph{components} of the natural transformation, and for any morphism |m : X =C=> Y| the following \key{naturality} diagram commutes:
 \[ \begin{tikzpicture}[x=50pt,y=30pt,baseline=(phi-Y.base)]
 \node(FX) {|object F X|};
@@ -597,7 +597,7 @@ We can then construct the following span
 \end{tikzpicture} \]
 where the homomorphism conditions are simply projections, and it is easy to prove that the span is a product.
 The categorical equivalence between |RAlg D| and |Ōrn / (I , D)| implies that the image of the product under |AlgOrn| is a pullback in |Ōrn|:
-\[ \begin{tikzpicture}[x=19em, y=12em, baseline=(D.base)]
+\[ \kern18.6pt\begin{tikzpicture}[x=19em, y=12em, baseline=(D.base)]
 \node(D) at (1, 0) {|I , D|};
 \node(E) at (0, 0) {|Σ I X , ⌊ algOD D R ⌋|};
 \node(F) at (1, .5) {|Σ I Y , ⌊ algOD D S ⌋|};
@@ -677,7 +677,7 @@ Call the left-to-right direction of the isomorphism |wrap|:
 ^^^wrap : {j : J} → μ D (e j) → (Σ'(p ∶ e ⋈ outl)) π₁ p ≡ j
 wrap {j} d = (ok j , ok (e j , d)) , refl
 \end{code}
-For the algebras, however, we have to dig painfully into the definitions.
+For the algebras, however, it seems that we can only dig painfully into the definitions.
 Here is an informal (but already painful) analysis explaining why the two algebras express the same relationship:
 Let |j : J|, |ds : ⟦ E j ⟧ (μ D ∘ e)|, and |d : μ D (e j)|.
 \begin{itemize}
@@ -717,9 +717,12 @@ Specifically, the formalised results include
 \end{itemize}
 The rest are worked out on paper, skipping over impractically tedious type-theoretic detail --- the problems about formalisation mentioned in \autoref{sec:categorical-discussion} escalate into unmanageable ones for the constructions in this chapter due to their greater complexity.
 In general, while the internalist typing of constructions about descriptions and ornaments works well in \autoref{chap:refinements-and-ornaments}, ensuring that every expression we write down makes sense, the encoded constraints need to be reasoned about non-trivially in this chapter, and this is greatly hindered because the constraints are implicitly coupled with the expressions in a particular way --- here externalism could be much more helpful.
-(For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.)
+For a simplest example, in this chapter we silently abandon the internalist type |Inv| and switch to the externalist type |Inv'|; Goal~3 is much easier to discharge as a consequence.
+Another example is classifying algebras, which (as mentioned above) were defined differently such that they were directly related to optimised predicates~(\autoref{sec:optimised-predicates}).
+This alternative definition yields optimised representation of membership proofs about classifying algebras, but the representation is more complicated and makes the categorical equivalence more difficult to construct.
+Hence in this dissertation we switch to an externalist definition of classifying algebras instead.
 
-The categorical equivalence prompts us to contemplate again why we need ornaments: if relational algebras can express the same refinement relationships between datatypes as ornaments, and can offer corresponding constructions as shown in \autoref{sec:banana-split}, what extra benefit do ornaments provide that justifies their existence?
+The categorical equivalence prompts us to contemplate again why we need ornaments: if relational algebras can express the same refinement relationship between datatypes as ornaments, and can offer corresponding constructions as shown in \autoref{sec:banana-split}, what extra benefit do ornaments provide that justifies their existence?
 Firstly, relational algebras describe how to classify inhabitants of existing datatypes to obtain more informative datatypes, and hence correspond more closely to \emph{ornamental descriptions}, which are more restrictive than ornaments as explained in the beginning of \autoref{sec:ornament-refinement-discussion} --- indeed, the categorical equivalence is between |RAlg| and the \emph{slice category} on top of |Ōrn|.
 Even when we restrict the comparison to one between relational algebras and ornamental descriptions, the latter still offer finer-grained control of representation, down to the level of individual fields.
 For example, while we can get a datatype of vectors by specialising |AlgList| with a suitable algebra, the index-first, representation-optimised version can only be obtained via ornamentation.
