@@ -182,19 +182,11 @@
   \emph{Lecture Notes in Computer Science}, pages 50--66. Springer-Verlag.
 \newblock \doi{10.1007/3-540-52335-9_47}.
 
-\bibitem[{Dagand and McBride(2012{\natexlab{a}})}]{Dagand-elaboration}
+\bibitem[{Dagand and McBride(2012)}]{Dagand-elaboration}
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012{\natexlab{a}}].
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
 \newblock Elaborating inductive definitions.
 \newblock \arXiv{1210.6390}.
-
-\bibitem[{Dagand and McBride(2012{\natexlab{b}})}]{Dagand-functional-ornaments}
-\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012{\natexlab{b}}].
-\newblock Transporting functions across ornaments.
-\newblock In \emph{International Conference on Functional Programming},
-  ICFP'12, pages 103--114. ACM.
-\newblock \doi{10.1145/2364527.2364544}.
 
 \bibitem[{Dagand and McBride(2013)}]{Dagand-categorical-ornaments}
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
@@ -202,6 +194,13 @@
 \newblock A categorical treatment of ornaments.
 \newblock In \emph{Logic in Computer Science}, LICS'13, pages 530--539. IEEE.
 \newblock \doi{10.1109/LICS.2013.60}.
+
+\bibitem[{Dagand and McBride(2014)}]{Dagand-functional-ornaments}
+\bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2014].
+\newblock Transporting functions across ornaments.
+\newblock \emph{Journal of Functional Programming}, 24(2--3):316--383.
+\newblock \doi{10.1017/S0956796814000069}.
 
 \bibitem[{Devriese and Piessens(2011)}]{Devriese-instance-arguments}
 \bibfnamefont{Dominique} \bibnamefont{Devriese} and \bibfnamefont{Frank}

@@ -32,13 +32,12 @@
   ICFP'10, pages 3--14. ACM.
 \newblock \doi{10.1145/1863543.1863547}.
 
-\bibitem[{Dagand and McBride(2012)}]{Dagand-functional-ornaments}
+\bibitem[{Dagand and McBride(2014)}]{Dagand-functional-ornaments}
 \bibfnamefont{Pierre-{\'E}variste} \bibnamefont{Dagand} and
-  \bibfnamefont{Conor} \bibnamefont{McBride} [2012].
+  \bibfnamefont{Conor} \bibnamefont{McBride} [2014].
 \newblock Transporting functions across ornaments.
-\newblock In \emph{International Conference on Functional Programming},
-  ICFP'12, pages 103--114. ACM.
-\newblock \doi{10.1145/2364527.2364544}.
+\newblock \emph{Journal of Functional Programming}, 24(2--3):316--383.
+\newblock \doi{10.1017/S0956796814000069}.
 
 \bibitem[{Dijkstra(1982)}]{Dijkstra-EWD447}
 \bibfnamefont{Edsger~W.} \bibnamefont{Dijkstra} [1982].

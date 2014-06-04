@@ -1283,7 +1283,7 @@ which is strikingly similar to |insert-EOV| in \autoref{sec:externalism-and-inte
 \end{figure}
 
 We are all familiar with the idea of \key{positional number systems}, in which we represent a number as a list of digits.
-Each position in a list of digits is associated with a weight, and the interpretation of the list is the weighted sum of the digits.
+Each digit is associated with a weight, and the interpretation of the list is the weighted sum of the digits.
 (For example, the weights used for binary numbers are powers of~$2$.)
 Some container data structures and associated operations strongly resemble positional representations of natural numbers and associated operations.
 For example, a \key{binomial heap} (illustrated in \autoref{fig:binomial-heap}) can be thought of as a binary number in which every $1$-digit stores a \key{binomial tree} --- the actual place for storing elements --- whose size is exactly the weight of the digit.
@@ -1309,7 +1309,7 @@ We use insertion into a binomial heap as an example, which is presented in detai
 \node(0) [right=15 of rank.east] {$0$};
 \node [treenode, below=8 of 0] {};
 
-\node(1+r) [right=25 of 0.east] {$1+r$};
+\node(1+r) [right=25 of 0.east] {|suc r|};
 \node(n) [coordinate, below=16 of 1+r] {};
 
 \node(r) [treenode, right=12 of n] {};
@@ -1382,8 +1382,8 @@ We use insertion into a binomial heap as an example, which is presented in detai
 The basic building blocks of binomial heaps are \key{binomial trees}, in which elements are stored.
 Binomial trees are defined inductively on their \key{rank}, which is a natural number (see \autoref{fig:binomial-trees}):
 \begin{itemize}
-\item a binomial tree of rank~$0$ is a single node storing an element of type |Val|, and
-\item a binomial tree of rank $1+r$ consists of two binomial trees of rank~$r$, with one attached under the other's root node.
+\item a binomial tree of rank~|0| is a single node storing an element of type |Val|, and
+\item a binomial tree of rank |suc r| consists of two binomial trees of rank~$r$, with one attached under the other's root node.
 \end{itemize}
 From this definition we can readily deduce that a binomial tree of rank~$r$ has $2^r$~elements.
 To actually define binomial trees as a datatype, however, an alternative view is more helpful: a binomial tree of rank~$r$ is constructed by attaching binomial trees of ranks $0$~to $r-1$ under a root node.
@@ -1407,7 +1407,7 @@ Note that, in |BTreeD|, we are exploiting the full computational power of |Desc|
 Due to this, it is tricky to wrap up |BTreeD| as an index-first datatype declaration, so we will skip this step and work directly with the raw representation, which looks reasonably intuitive anyway: a binomial tree of type |BTree r| is of the form |con (x , ts)| where |x : Val| is the root element and |ts : Ṗ (descend r) BTree| is a series of sub-trees.
 
 The most important operation on binomial trees is combining two smaller binomial trees of the same rank into a larger one, which corresponds to carrying in positional arithmetic.
-Given two binomial trees of the same rank~$r$, one can be |attach|{\kern.5pt}ed under the root of the other, forming a single binomial tree of rank $1+r$ --- this is exactly the inductive definition of binomial trees.
+Given two binomial trees of the same rank~$r$, one can be |attach|{\kern.5pt}ed under the root of the other, forming a single binomial tree of rank |suc r| --- this is exactly the inductive definition of binomial trees.
 \begin{code}
 ^^^attach : {r : Nat} → BTree r → BTree r → BTree (suc r)
 attach t (con (y , us)) = con (y , t , us)
@@ -1448,16 +1448,15 @@ indexfirst data ^^^Bin : Set where
 \end{code}
 The intended interpretation of binary numbers is given by
 \begin{code}
-^^^toNat : Bin → Nat
-toNat nil        = 0
-toNat (zero  b)  = 0 + (TIMES(2)(toNat b))
-toNat (one   b)  = 1 + (TIMES(2)(toNat b))
+^^^toNat : Nat → Bin → Nat
+toNat r nil        = 0
+toNat r (zero  b)  = {-"\rlap{0}\phantom{2^r}"-} + toNat (suc r) b
+toNat r (one   b)  = {-"2^r"-} + toNat (suc r) b
 \end{code}
-That is, the list of digits of a binary number of type |Bin| starts from the least significant digit, and the $i$-th digit (counting from zero) has weight~$2^i$.
-We refer to the position of a digit as its rank, i.e., the $i$-th digit is said to have rank~$i$.
+That is, starting from a given rank~|r|, we assign increasing ranks to the list of digits of a binary number and compute the weighted sum of the digits, where a digit of rank~|i| is weighted by~$2^i$ (cf.~the rank of binomial trees).
 
 As stated in the beginning, binomial heaps are binary numbers whose $1$-digits are decorated with binomial trees of matching rank, which can be expressed straightforwardly as an ornamentation of binary numbers.
-To ensure that the binomial trees in binomial heaps have the right rank, the datatype |BHeap : Nat → Set| is indexed with a ``starting rank'': if a binomial heap of type |BHeap r| is nonempty (i.e., not |nil|), then its first digit has rank~|r| (and stores a binomial tree of rank~|r| when the digit is~|one|), and the rest of the heap is indexed with |suc r|.
+To ensure that the binomial trees in binomial heaps have the right rank, the datatype |BHeap : Nat → Set| is indexed with the starting rank: if a binomial heap of type |BHeap r| is nonempty (i.e., not |nil|), then its first digit has rank~|r| (and stores a binomial tree of rank~|r| when the digit is~|one|), and the rest of the heap is indexed with |suc r|.
 \begin{code}
 ^^^BHeapOD : OrnDesc Nat ! BinD
 BHeapOD (ok r) = σ BinTag λ  case  `nil   mapsto  ṿ tt
