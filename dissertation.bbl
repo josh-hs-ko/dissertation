@@ -1,4 +1,4 @@
-\begin{thebibliography}{88}
+\begin{thebibliography}{89}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\bibnamefont}[1]{#1}
 \providecommand{\bibfnamefont}[1]{#1}
@@ -141,6 +141,13 @@
   Notes in Computer Science}, pages 115--129. Springer-Verlag.
 \newblock \doi{10.1007/978-3-540-24849-1_8}.
 
+\bibitem[{Capretta(2000)}]{Capretta-recursive-families}
+\bibfnamefont{Venanzio} \bibnamefont{Capretta} [2000].
+\newblock Recursive families of inductive types.
+\newblock In \emph{Theorem Proving in Higher Order Logics}, volume 1869 of
+  \emph{Lecture Notes in Computer Science}, pages 73--89. Springer-Verlag.
+\newblock \doi{10.1007/3-540-44659-1_5}.
+
 \bibitem[{Chapman et~al.(2010)Chapman, Dagand, McBride, and
   Morris}]{Chapman-levitation}
 \bibfnamefont{James} \bibnamefont{Chapman}, \bibfnamefont{Pierre-{\'E}variste}
@@ -272,6 +279,12 @@
 \newblock Polynomial functors and polynomial monads.
 \newblock \arXiv{0906.4931}.
 
+\bibitem[{Gentzen(1964)}]{Gentzen-investigations-into-natural-deduction}
+\bibfnamefont{Gerhard} \bibnamefont{Gentzen} [1964].
+\newblock Investigations into natural deduction.
+\newblock \emph{American Philosophical Quarterly}, 1(4):288--306.
+\newblock \urlentry{http://www.jstor.org/stable/20009142}.
+
 \bibitem[{Gibbons(2007{\natexlab{a}})}]{Gibbons-DGP}
 \bibfnamefont{Jeremy} \bibnamefont{Gibbons} [2007{\natexlab{a}}].
 \newblock Datatype-generic programming.
@@ -284,14 +297,6 @@
 \newblock Metamorphisms: Streaming representation-changers.
 \newblock \emph{Science of Computer Programming}, 65(2):108--139.
 \newblock \doi{10.1016/j.scico.2006.01.006}.
-
-\bibitem[{Girard et~al.(1989)Girard, Taylor, and
-  Lafont}]{Girard-proofs-and-types}
-\bibfnamefont{Jean-Yves} \bibnamefont{Girard}, \bibfnamefont{Paul}
-  \bibnamefont{Taylor}, and \bibfnamefont{Yves} \bibnamefont{Lafont} [1989].
-\newblock \emph{Proofs and Types}.
-\newblock Cambridge University Press.
-\newblock \isbn{978-0521371810}.
 
 \bibitem[{Goguen et~al.(2006)Goguen, McBride, and McKinna}]{Goguen-elim}
 \bibfnamefont{Healfdene} \bibnamefont{Goguen}, \bibfnamefont{Conor}
@@ -565,6 +570,12 @@
 \newblock
   \urlentry{http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html}.
 
+\bibitem[{Prawitz(2006)}]{Prawitz-natural-deduction}
+\bibfnamefont{Dag} \bibnamefont{Prawitz} [2006].
+\newblock \emph{Natural Deduction: A Proof-theoretical Study}.
+\newblock Dover Publications.
+\newblock \isbn{978-0486446554}.
+
 \bibitem[{Sheard and Linger(2007)}]{Sheard-Omega}
 \bibfnamefont{Tim} \bibnamefont{Sheard} and \bibfnamefont{Nathan}
   \bibnamefont{Linger} [2007].
@@ -596,12 +607,6 @@
 \newblock \emph{Homotopy Type Theory: Univalent Foundations of Mathematics}.
 \newblock Institute for Advanced Study, Princeton.
 \newblock \urlentry{http://homotopytypetheory.org/book/}.
-
-\bibitem[{van Dalen(2012)}]{vanDalen-logic}
-\bibfnamefont{Dirk} \bibnamefont{van Dalen} [2012].
-\newblock \emph{Logic and Structure}.
-\newblock Springer-Verlag, fifth edition.
-\newblock \isbn{978-1447145578}.
 
 \bibitem[{Wadler(1987)}]{Wadler-views}
 \bibfnamefont{Philip} \bibnamefont{Wadler} [1987].

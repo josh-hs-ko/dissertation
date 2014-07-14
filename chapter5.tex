@@ -23,7 +23,7 @@ Though lacking a directly executable semantics, most relational programs can sti
 To emphasise the computational interpretation of relations, we will mainly model a relation between sets |A|~and~|B| as a function sending each inhabitant of~|A| to a \emph{subset} of~|B|.
 We define subsets by
 \begin{code}
-^^^℘ : Set → Set₁
+^^^℘ ^^^P' : Set → Set₁
 (Power A) = A → Set
 \end{code}
 That is, a subset |s : (Power A)| is a characteristic function that assigns a type to each inhabitant of~|A|, and |a : A| is considered to be a member of~|s| if the type |s a : Set| is inhabited.
@@ -48,7 +48,7 @@ The subset |return a : (Power A)| for some |a : A| simplifies to |(lambda(a')) a
 ^^^_>>=_ : {A B : Set} → (Power A) → (A → (Power B)) → (Power B)
 _>>=_ {A} s f = (lambda(b)) (Σ'(a ∶ A)) s a × f a b
 \end{code}
-If |s : (Power A)| and |f : A → (Power B)|, then the subset |s >>= f : (Power B)| is the disjoint union of all the subsets |f a : (Power B)| where |a|~ranges over the inhabitants of~|A| that belong to~|s|; that is, an inhabitant |b : B| is a member of |s >>= f| exactly when there exists some |a : A| belonging to~|s| such that |b|~is a member of |f a|.
+If |s : (Power A)| and |f : A → (Power B)|, then the subset |s >>= f : (Power B)| is the union of all the subsets |f a : (Power B)| where |a|~ranges over the inhabitants of~|A| that belong to~|s|; that is, an inhabitant |b : B| is a member of |s >>= f| exactly when there exists some |a : A| belonging to~|s| such that |b|~is a member of |f a|.
 \end{itemize}
 (We omit the proofs that the two combinators satisfy the (relative) monad laws up to pointwise isomorphism.)
 On top of |return| and |_>>=_|\,, the functorial map on~|℘| is defined as
@@ -108,7 +108,7 @@ mapRDR (ṿ [])        R tt        =  return tt
 mapRDR (ṿ (i ∷ is))  R (x , xs)  =  pair <$>² (R x) (mapRDR (ṿ is) R xs)
 mapRDR (σ S D)       R (s , xs)  =  (pair s) <$> (mapRDR (D s) R xs)
 
-^^^Ṙ :  {I : Set} (D : Desc I) {X Y : I → Set} → (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
+^^^Ṙ ^^^R :  {I : Set} (D : Desc I) {X Y : I → Set} → (X ↝ Y) → (Ḟ D X ↝ Ḟ D Y)
 Ṙ D R {i} = mapRDR (D i) R
 \end{code}
 \caption{Definitions for relators.}
@@ -140,11 +140,13 @@ or equivalence of relations, i.e., two-way inclusion:
 ^^^_≃_ : {I : Set} {X Y : I → Set} (R S : X ↝ Y) → Set
 R ≃ S = (R ⊆ S) × (R ⊇ S)
 \end{code}
-where |R ^^^⊇ S| is defined to be |S ⊆ R| as usual.
-For example, a relator preserves identity and composition, i.e.,
-\begin{flalign*}
-&\hskip\mathindent |Ṙ D idR ≃ idR| \qquad\text{and}\qquad |Ṙ D (R • S) ≃ Ṙ D R • Ṙ D S| &
-\end{flalign*}
+where |R ^^^⊇ ^^^_⊇_ ^^^_⊇_ S| is defined to be |S ⊆ R| as usual.
+For example, a relator preserves identity, composition, and converse, i.e.,
+\begin{code}
+Ṙ D idR      ≃ idR
+Ṙ D (R • S)  ≃ Ṙ D R • Ṙ D S
+Ṙ D (R º)    ≃ (Ṙ D R) º
+\end{code}
 and is monotonic, i.e.,
 \begin{flalign*}
 &\hskip\mathindent |Ṙ D R ⊆ Ṙ D S| \qquad\text{whenever}\quad |R ⊆ S| &
@@ -187,7 +189,7 @@ In the context of optimisation problems, monotonicity can be used to capture the
 \begin{code}
 mutual
 
-  ^^^foldR :  {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ↝ X) → (μ D ↝ X)
+  ^^^foldR ^^^_foldR :  {I : Set} {D : Desc I} {X : I → Set} → (Ḟ D X ↝ X) → (μ D ↝ X)
   foldR {I} {D} R {i} (con ds) = mapFoldR D (D i) R ds >>= R
 
   ^^^mapFoldR :  {I : Set} (D : Desc I) (D' : RDesc I) →
@@ -233,17 +235,17 @@ be a relational algebra for lists.
 We can define a datatype of ``algebraically ornamented lists'' as
 \begin{code}
 indexfirst data ^^^AlgList A R : X → Set where
-  AlgList A R x  offers  nil (rnil : R (`nil , tt) x)
-                 or      cons  (a : A) (x' : X) (rcons : R (`cons , a , x' , tt) x)
-                               (as : AlgList A R x')
+  AlgList A R x  offers  ^^^nil (rnil : R (`nil , tt) x)
+                 or      ^^^cons  (a : A) (x' : X) (rcons : R (`cons , a , x' , tt) x)
+                                  (as : AlgList A R x')
 \end{code}
 There is an ornament from lists to algebraically ornamented lists which marks the fields |rnil|, |x'|, and |rcons| in |AlgList| as additional and refines the index of the recursive position from~|tt| to~|x'|.
 The optimised predicate~(\autoref{sec:optimised-predicates}) for this ornament is
 \begin{code}
 indexfirst data ^^^AlgListP A R : X → List A → Set where
-  AlgListP A R x []        offers  nil (rnil : R (`nil , tt) x)
-  AlgListP A R x (a ∷ as)  offers  cons  (x' : X) (rcons : R (`cons , a , x' , tt) x)
-                                         (p : AlgListP A R x' as)
+  AlgListP A R x []        offers  ^^^nil (rnil : R (`nil , tt) x)
+  AlgListP A R x (a ∷ as)  offers  ^^^cons  (x' : X) (rcons : R (`cons , a , x' , tt) x)
+                                            (p : AlgListP A R x' as)
 \end{code}
 A simple argument by induction shows that |AlgListP A R x as| is in fact isomorphic to |(cata(R)) as x| for any |as : List A| and |x : X| --- that is, we can do predicate swapping for the refinement semantics of the ornament from lists to algebraically ornamented lists~(\autoref{sec:refinement-semantics}).
 Thus we get the conversion isomorphisms
@@ -271,6 +273,7 @@ by |fun-preserves-fold|.
 algROD (ṿ is)   {X}     P =  (Δ'(xs ∶ Ṗ is X)) (Δ'(_ ∶ P xs))
                                ṿ (Ṗ-map ((lambda({i} x)) ok (i , x)) is xs)
 algROD (σ S D)  {-""-}  P =  (σ'(s ∶ S)) algROD (D s) (curry P s)
+                               -- |^^^curry = (lambda(f x y)) f (x , y)|
 
 ^^^algOD :  {I : Set} (D : Desc I) {X : I → Set} →
             (Ḟ D X ↝ X) → OrnDesc (Σ I X) proj₁ D
@@ -324,7 +327,7 @@ We can thus easily translate relational expressions into internalist types for t
 We give three examples involving three relational theorems.
 \begin{itemize}
 \item \autoref{sec:fold-fusion} shows how the \key{Fold Fusion Theorem}~\citep[Section~6.2]{Bird-AoP} gives rise to conversion functions between algebraically ornamented datatypes.
-\item \autoref{sec:metamorphism-streaming} implements the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} as an internalist program, whose type directly corresponds to the ``metamorphic'' specification stated by the theorem.
+\item \autoref{sec:metamorphism-streaming} implements a relational version of the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} as an internalist program, whose type directly corresponds to the ``metamorphic'' specification stated by the theorem.
 \item \autoref{sec:minimum-coin-change} uses the \key{Greedy Theorem}~\citep[Theorem~10.1]{Bird-AoP} to nontrivially derive a suitable type for an internalist program that solves the \key{minimum coin change problem}.
 \end{itemize}
 
@@ -500,7 +503,7 @@ Both conversions preserve the underlying list by construction.
 A \key{metamorphism}~\citep{Gibbons-metamorphisms} is an unfold after a fold --- it consumes a data structure to compute an intermediate value and then produces a new data structure using the intermediate value as the seed.
 In this section we will restrict ourselves to metamorphisms consuming and producing lists.
 As \citeauthor{Gibbons-metamorphisms} noted, (list) metamorphisms in general cannot be automatically optimised in terms of time and space, but under certain conditions it is possible to refine a list metamorphism to a \key{streaming algorithm} --- which can produce an initial segment of the output list without consuming all of the input list --- or a parallel algorithm~\citep{Nakano-jigsaw}.
-In the rest of this section, we prove the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} by implementing the streaming algorithm given by the theorem with algebraically ornamented lists such that the algorithm satisfies its metamorphic specification by construction.
+In the rest of this section, we prove a \emph{relational version} of the \key{Streaming Theorem}~\citep[Theorem~30]{Bird-arithmetic-coding} by implementing the streaming algorithm given by the theorem with algebraically ornamented lists such that the algorithm satisfies its metamorphic specification by construction.
 
 Our first step is to formulate a metamorphism as a relational specification of the streaming algorithm.
 \begin{itemize}
@@ -527,11 +530,12 @@ The left fold can thus be linked to the relational fold by
 &\hskip\mathindent |fun (foldl f x) ≃ fun ((lambda(h)) h x) • (cata(fun (foldl-alg f)))| &
 \label{eq:foldl}
 \end{flalign}
-\item The unfold part is approximated by the converse of a relational fold: given a list coalgebra |g : const X ⇉ Ḟ (ListD B) (const X)| for some |X : Set|, we take its converse, turning it into a relational algebra, and use the converse of the relational fold with this algebra.
+\item For the unfold part, a relational unfold is exactly the converse of a fold.
+Given a functional list coalgebra |g : const X ⇉ Ḟ (ListD B) (const X)| for some |X : Set|, we take its converse, turning it into a relational algebra, and use the converse of the relational fold with this algebra.
 \begin{code}
 (cata(fun g º)) º : const X ↝ const (List A)
 \end{code}
-This is only an approximation because, while the relation does produce a list, the resulting list is inductive rather than coinductive, so the relation is actually a \key{well-founded} unfold, which is incapable of producing an infinite list.
+Note that a relational unfold (conceptually) produces inductive lists rather than coinductive ones.
 \end{itemize}
 Thus, given a ``left algebra'' for consuming |List A|
 \begin{code}
@@ -567,11 +571,11 @@ fun (stream' f g x)  ⊆ meta f g x
 \end{code}
 The extraction of |stream' f g| from |stream f g| is done with the help of the conversion isomorphisms~(\ref{eq:algOD}) for the two |AlgList| datatypes involved:
 \begin{code}
-consumption-iso :
+^^^consumption-iso :
   (h : X → X) →
   AlgList A (fun (foldl-alg f)) h ≅ (Σ'(as ∶ List A)) fold (foldl-alg f) as ≡ h
 
-production-iso :
+^^^production-iso :
   (x : X) → AlgList B (fun g º) x ≅ (Σ'(bs ∶ List B)) (cata(fun g º)) bs x
 \end{code}
 (where |consumption-iso| has been simplified by |fun-preserves-fold|).
@@ -679,7 +683,11 @@ where |streaming-condition : StreamingCondition f g| is a proof term that should
 Goal~0 is then discharged by the term |streaming-lemma b x x' gxeq as|.
 
 We have thus completed the implementation of the Streaming Theorem, except that |stream f g| is non-terminating, as there is no guarantee that |g|~produces only a finite number of elements.
-In our setting, where the output list is specified to be finite, we can additionally require that |g|~is well-founded and revise |stream| accordingly (see, e.g., \citet{Nordstrom-accessibility}); the general way out is to switch to coinductive datatypes to allow the output list to be infinite, which, however, falls outside the scope of this dissertation.
+In our relational setting, where the output list is specified to be finite, we can additionally require that |g|~is well-founded and revise |stream| accordingly (see, e.g., \citet{Nordstrom-accessibility}).
+The general way out is to switch to a different setting incorporating coinductive datatypes, allowing the output list to be infinite.
+This, however, falls outside the scope of this dissertation.
+
+\block{Remark}{coinductive datatypes}{While coinductive families are outside the scope of this dissertation, it is conceivable that the ornament framework can be easily adapted to coinductive families, since ornaments operate at the functor level, independently from the least/greatest fixed-point datatype manufacturing mechanism.}
 
 It is interesting to compare our implementation with the proofs of \citet{Bird-arithmetic-coding}.
 While their Lemma~29 turns explicitly into our |streaming-lemma|, their Theorem~30 goes implicitly into the typing of |stream| and no longer needs special attention.
@@ -691,9 +699,9 @@ The structure of |stream| already matches that of \citeauthor{Bird-arithmetic-co
 Suppose that we have an unlimited number of 1-penny, 2-pence, and 5-pence coins, modelled by the following datatype:
 \begin{code}
 data ^^^Coin : Set where
-  ^^^onep   : Coin
-  ^^^twop   : Coin
-  ^^^fivep  : Coin
+  ^^^onep ^^^*1p   : Coin
+  ^^^twop ^^^*2p  : Coin
+  ^^^fivep ^^^*5p : Coin
 \end{code}
 The \key{minimum coin change problem} asks for the least number of coins that make up |n|~pence for any given |n : Nat|.
 We can give a relational specification of the problem with the following \key{minimisation} operator:
@@ -1143,6 +1151,7 @@ In particular, since relational coalgebras coincide with the converses of algebr
 We will show in \autoref{chap:equivalence} that the generalisation is in fact a ``maximal'' one: any datatype obtained via ornamentation can be obtained via relational algebraic ornamentation up to isomorphism.
 \citet{Atkey-refining-inductive-types} also investigated algebraic ornamentation via a fibrational, syntax-free perspective.
 While their ``partial refinement'' (which generalises functional algebraic ornamentation) is subsumed by relational algebraic ornamentation (since relational algebras allow partiality), they were able to go beyond inductive families to indexed inductive-recursive datatypes~\citep{Dybjer-indexed-induction-recursion}, which are out of the scope of this dissertation.
+(Unlike coinductive families, the ornament framework will require a significant revision to work for inductive-recursive families; in particular, we will need to rethink what it means for an inductive-recursive functor to refine another.)
 
 Let us contemplate the interplay between internalist programming and relational programming, especially the one in \autoref{sec:minimum-coin-change}.
 As mentioned in \autoref{sec:externalism-and-internalism}, internalist programs can encode more semantic information, including correctness proofs; we can thus write programs that directly explain their own meaning.

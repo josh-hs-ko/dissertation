@@ -14,7 +14,7 @@ Central to the design of intuitionistic type theory (which we simply call ``type
 Consequently, type theory can be regarded simultaneously as a computationally meaningful higher-order logic system and an expressively typed functional programming language (whose type system is commonly referred to as \key{dependent types}) --- proof rules for constructing formal derivations in logic are typed primitive terms in the programming language, and valid derivations of propositions are typechecked programs.
 Compared with Hoare logic, in which an imperative program can be similarly regarded as a formal derivation of a transformation from one predicate to another, type theory is a more natural and powerful system for achieving program correctness:
 A specification for functional programs is simply a proposition --- i.e., a type --- rather than a predicate transformer (an apparently more complicated notion).
-Moreover, in type theory, the proof rules available for deriving propositions are the standard, structural ones from natural deduction (see, e.g., \citet{Girard-proofs-and-types} and \citet{vanDalen-logic}), whereas in Hoare logic, the available primitive transformers are more contrived, catering for state-based computation.
+Moreover, in type theory, the proof rules available for deriving propositions are the standard, structural ones from natural deduction~\citep{Gentzen-investigations-into-natural-deduction, Prawitz-natural-deduction}, whereas in Hoare logic, the available primitive transformers are more contrived, catering for state-based computation.
 Most importantly, Hoare logic merely imposes a special-purpose proof system on imperative programs, whereas type theory is based on a fundamental unification of proofs and programs, allowing them to coexist in a uniform language and interact freely --- in particular, we can state and prove various properties about existing programs all in the same language, with the proving process being just additional programming.
 
 The methodological distinction between program correctness by verification and by construction exists for type theory as well.
@@ -37,7 +37,7 @@ The interconnection consists of two directions:
 More specifically, this dissertation shows that
 \begin{itemize}
 \item the analytic direction can be exploited for achieving a modular structure of libraries of internalist datatypes, and
-\item the synthetic direction for bridging internalist programming with relational specifications and program derivation~\citep{Bird-AoP}.
+\item the synthetic direction can link internalist programming with relational specifications and program derivation~\citep{Bird-AoP}.
 \end{itemize}
 After \autoref{chap:background} covers some preliminary background on dependently typed programming, the above two applications and their supporting mechanisms are respectively presented in Chapters \ref{chap:refinements-and-ornaments}~and~\ref{chap:algebraic}.
 The supporting mechanisms are based on \varcitet{McBride-ornaments}{'s \key{ornaments}}:

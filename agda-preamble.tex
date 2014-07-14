@@ -16,7 +16,7 @@
 %format (lambda(x)) = "\lambda\," x "\," mapsto "\!"
 %format sep = "\kern.14em;"
 %format INF = ".\kern-.25em"
-%format := = "{\protect\raisebox{.08pt}{$\mathop:$}\shorteq}"
+%format := = "{\protect\raisebox{.08pt}{\ensuremath{\mathop:}}\shorteq}"
 %format (proofterm(t)) = "\proofterm{" t "}"
 %format (vartype(t)) = "^{\kern-1pt" t "}"
 
@@ -24,7 +24,7 @@
 %format constructor = "\keyword{constructor}"
 %format indexfirst = "\keyword{indexfirst}"
 %format offers = "\ni"
-%format noffers = "\mathrel{\rlap{\kern-.06em$\not$}{\ni}}"
+%format noffers = "\mathrel{\rlap{\kern-.06em\ensuremath{\not}}{\ni}}"
 %format or = "\kern.475em|"
 %format IN = "\in"
 
@@ -103,15 +103,16 @@
 %format Σ.proj₂ = Σ "\recordmember" proj₂
 %format _×_ = _ "{\times}\kern-\underscorespace" _
 %format × = "\!\times\!"
-%link _×_ ×
+%link _×_ _×_
 %format ×' = "\!\mathop{\smash{\dot\times}}\!"
+%format _×'_ = _ "{\smash{\dot\times}}\kern-\underscorespace" _
 %format inj₁ = "\constructor{inl}"
 %format inj₂ = "\constructor{inr}"
 %format ▿ =  "\triangledown"
 %format _▿_ =  _ "{" ▿ "}\kern-\underscorespace" _
 %link ▿ _▿_
-%format ▵ =  "\protect\rotatebox[origin=c]{180}{$" ▿ "$}"
-%link _▵_ ▵
+%format ▵ =  "\protect\rotatebox[origin=c]{180}{\ensuremath{" ▿ "}}"
+%link _▵_ _▵
 %format _▵_ = _ "{" ▵ "}\kern-\underscorespace" _
 %format _*_ = _ "{" * "}\kern-\underscorespace" _
 %link * _*_
@@ -179,6 +180,7 @@
 %format Pullback-preserving = "\identifier{Pullback\text-preserving}"
 %format φ = "\phi"
 %format / = "\kern-3pt\protect\raisebox{-1pt}{\protect\scalebox{1.1}{/}}\kern-3pt"
+%format _/_ = _ "{\protect\raisebox{-1pt}{\protect\scalebox{1.1}{/}}}\kern-\underscorespace" _
 
 %%%%%%%%
 % refinements
@@ -188,9 +190,9 @@
 %format Refinement.i = Refinement "\recordmember" i
 %format Refinement.forget = Refinement "\recordmember" forget
 %format Refinement' = "\constructor{Refinement}^\prime"
-%format Refinement'.P = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" P
-%format Refinement'.forget = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" forget
-%format Refinement'.p = Refinement "\rlap{$^\prime$}\kern.5pt\recordmember\kern.5pt" p
+%format Refinement'.P = Refinement "\rlap{\ensuremath{^\prime}}\kern.5pt\recordmember\kern.5pt" P
+%format Refinement'.forget = Refinement "\rlap{\ensuremath{^\prime}}\kern.5pt\recordmember\kern.5pt" forget
+%format Refinement'.p = Refinement "\rlap{\ensuremath{^\prime}}\kern.5pt\recordmember\kern.5pt" p
 %format forget-iso = "\identifier{forget\text-iso}"
 %format FRefinement = "\constructor{FRefinement}"
 
@@ -260,7 +262,7 @@
 %format Δ = "\Delta"
 %format (Δ'(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (Δ''(t)) = Δ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
-%format ∇ = "\protect\rotatebox[origin=c]{180}{$" Δ "$}"
+%format ∇ = "\protect\rotatebox[origin=c]{180}{\ensuremath{" Δ "}}"
 %format (∇'(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr\hskip\binderskip"
 %format (∇''(t)) = ∇ "\kern\binderspace\binderbracketl\," t "\,\binderbracketr"
 %format erase-Ṡ = erase "_{" Ṡ "}"
@@ -268,6 +270,9 @@
 %format OrnDesc = "\constructor{OrnDesc}"
 %format Ṗ-toList = "\identifier{" Ṗ "\text-toList}"
 %format Ṗ-toEq = "\identifier{" Ṗ "\text-toEq}"
+%format ⌊_⌋ = "\protect\lfloor" _ "\kern\underscorespace\protect\rfloor"
+%format ⌈_⌉ = "\protect\lceil" _ "\kern\underscorespace\protect\rceil"
+%format ⌊_⌋T = ⌊_⌋ "_{\kern-.5ptT}"
 %format ⌊ = "\lfloor\kern-.2em"
 %link ⌊ ⌊_⌋
 %format ⌋ = "\kern-.2em\rfloor"
@@ -280,11 +285,9 @@
 %link T⌊ ⌊_⌋T
 %format ⌋T = ⌋ "_{\kern-.5ptT}"
 %link ⌋T ⌊_⌋T
-%format ⌊_⌋ = "\lfloor" _ "\kern\underscorespace" "\rfloor"
 %format TDesc = "\constructor{TDesc}"
 %format _⊕_ = _ ⊕ "\kern-\underscorespace" _
 %link ⊕ _⊕_
-%format ⌊_⌋T = ⌊_⌋ "_{\kern-.5ptT}"
 %format _⊗_ = _ "{" ⊗ "}\kern-\underscorespace" _
 %link ⊗ _⊗_
 %format pc-Ė = "\identifier{pc\text-" Ė "}"
@@ -339,19 +342,19 @@
 
 %format ℘ = "{\mathcal P}"
 %format (Power t) = ℘ t
-%link Power ℘
+%link Power P'
 %format _↝_ = _ "{" ↝ "}\kern-\underscorespace" _
 %link ↝ _↝_
 %format Ṙ = "\mathbb R"
 %format _>>=_ = _ "{" >>= "}\kern-\underscorespace" _
 %link >>= _>>=_
-%format <$> = "\mathop{\protect\raisebox{2.4pt}{\protect\scalebox{1}[.4]{$\langle$}}\$\protect\raisebox{2.4pt}{\protect\scalebox{1}[.4]{$\rangle$}}}"
+%format <$> = "\mathop{\protect\raisebox{2.4pt}{\protect\scalebox{1}[.4]{\ensuremath{\protect\langle}}}\$\protect\raisebox{2.4pt}{\protect\scalebox{1}[.4]{\ensuremath{\protect\rangle}}}}"
 %link <$> _<$>
 %format _<$> = _ "{" <$> "}"
 %format <$>² = "\mathop{{" <$> "}\kern-.5pt^2}"
 %link <$>² _<$>²
 %format _<$>² = _ "{" <$>² "}"
-%format • = "\mathop{\protect\raisebox{2pt}{\protect\scalebox{0.5}{$\bullet$}}}"
+%format • = "\mathop{\protect\raisebox{2pt}{\protect\scalebox{0.5}{\ensuremath{\bullet}}}}"
 %link • _•_
 %format _•_ = _ "\kern\underscorespace{" • "}\kern.8\underscorespace" _
 %link ∩ _∩_
@@ -366,7 +369,7 @@
 %format ⊇ = "\rel{\supseteq}"
 %format ⊇* = "\supseteq"
 %format _⊇_ = _ "\kern\underscorespace{\supseteq}" _
-%link _⊇_ ⊇
+%link _⊇_ _⊇_
 %format ≃ = "\rel{\simeq}"
 %link ≃ _≃_
 %format _≃_ = _ "\kern\underscorespace{\simeq}" _
@@ -453,9 +456,11 @@
 %format Length = "\constructor{Length}"
 %format Length-FSwap = "\identifier{Length\text-FSwap}"
 %format Vec' = Vec "^\prime"
+%format Vec'' = "\identifier{Vec}"
 %format Square = "\constructor{Square}"
 %format OrdList = "\constructor{OrdList}"
 %format Ordered = "\constructor{Ordered}"
+%format Ordered' = "\constructor{Ordered^\prime}"
 %format OrdVec = "\constructor{OrdVec}"
 %format OrdVec-FSwap = "\identifier{OrdVec\text-FSwap}"
 %format OrderedLength = "\constructor{OrderedLength}"
@@ -482,6 +487,8 @@
 %format BHeap = "\constructor{BHeap}"
 %format BHeap' = "\constructor{BHeap}^\prime"
 %format incr-insT-coherence = "\identifier{incr\text-insT\text-coherence}"
+%format toBin-mapBHeap = "\identifier{toBin\text-mapBHeap}"
+%format shift-halve-coherence = "\identifier{shift\text-halve\text-coherence}"
 %format BinTag = "\constructor{BinTag}"
 %format `zero = "`" zero
 %format `one = "`" one
@@ -581,3 +588,4 @@
 %format streaming-condition = "\identifier{streaming\text-condition}"
 %format nothing = "\constructor{nothing}"
 %format next' = "\constructor{next}"
+%format _∧_ = _ "{" ∧ "}\kern-\underscorespace" _

@@ -140,7 +140,7 @@ The container type is then isomorphic to the type of lists, whose elements are i
 Response descriptions can be regarded as a special case of indexed containers: values of fields constitute a shape, and sets of positions are restricted to \emph{enumerable} finite sets; consequently, |next s : P s → I| for any |s : S| can be represented by a |List I|, and there is no longer need to specify~|P|.
 We thus define the set of shapes derived from a response description by
 \begin{code}
-^^^Ṡ : {I : Set} → RDesc I → Set
+^^^Ṡ ^^^S : {I : Set} → RDesc I → Set
 Ṡ (ṿ is)   = ⊤
 Ṡ (σ S D)  = (Σ'(s ∶ S)) Ṡ (D s)
 \end{code}
@@ -195,7 +195,7 @@ We thus define \key{horizontal transformations} as
 \begin{code}
 record ^^^HTrans {I J : Set} (e : J → I) (D : RDesc I) (E : RDesc J) : Set
   where
-    constructor pair
+    constructor ^^^pair ^^^_,_
     field
       t  : Ṡ E → Ṡ D
       c  : (ss : Ṡ E) → Ė e (next E ss) (next D (t ss))
@@ -215,7 +215,7 @@ normROrn {E := σ S E  } tr =
 \end{code}
 The top-level function |normROrn| exhausts all fields of~|E| by~|Δ|, partially applying the transformation along the way, and then |normROrn-∇| takes over and inserts values obtained from the result of the transformation into fields of~|D| by~|∇|, ending with the placement of the index coherence proof.
 
-We can now easily arrange a category |^^^ḞHTrans| of descriptions and horizontal transformations, which is isomorphic to |Ōrn|.
+We can now easily arrange a category |^^^ḞHTrans ^^^FHTrans| of descriptions and horizontal transformations, which is isomorphic to |Ōrn|.
 Its objects are of type |Σ Set Desc| as in |Ōrn|, and its sets of morphisms are
 \begin{code}
 λ case (J , E) (I , D) mapsto (Σ'(e : J → I)) FHTrans e D E endcase
@@ -288,7 +288,7 @@ Both equivalence and composition for natural transformations are componentwise.
 A categorical equivalence is then an isomorphism in this category of categories and functors.
 \end{itemize}
 \end{itemize}
-Fixing |D : Desc I|, the completeness theorem is a consequence of one direction of the \emph{object part} of an equivalence between |SliceCategory Ōrn (I , D)| --- which we denote by |Ōrn ^^^/ (I , D)| from now on --- and the category |^^^RAlg D| whose objects are relational |D|-algebras
+Fixing |D : Desc I|, the completeness theorem is a consequence of one direction of the \emph{object part} of an equivalence between |SliceCategory Ōrn (I , D)| --- which we denote by |Ōrn ^^^/ ^^^_/_ ^^^_/_ (I , D)| from now on --- and the category |^^^RAlg D| whose objects are relational |D|-algebras
 \begin{code}
 record ^^^RAlgebra D : Set₁ where
   constructor pair
@@ -452,7 +452,7 @@ We thus see that proofs of the homomorphism condition should not be treated irre
 This brings us to the right notion of algebra homomorphisms, defined by
 \begin{code}
 record ^^^RAlgMorphism D (X , R) (Y , S) : Set₁ where
-  constructor pair
+  constructor ^^^pair ^^^_,_
   field
     h  : X ⇉ Y
     c  : (i {-"\kern-1.1pt"-}:{-"\kern-1.1pt"-} I) {-"\kern-1.1pt"-} (xs {-"\kern-1.1pt"-}:{-"\kern-1.1pt"-} ⟦ D i ⟧ X) {-"\kern-1.1pt"-} (x {-"\kern-1.1pt"-}:{-"\kern-1.1pt"-} X i) {-"\kern-1.1pt"-} → {-"\kern-1.1pt"-} R xs x {-"\kern-1.1pt"-} → {-"\kern-1.1pt"-} S (mapRD (D i) h xs) (h x)
@@ -561,7 +561,7 @@ Below we look at a consequence of the latter direction.
 In |RAlg D|, a construction of products is inspired by the \key{banana-split law}~\citep[page~88]{Fokkinga-thesis}, whose original, functional form is as follows:
 Define the functorial mapping |Ḟ-map D| by
 \begin{code}
-^^^Ḟ-map D : {Z W : I → Set} → (Z ⇉ W) → (Ḟ D Z ⇉ Ḟ D W)
+^^^Ḟ-map ^^^F-map D : {Z W : I → Set} → (Z ⇉ W) → (Ḟ D Z ⇉ Ḟ D W)
 Ḟ-map D f {i} = mapRD (D i) f
 \end{code}
 For any |f : Ḟ D X ⇉ X| and |g : Ḟ D Y ⇉ Y| we have
@@ -576,7 +576,7 @@ We define the ``banana-split algebra'' of |R|~and~|S| by
 ^^^BSAlg R S : Ḟ D (X ×' Y) ↝ (X ×' Y)
 BSAlg R S xys (x , y) = R (Ḟ-map D proj₁ xys) x × S (Ḟ-map D proj₂ xys) y
 \end{code}
-where |(X ^^^×' Y) i = X i × Y i|.
+where |(X ^^^×' ^^^_×'_ ^^^_×'_ Y) i = X i × Y i|.
 We can then construct the following span
 \[ \begin{tikzpicture}[x=10em, y=3em, baseline=(FDZ.base)]
 \node(Z)                  {|X ×' Y|};

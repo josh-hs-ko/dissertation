@@ -15,7 +15,7 @@
 (Fam.south west)  edge[bend left]               node[below]      {|FRefC|} (FRef.south east)
 (Fam)             edge[bend left,looseness=.7]  node[above]      {|Com|}   (Fun)
 (Fam)             edge[bend right,looseness=.7] node[below]      {|FamF|}  (Fun);
-\node at ($(FRef)!.5!(Fam)$) {|≅|};
+\node at ($(FRef)!.5!(Fam)$) {|≅*|};
 \end{tikzpicture}
 \end{center}
 \caption{Categories and functors for the ornament--refinement framework.}
@@ -86,7 +86,7 @@ _·_  : {X Y Z : Object} → (Y ==> Z) → (X ==> Y) → (X ==> Z)
 \end{code}
 which has left and right identities and is associative.
 
-\block{Syntactic remark}{universe polymorphism}{Many definitions in this chapter (like |Graph| above) employ \Agda's \key{universe polymorphism}~\citep{Harper-universes}, so the definitions can be instantiated at suitable levels of the |Set| hierarchy as needed.
+\block{Remark}{universe polymorphism}{Many definitions in this chapter (like |Graph| above) employ \Agda's \key{universe polymorphism}~\citep{Harper-universes}, so the definitions can be instantiated at suitable levels of the |Set| hierarchy as needed.
 (For example, the type of |Fun-graph| is implicitly instantiated as |Graph {1} {0}|, since |Set| is of type |Set₁| and any |A → B| (where |A|, |B : Set|) are of type |Set| ($=$~|Set₀|), and |Graph {1} {0}| itself is of type |Set₂|, whose level is computed by taking the successor of the maximum of the two level arguments.)
 We will give the first few universe-polymorphic definitions with full detail about their levels, but will later suppress the syntactic noise wherever possible.}
 
@@ -186,7 +186,7 @@ FRef = record
                                sep  proofs-of-laws endcase endcase
   sep   proofs-of-laws endcase
 
-^^^Ōrn : Category
+^^^Ōrn ^^^Orn' : Category
 Ōrn = record
   case  Object    =  (Σ'(I ∶ Set)) Desc I
   sep   Morphism  =  λ case  (J , E) (I , D) mapsto record
@@ -268,7 +268,7 @@ The two functors |FRefF| and |FRefC| are inverse to each other by definition.
 \begin{figure}
 \codefigure\small
 \begin{code}
-^^^Ė-refl : (is : List I) → Ė id is is
+^^^Ė-refl ^^^E-refl : (is : List I) → Ė id is is
 Ė-refl []        = []
 Ė-refl (i ∷ is)  = refl ∷ Ė-refl is
 
@@ -279,7 +279,7 @@ idROrn (σ S E)  = (σ'(s ∶ S)) idROrn (E s)
 ^^^idOrn : {I : Set} (D : Desc I) → Orn id D D
 idOrn {I} D (ok i) = idROrn (D i)
 
-^^^Ė-trans :  {I J K : Set} {e : J → I} {f : K → J} →
+^^^Ė-trans ^^^E-trans :  {I J K : Set} {e : J → I} {f : K → J} →
               {is : List I} {js : List J} {ks : List K} →
               Ė e js is → Ė f ks js → Ė (e ∘ f) ks is
 Ė-trans           []            []            =  []
@@ -338,7 +338,7 @@ Ind = record  case  object    =  λ case (I , D  ) mapsto I , μ D       endcase
 
 To translate |Ōrn| to |FRef|, a naive way is to use the composite functor |FRefC ⋄ Ind : Functor Ōrn FRef|, where composition |F ⋄ G| of functors |F : Functor D E| and |G : Functor C D| is defined by
 \begin{code}
-F ^^^⋄ G : Functor C E
+F ^^^⋄ ^^^_⋄_ ^^^_⋄_ G : Functor C E
 F ⋄ G = record  case  object    = object F ∘ object G
                 sep   morphism  = morphism F ∘ morphism G
                 sep   proofs-of-laws endcase
@@ -398,6 +398,7 @@ where |Singleton| is defined by
 ^^^Singleton : (S : Setoid) → Set _
 Singleton S = Setoid.Carrier S × ((s t : Setoid.Carrier S) → s ≈S t)
 \end{code}
+\sidenote{The universe levels of |Terminal C Y| and |Singleton S| can be inferred from those of |C|~and~|S|. We instruct \Agda\ to do the inference by writing |Set _|\,.}
 The uniqueness condition ensures that terminal objects are unique up to (a unique) isomorphism --- that is, if two objects are both terminal in~|C|, then there is an isomorphism between them:
 \begin{code}
 ^^^terminal-iso C : (X Y : Object) → Terminal C X → Terminal C Y → Iso C X Y
@@ -423,7 +424,7 @@ Let |C|~be a category and |L|,~|R| two objects in~|C|.
 A \key{span} over |L|~and~|R| is defined by
 \begin{code}
 record ^^^Span C L R : Set _ where
-  constructor threetuple
+  constructor ^^^threetuple ^^^_,_,_
   field
     M  : Object
     l  : M ==> L
@@ -441,7 +442,7 @@ If we interpret a morphism |X ==> Y| as evidence that |X|~is more informative th
 Spans over the same objects can be ``compared'': define a morphism between two spans by
 \begin{code}
 record ^^^SpanMorphism C L R (s s' : Span C L R) : Set _ where
-  constructor threetuple
+  constructor ^^^threetuple ^^^_,_,_
   field
     m : Span.M s ==> Span.M s'
     triangle-l  : Span.l  s' · m ≈ Span.l  s
@@ -493,7 +494,7 @@ A slice category is parametrised with an ambient category~|C| and an object~|B| 
 \item objects: all the morphisms in~|C| with target~|B|,
 \begin{code}
 record ^^^Slice C B : Set _ where
-  constructor pair
+  constructor ^^^pair ^^^_,_
   field
     T  : Object
     s  : T ==> B
@@ -502,7 +503,7 @@ and
 \item morphisms: mediating morphisms giving rise to commutative triangles,
 \begin{code}
 record ^^^SliceMorphism C B (s s' : Slice C B) : Set _ where
-  constructor pair
+  constructor ^^^pair ^^^_,_
   field
     m : Slice.T s ==> Slice.T s'
     triangle : Slice.s s' · m ≈ Slice.s s
@@ -651,7 +652,7 @@ For any |O : Orn e D E| and |P : Orn f D F| where |D : Desc I|, |E : Desc J|, an
 \path[->, font=\small]
 (E) edge node[below]{|e , O|} (D)
 (F) edge node[right]{|f , P|} (D)
-(P) edge node[label on arrow]{|pull, ⌈ O ⊗ P ⌉|} (D)
+(P) edge node[label on arrow]{|pull , ⌈ O ⊗ P ⌉|} (D)
 (P) edge node[left]{\llap{|π₁ , diffOrn-l O P|}} (E)
 (P) edge node[above,yshift=.5ex]{|π₂ , diffOrn-r O P|} (F);
 \end{tikzpicture}
@@ -704,7 +705,9 @@ and the image of~(\ref{eq:Fam-pullback}) under |Com| in |Fun|:
 \end{tikzpicture}
 \label{eq:Fun-pullback}
 \end{equation}
-Both (\ref{eq:Fam-pullback})~and~(\ref{eq:Fun-pullback}) are indeed pullbacks by pullback preservation of |Ind| and |Com|.
+The pullback property of~(\ref{eq:Fam-pullback}) can be directly established.
+(Together with the pullback property of~(\ref{eq:pc-square}), this ensures that |Ind| is pullback-preserving --- a functor is pullback-preserving if a specific square and its image under that functor are both pullbacks.)
+Then the pullback property of~(\ref{eq:Fun-pullback}) follows from pullback preservation of |Com|.
 
 \section{Consequences}
 \label{sec:categorical-consequences}

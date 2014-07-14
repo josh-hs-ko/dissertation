@@ -63,13 +63,11 @@
 \newblock \emph{Formal Aspects of Computing}, 6(4):440--465.
 \newblock \doi{10.1007/BF01211308}.
 
-\bibitem[{Girard et~al.(1989)Girard, Taylor, and
-  Lafont}]{Girard-proofs-and-types}
-\bibfnamefont{Jean-Yves} \bibnamefont{Girard}, \bibfnamefont{Paul}
-  \bibnamefont{Taylor}, and \bibfnamefont{Yves} \bibnamefont{Lafont} [1989].
-\newblock \emph{Proofs and Types}.
-\newblock Cambridge University Press.
-\newblock \isbn{978-0521371810}.
+\bibitem[{Gentzen(1964)}]{Gentzen-investigations-into-natural-deduction}
+\bibfnamefont{Gerhard} \bibnamefont{Gentzen} [1964].
+\newblock Investigations into natural deduction.
+\newblock \emph{American Philosophical Quarterly}, 1(4):288--306.
+\newblock \urlentry{http://www.jstor.org/stable/20009142}.
 
 \bibitem[{Gries(1981)}]{Gries-science-of-programming}
 \bibfnamefont{David} \bibnamefont{Gries} [1981].
@@ -168,10 +166,10 @@
   \emph{Lecture Notes in Computer Science}, pages 230--266. Springer-Verlag.
 \newblock \doi{10.1007/978-3-642-04652-0_5}.
 
-\bibitem[{van Dalen(2012)}]{vanDalen-logic}
-\bibfnamefont{Dirk} \bibnamefont{van Dalen} [2012].
-\newblock \emph{Logic and Structure}.
-\newblock Springer-Verlag, fifth edition.
-\newblock \isbn{978-1447145578}.
+\bibitem[{Prawitz(2006)}]{Prawitz-natural-deduction}
+\bibfnamefont{Dag} \bibnamefont{Prawitz} [2006].
+\newblock \emph{Natural Deduction: A Proof-theoretical Study}.
+\newblock Dover Publications.
+\newblock \isbn{978-0486446554}.
 
 \end{thebibliography}

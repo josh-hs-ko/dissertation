@@ -19,7 +19,7 @@ The above framework of ornaments, refinements, and upgrades are illustrated with
 \section{Refinements}
 \label{sec:refinements}
 
-We first abstract away from the detail of the construction of conversion isomorphisms and simply axiomatise their existence as \key{refinements} from basic types to more sophisticated types.
+We first abstract away from the details of the construction of conversion isomorphisms and simply axiomatise their existence as \key{refinements} from basic types to more sophisticated types.
 There are two versions of refinements:
 \begin{itemize}
 \item the non-indexed version between individual types~(\autoref{sec:individual-refinements}), and
@@ -49,8 +49,8 @@ Computationally, any inhabitant of~|B| can be decomposed (by |Iso.to i|\kern1pt)
 \block{Example}{refinement from lists to ordered lists}{Consider the internalist datatype of ordered lists (indexed by a lower bound; the type |Val| and associated operations are postulated in \autoref{sec:with}):
 \begin{code}
 indexfirst data ^^^OrdList : Val → Set where
-  OrdList b  offers  nil
-             or      cons (x : Val) (leq : b ≤ x) (xs : OrdList x)
+  OrdList b  offers  ^^^nil
+             or      ^^^cons (x : Val) (leq : b ≤ x) (xs : OrdList x)
 \end{code}
 Fixing |b : Val|, there is a refinement from |List Val| to |OrdList b| whose promotion predicate is |Ordered b|, since we have an isomorphism of type
 \begin{code}
@@ -90,10 +90,11 @@ The forgetful function is actually the core of a refinement, as justified by the
 canonRef {A} {B} f = record
   case  P  =  (lambda(a)) (Σ'(b ∶ B)) f b ≡ a
   sep   i  =  record
-                case  to    =  f ▵ (id ▵ ((lambda(b)) refl))  -- |(g ^^^▵ h) x = (g x , h x)|
+                case  to    =  f ▵ (id ▵ ((lambda(b)) refl))
                 sep   from  =  proj₁ ∘ proj₂
                 sep   proofs-of-laws endcase endcase  -- proofs of inverse properties omitted
 \end{code}
+(The |^^^_▵_|~operator is defined by |(g ▵ h) x = (g x , h x)|.)
 We call |(lambda(a)) (Σ'(b ∶ B)) f b ≡ a| the \key{canonical promotion predicate}, which says that, to promote |a : A| to type~|B|, we are required to supply a complete |b : B| and prove that its underlying value is~|a|.
 \item For any refinement |r : Refinement A B|, its forgetful function is definitionally that of |canonRef (Refinement.forget r)|, so from |forget-iso| we can prove that a promotion predicate is always pointwise isomorphic to the canonical promotion predicate:
 \begin{code}
@@ -162,7 +163,8 @@ duplicate' (suc n)  (x ∷ xs)  =  x ∷ x ∷ duplicate' n xs
 we can synthesise a function |duplicate : List A → List A| by
 \begin{code}
 ^^^duplicate : List A → List A
-duplicate = Iso.from iso ∘ (double * duplicate' _) ∘ Iso.to iso
+duplicate =  Iso.from iso ∘ (double * duplicate' _) ∘ Iso.to iso
+             -- |(f * g) (x , y) = (f x , g y)|
   where  iso : List A ≅ Σ Nat (Vec A)
          iso = Refinement.i (Nat-List A)
 \end{code}
@@ -210,7 +212,7 @@ As we said, upgrades amount to only the promoting direction of refinements.
 This is most obvious when we look at the coherence-based refinements, of which upgrades are a direct generalisation: we get from |Refinement'| to |Upgrade| by abstracting the notion of coherence and weakening the isomorphism to only the left-to-right computation.
 Any coherence-based refinement can thus be weakened to an upgrade:
 \begin{code}
-toUpgrade' : {A B : Set} → Refinement' A B → Upgrade A B
+^^^toUpgrade' : {A B : Set} → Refinement' A B → Upgrade A B
 toUpgrade' r = record  case  P  =  Refinement'.P r
                        sep   C  =  (lambda(a b)) Refinement'.forget r b ≡ a
                        sep   u  =  (lambda(a)) proj₁  ∘ Iso.to (Refinement'.p r a)
@@ -257,12 +259,13 @@ The complete definition of |_⇀_| is
 ^^^_⇀_ :  {A A' B B' : Set} →
           Refinement A A' → Upgrade B B' → Upgrade (A → B) (A' → B')
 r ⇀ s = record
-  case   P  = (lambda(f)) (a : A) → Refinement.P r a → Upgrade.P s (f a)
-  sep    C  = (lambda(f f'))  (a : A) (a' : A') →
-                              Refinement.forget r a' ≡ a → Upgrade.C s (f a) (f' a')
-  sep    u  = (lambda(f h)) Upgrade.u s _ ∘ uncurry h ∘ Iso.to (Refinement.i r)
-  sep    c  = λ case f h INF _ a' refl mapsto  let  (a , p) = Iso.to (Refinement.i r) a'
-                                               in   Upgrade.c s (f a) (h a p) endcase endcase
+  case   P  =  (lambda(f)) (a : A) → Refinement.P r a → Upgrade.P s (f a)
+  sep    C  =  (lambda(f f'))  (a : A) (a' : A') →
+                               Refinement.forget r a' ≡ a → Upgrade.C s (f a) (f' a')
+  sep    u  =  (lambda(f h)) Upgrade.u s _ ∘ uncurry h ∘ Iso.to (Refinement.i r)
+                 -- |^^^uncurry = (lambda(f)) λ case (x , y) mapsto f x y endcase|
+  sep    c  =  λ case f h INF _ a' refl mapsto  let  (a , p) = Iso.to (Refinement.i r) a'
+                                                in   Upgrade.c s (f a) (h a p) endcase endcase
 \end{code}
 
 \block{Example}{upgrade from |Nat → Nat| to |List A → List A|}{Using the |_⇀_| combinator on the refinement
@@ -340,7 +343,7 @@ erase (`cons  , a , x ,  tt)  =  `cons  ,  x ,  tt   -- |`cons| copied, |a|~disc
 \end{code}
 The transformation can then be lifted to work on the least fixed points, yielding an alternative definition of |length|.
 \begin{code}
-length : {A : Set} → μ (ListD A) ⇉ μ NatD
+^^^length : {A : Set} → μ (ListD A) ⇉ μ NatD
 length {A} = fold (con ∘ erase {A} {μ NatD})
 \end{code}
 \sidenote{Implicit arguments can be explicitly supplied in curly braces.}
@@ -392,13 +395,13 @@ The definition of |Orn| given above is a restatement of this in an intensionally
 Now we look at the definitions of |ROrn| and |erase|, followed by explanations of the four cases.
 \begin{code}
 data ^^^ROrn {I J : Set} (e : J → I) : RDesc I → RDesc J → Set₁ where
-  ṿ   :  {js : List J} {is : List I} (eqs : Ė e js is) → ROrn e (ṿ is) (ṿ js)
-  σ   :  (S : Set) {D : S → RDesc I} {E : S → RDesc J}
-         (O : (s : S) → ROrn e (D s) (E s)) → ROrn e (σ S D) (σ S E)
-  Δ   :  (T : Set) {D : RDesc I} {E : T → RDesc J}
-         (O : (t : T) → ROrn e D (E t)) → ROrn e D (σ T E)
-  ∇   :  {S : Set} (s : S) {D : S → RDesc I} {E : RDesc J}
-         (O : ROrn e (D s) E) → ROrn e (σ S D) E
+  ^^^ṿ ^^^v   :  {js : List J} {is : List I} (eqs : Ė e js is) → ROrn e (ṿ is) (ṿ js)
+  ^^^σ   :  (S : Set) {D : S → RDesc I} {E : S → RDesc J}
+            (O : (s : S) → ROrn e (D s) (E s)) → ROrn e (σ S D) (σ S E)
+  ^^^Δ   :  (T : Set) {D : RDesc I} {E : T → RDesc J}
+            (O : (t : T) → ROrn e D (E t)) → ROrn e D (σ T E)
+  ^^^∇   :  {S : Set} (s : S) {D : S → RDesc I} {E : RDesc J}
+            (O : ROrn e (D s) E) → ROrn e (σ S D) E
            
 ^^^erase :  {I J : Set} {e : J → I} {D : RDesc I} {E : RDesc J} →
             ROrn e D E → {X : I → Set} → ⟦ E ⟧ (X ∘ e) → ⟦ D ⟧ X
@@ -416,10 +419,10 @@ There are no horizontal contents (i.e., fields) and thus no horizontal modificat
 We thus demand that |js|~and~|is| have the same number of elements and the corresponding pairs of indices |e j|~and~|i| are equal; that is, we demand a proof of |map e js ≡ is| (where |map| is the usual functorial map on lists).
 To make it easier to analyse a proof of |map e js ≡ is| in the |ṿ|~case of |erase|, we instead define the proposition inductively as |Ė e js is|, where the datatype~|Ė| is defined by
 \begin{code}
-data ^^^Ė {I J : Set} (e : J → I) : List J → List I → Set where
-  []   :  Ė e [] []
-  _∷_  :  {j : J} {i : I} (eq : e j ≡ i) →
-          {js : List J} {is : List I} (eqs : Ė e js is) → Ė e (j ∷ js) (i ∷ is)
+data ^^^Ė ^^^E {I J : Set} (e : J → I) : List J → List I → Set where
+  ^^^[]   :  Ė e [] []
+  ^^^_∷_  :  {j : J} {i : I} (eq : e j ≡ i) →
+             {js : List J} {is : List I} (eqs : Ė e js is) → Ė e (j ∷ js) (i ∷ is)
 \end{code}
 \item The |σ|~case of |ROrn| states when |σ S E| refines |σ S D| --- note that both response descriptions start with the same field of type~|S|.
 The intended semantics --- the |σ|~case of |erase| --- is to preserve (copy) the value of this field.
@@ -456,7 +459,7 @@ discards all list elements from a list and returns its underlying natural number
 \begin{code}
 ^^^ListD-VecD A : Orn ! (ListD A) (VecD A)
 ListD-VecD A (ok zero     ) = (∇'(`nil))   ṿ []
-ListD-VecD A (ok (suc n)  ) = (∇'(`cons))  (σ'(_ ∶ A)) ṿ (refl ∷ []) endcase
+ListD-VecD A (ok (suc n)  ) = (∇'(`cons))  (σ'(_ ∶ A)) ṿ (refl ∷ [])
 \end{code}
 The response ornaments are indexed by |Nat|, since |Nat| is the index set of the datatype of vectors.
 We do pattern matching on the index request, resulting in two cases.
@@ -476,14 +479,14 @@ It is worth emphasising again that ornaments encode only horizontal transformati
 \codefigure\small\vskip-\baselineskip
 \begin{code}
 data ^^^ROrnDesc J e : RDesc I → Set₁ where
-  ṿ   :  {is : List I} (js : Ṗ is (Inv e)) → ROrnDesc J e (ṿ is)
-  σ   :  (S : Set) {D : S → RDesc I}
-         (OD : (s : S) → ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
-  Δ   :  (T : Set) {D : RDesc I} (OD : T → ROrnDesc J e D) → ROrnDesc J e D
-  ∇   :  {S : Set} (s : S) {D : S → RDesc I}
-         (OD : ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
+  ^^^ṿ ^^^v  :  {is : List I} (js : Ṗ is (Inv e)) → ROrnDesc J e (ṿ is)
+  ^^^σ   :  (S : Set) {D : S → RDesc I}
+            (OD : (s : S) → ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
+  ^^^Δ   :  (T : Set) {D : RDesc I} (OD : T → ROrnDesc J e D) → ROrnDesc J e D
+  ^^^∇   :  {S : Set} (s : S) {D : S → RDesc I}
+            (OD : ROrnDesc J e (D s)) → ROrnDesc J e (σ S D)
 
-^^^Ṗ-toList : {X : I → List} → (X ⇉ const J) → (is : List I) → Ṗ is X → List J
+^^^Ṗ-toList ^^^P-toList : {X : I → List} → (X ⇉ const J) → (is : List I) → Ṗ is X → List J
 Ṗ-toList f []        tt        = []
 Ṗ-toList f (i ∷ is)  (x , xs)  = f x ∷ Ṗ-toList f is xs
 
@@ -496,7 +499,7 @@ toRDesc (∇ s OD)     = toRDesc OD
 ^^^toEq : {i : I} (j : e ⁻¹ i) → e (und j) ≡ i
 toEq (ok j) = refl
 
-^^^Ṗ-toEq : (is : List I) (js : Ṗ is (Inv e)) → Ė e (Ṗ-toList und is js) is
+^^^Ṗ-toEq ^^^P-toEq : (is : List I) (js : Ṗ is (Inv e)) → Ė e (Ṗ-toList und is js) is
 Ṗ-toEq []        tt        = []
 Ṗ-toEq (i ∷ is)  (j , js)  = toEq j ∷ Ṗ-toEq is js
 
@@ -504,7 +507,7 @@ toEq (ok j) = refl
 toROrn (ṿ {is} js)  = ṿ (Ṗ-toEq is js)
 toROrn (σ S OD)     = (σ'(s ∶ S)) toROrn (OD s)
 toROrn (Δ T OD)     = (Δ'(t ∶ T)) toROrn (OD t)
-toROrn (∇ s OD)     = (∇'(s)) (toROrn OD)
+toROrn (∇ s OD)     = (∇'(s)) toROrn OD
 
 ^^^OrnDesc J e : Desc I → Set₁
 OrnDesc J e D = {i : I} (j : e ⁻¹ i) → ROrnDesc J e (D i)
@@ -562,14 +565,14 @@ to get an ornament from lists to ordered lists.}
 
 \block{Example}{singleton ornamentation}{Consider the following \key{singleton datatype} for lists:
 \begin{code}
-indexfirst data ListS A : List A → Set where
-  ListS A []        offers  nil
-  ListS A (a ∷ as)  offers  cons (s : ListS A as)
+indexfirst data ^^^ListS A : List A → Set where
+  ListS A []        offers  ^^^nil
+  ListS A (a ∷ as)  offers  ^^^cons (s : ListS A as)
 \end{code}
 For each type |ListS A as|, there is exactly one (canonical) inhabitant (hence the name ``singleton datatype''~\citep[Section~3.6]{Sheard-Omega}), which is devoid of any horizontal content and whose vertical structure is exactly that of~|as|.
 We can encode the datatype as an ornamental description relative to |ListD A|:
 \begin{code}
-ListSOD : (A : Set) → OrnDesc (List A) ! (ListD A)
+^^^ListSOD : (A : Set) → OrnDesc (List A) ! (ListD A)
 ListSOD A (ok []        ) = (∇'(`nil)) ṿ tt
 ListSOD A (ok (a ∷ as)  ) = (∇'(`cons)) (∇'(a)) ṿ (ok as , tt)
 \end{code}
@@ -581,8 +584,8 @@ singletonOD : {I : Set} (D : Desc I) → OrnDesc (Σ I (μ D)) proj₁ D
 called the \key{singleton ornamental description}, which delivers a singleton datatype as an ornamentation of any datatype.
 The complete definition is
 \begin{code}
-erode :  {I : Set} (D : RDesc I) {J : I → Set} →
-         ⟦ D ⟧ J → ROrnDesc (Σ I J) proj₁ D
+^^^erode :  {I : Set} (D : RDesc I) {J : I → Set} →
+            ⟦ D ⟧ J → ROrnDesc (Σ I J) proj₁ D
 erode (ṿ is)   js        = ṿ (Ṗ-map ((lambda({i} j)) ok (i , j)) is js)
 erode (σ S D)  (s , js)  = (∇'(s)) erode (D s) js
 
@@ -591,7 +594,7 @@ singletonOD D (ok (i , con ds)) = erode (D i) ds
 \end{code}
 where
 \begin{code}
-^^^Ṗ-map :  {I : Set} {X Y : I → Set} → (X ⇉ Y) →
+^^^Ṗ-map ^^^P-map :  {I : Set} {X Y : I → Set} → (X ⇉ Y) →
             (is : List I) → Ṗ is X → Ṗ is Y
 Ṗ-map f []        tt        = tt
 Ṗ-map f (i ∷ is)  (x , xs)  = f x , Ṗ-map f is xs
@@ -625,7 +628,7 @@ If the template response description is~|ṿ is|, then we can specify a list of 
 \codefigure
 \begin{code}
 record ^^^_⋈_ {I J K : Set} (e : J → I) (f : K → I) : Set where
-  constructor pair
+  constructor ^^^pair ^^^_,_
   field
     {i}  :  I  -- implicit field
     j    :  e ⁻¹ i
@@ -634,10 +637,10 @@ record ^^^_⋈_ {I J K : Set} (e : J → I) (f : K → I) : Set where
 ^^^pull : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → I
 pull = _⋈_.i
 
-^^^π₁ : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → J
+^^^π₁ ^^^outlp : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → J
 π₁ = und ∘ _⋈_.j
 
-^^^π₂ : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → K
+^^^π₂ ^^^outrp : {I J K : Set} {e : J → I} {f : K → I} → e ⋈ f → K
 π₂ = und ∘ _⋈_.k
 \end{code}
 \caption{Definitions for set-theoretic pullbacks.}
@@ -960,7 +963,16 @@ where \highlight{\text{lighter box}} indicates contributions from the ornament |
                                                      ṿ (ok ((highlight(ok x)) , (Highlight(ok (tt , xs)))) , tt) endcase
 \end{code}
 where \highlight{\text{lighter box}} indicates contributions from |⌈ OrdListOD ⌉| and \Highlight{\text{darker box}} from |⌈ singletonOD (ListD Val) ⌉|.
-Since a proof of |Ordered b xs| consists of exactly the inequality proofs necessary for ensuring that |xs|~is ordered and bounded below by~|b|, its representation is optimised, justifying the name ``optimised predicate''.}
+This yields the |Ordered| predicate defined in \autoref{sec:externalism-and-internalism}.
+Compare |Ordered| with the traditional version:
+\begin{code}
+data Ordered' : Val → List Val → Set where
+  nil   :  {b : Val} → Ordered' b []
+  cons  :  {b : Val} {x : Val} {xs : List Val} →
+             b ≤ x → Ordered' x xs → Ordered' b (x ∷ xs)
+\end{code}
+A proof of |Ordered b xs| consists of exactly the inequality proofs necessary for ensuring that |xs|~is ordered and bounded below by~|b|, whereas a proof of |Ordered' b xs| also redundantly contains all the intermediate lower bounds and the elements of~|xs|.
+The proof representation of |Ordered| is thus optimised, justifying the name ``optimised predicate''.}
 
 \block{Example}{inductive length predicate on lists}{The optimised predicate for the ornament |ListD-VecD A| from lists to vectors is produced by the ornamental description |OptPOD (ListD-VecD A)| relative to |ListD A|:
 \begin{code}
@@ -980,11 +992,11 @@ Thus, in effect, the ornamental description produces the following inductive len
 \begin{code}
 indexfirst data ^^^Length : Nat → List A → Set where
   Length zero     []        offers  nil
-  Length zero     (a ∷ as)  noffers
-  Length (suc n)  []        noffers
+  Length zero     (a ∷ as)  offers
+  Length (suc n)  []        offers
   Length (suc n)  (a ∷ as)  offers  cons (l : Length n as)
 \end{code}
-where |noffers| indicates that a case is uninhabited.}
+where the middle two cases are uninhabited.}
 
 We have thus determined the promotion predicate used by the refinement semantics of ornaments to be the optimised predicate:
 \begin{code}
@@ -1019,8 +1031,8 @@ for all |i : I|, |j : e ⁻¹ i|, |k : f ⁻¹ i|, and |x : μ D i|.
 \begin{code}
 indexfirst data ^^^OrderedLength : Val → Nat → List Val → Set where
   OrderedLength b zero     []        offers  nil
-  OrderedLength b zero     (x ∷ xs)  noffers
-  OrderedLength b (suc n)  []        noffers
+  OrderedLength b zero     (x ∷ xs)  offers
+  OrderedLength b (suc n)  []        offers
   OrderedLength b (suc n)  (x ∷ xs)  offers  cons  (leq : b ≤ x)
                                                    (ol : OrderedLength x n xs)
 \end{code}
@@ -1432,9 +1444,9 @@ This is a crucial assumption in binomial heaps (which is not essential to our de
 The datatype |Bin : Set| of binary numbers is just a specialised datatype of lists of binary digits:
 \begin{code}
 data ^^^BinTag : Set where
-  `nil   : BinTag
-  `zero  : BinTag
-  `one   : BinTag
+  ^^^`nil   : BinTag
+  ^^^`zero  : BinTag
+  ^^^`one   : BinTag
 
 ^^^BinD : Desc ⊤
 BinD tt = σ BinTag λ  case  `nil   mapsto  ṿ []
@@ -1442,18 +1454,19 @@ BinD tt = σ BinTag λ  case  `nil   mapsto  ṿ []
                       sep   `one   mapsto  ṿ (tt ∷ []) endcase
 
 indexfirst data ^^^Bin : Set where
-  Bin  offers  nil
-       or      zero  (b : Bin)
-       or      one   (b : Bin)
+  Bin  offers  ^^^nil
+       or      ^^^zero  (b : Bin)
+       or      ^^^one   (b : Bin)
 \end{code}
 The intended interpretation of binary numbers is given by
 \begin{code}
-^^^toNat : Nat → Bin → Nat
-toNat r nil        = 0
-toNat r (zero  b)  = {-"\rlap{0}\phantom{2^r}"-} + toNat (suc r) b
-toNat r (one   b)  = {-"2^r"-} + toNat (suc r) b
+^^^toNat : Bin → Nat
+toNat nil        = 0
+toNat (zero  b)  = 0 + (TIMES(2)(toNat b))
+toNat (one   b)  = 1 + (TIMES(2)(toNat b))
 \end{code}
-That is, starting from a given rank~|r|, we assign increasing ranks to the list of digits of a binary number and compute the weighted sum of the digits, where a digit of rank~|i| is weighted by~$2^i$ (cf.~the rank of binomial trees).
+That is, the list of digits of a binary number of type |Bin| starts from the least significant digit, and the $i$-th digit (counting from zero) has weight~$2^i$.
+We refer to the position of a digit as its rank, i.e., the $i$-th digit is said to have rank~$i$.
 
 As stated in the beginning, binomial heaps are binary numbers whose $1$-digits are decorated with binomial trees of matching rank, which can be expressed straightforwardly as an ornamentation of binary numbers.
 To ensure that the binomial trees in binomial heaps have the right rank, the datatype |BHeap : Nat → Set| is indexed with the starting rank: if a binomial heap of type |BHeap r| is nonempty (i.e., not |nil|), then its first digit has rank~|r| (and stores a binomial tree of rank~|r| when the digit is~|one|), and the rest of the heap is indexed with |suc r|.
@@ -1464,9 +1477,9 @@ BHeapOD (ok r) = σ BinTag λ  case  `nil   mapsto  ṿ tt
                              sep   `one   mapsto  (Δ'(t ∶ BTree r)) ṿ (ok (suc r) , tt) endcase
 
 indexfirst data ^^^BHeap : Nat → Set where
-  BHeap r  offers  nil
-           or      zero  (h : BHeap (suc r))
-           or      one   (t : BTree r) (h : BHeap (suc r))
+  BHeap r  offers  ^^^nil
+           or      ^^^zero  (h : BHeap (suc r))
+           or      ^^^one   (t : BTree r) (h : BHeap (suc r))
 \end{code}
 In applications, we would use binomial heaps of type |BHeap zero|, which encompasses binomial heaps of all sizes.
 
@@ -1488,7 +1501,7 @@ insT t (one u  h)  = zero (insT (link t u) h)
 Conceptually, |incr| puts a $1$-digit into the least significant position of a binary number, triggering a series of carries, i.e., summing $1$-digits of smaller ranks into $1$-digits of larger ranks; |insT| follows the pattern of |incr|, but since $1$-digits now have to store a binomial tree of matching rank, |insT| takes an additional binomial tree as input and |link|s binomial trees of smaller ranks into binomial trees of larger ranks whenever carrying happens.
 Having defined |insT|, inserting a single element into a binomial heap of type |BHeap zero| is then inserting, by |insT|, a rank-$0$ binomial tree (i.e., a single node) storing the element into the heap.
 \begin{code}
-insV : Val → BHeap zero → BHeap zero
+^^^insV : Val → BHeap zero → BHeap zero
 insV x = insT (con (x , tt))
 \end{code}
 
@@ -1568,13 +1581,109 @@ which is automatically coherent with |incr|:
 incr-insT-coherence = Upgrade.c upg incr insT'
 \end{code}
 
-\subsubsection{Summary}
-
+To sum up:
 We define |Bin|, |incr|, and then |BHeap| as an ornamentation of |Bin|, describe in |upg| how the type of |insT| is an upgraded version of the type of |incr|, and implement |insT'|, whose type is supplied by |upg|.
 We can then derive |insT|, the coherence property of |insT| with respect to |incr|, and its proof, all automatically by |upg|.
 Compared to \citeauthor{Okasaki-data-structures}'s implementation, besides rank-indexing, which elegantly transfers the management of rank-related invariants to the type system, the extra work is only the straightforward markings of the differences between |Bin| and |BHeap| (in |BHeapOD|) and between the type of |incr| and that of |insT| (in |upg|).
 The reward is huge in comparison: we get a coherence property that precisely characterises the structural behaviour of insertion with respect to increment, and an enriched function type that guides the implementation of insertion such that the coherence property is satisfied by construction.
 This example is thus a nice demonstration of using the ornament--refinement framework to derive nontrivial types and programs from straightforward markings.
+
+\subsubsection{Shifting and halving}
+
+We turn to another example and contrast our approach using refinements and upgrades with the usual externalist approach.
+In a binary number, we can decrease the ranks of all the bits by one and discard the bit of rank zero, i.e., ``shifting'' all the bits to the left:
+\begin{code}
+^^^shift : Bin → Bin
+shift nil        = nil
+shift (zero  b)  = b
+shift (one   b)  = b
+\end{code}
+This operation corresponds to ``halving'' of binomial heaps:
+Suppose we are given a function of type |{r : Nat} → BTree (suc r) → BTree r| --- which shrinks a binomial tree of rank |suc r| to one of rank~|r| --- and a binomial heap starting from rank~|r|.
+After discarding the binomial tree of rank~|r| in the heap (if any), we apply the shrinking function to all binomial trees in the remaining heap, obtaining a binomial heap starting from rank~|r| again.
+The shrinking function may extract the largest sub-tree,
+\begin{code}
+^^^left : {r : Nat} → BTree (suc r) → BTree r
+left (node x (t , ts)) = t
+\end{code}
+remove the largest sub-tree,
+\begin{code}
+^^^right : {r : Nat} → BTree (suc r) → BTree r
+right (node x (t , ts)) = node x ts
+\end{code}
+or even perform some more complicated computations.
+Halving a binomial heap twice with |left| and |right| discards the binomial tree at the first position of the heap (if any) and splits the rest of the heap into two smaller heaps of the same size.
+To implement halving in our framework, we start by writing an upgrade
+\begin{code}
+upg : Upgrade (Bin → Bin) (  ({r : Nat} → BTree (suc r) → BTree r) →
+                             {r : Nat} → BHeap r →  BHeap r)
+upg =  (newforall(_ ∶ {r : Nat} → BTree (suc r) → BTree r))
+         (newforall'(r ∶ Nat))  let  ref = RSem' ⌈ BHeapOD ⌉ (ok r)
+                                in   ref ⇀ toUpgrade ref
+\end{code}
+and construct a promotion proof specified by this upgrade, which amounts to the halving operation on |BHeap'|:
+\begin{code}
+^^^halve' :  ({r : Nat} → BTree (suc r) → BTree r) →
+             {r : Nat} (b : Bin) → BHeap' r b → BHeap' r (shift b)
+halve' f nil        nil         = nil
+halve' f (zero  _)  (zero   h)  = mapBHeap' f h
+halve' f (one   _)  (one t  h)  = mapBHeap' f h
+\end{code}
+where the auxiliary operation |mapBHeap'| is the usual mapping operation on binomial heaps with a particular type:
+\begin{code}
+^^^mapBHeap' :  ({r : Nat} → BTree (suc r) → BTree r) →
+                {r : Nat} {b : Bin} → BHeap' (suc r) b → BHeap' r b
+mapBHeap' f {r} {nil      } nil         = nil
+mapBHeap' f {r} {zero  _  } (zero   h)  = zero       (mapBHeap' f h)
+mapBHeap' f {r} {one   _  } (one t  h)  = one (f t)  (mapBHeap' f h)
+\end{code}
+Now the upgrade mechanism directly gives us the halving operation on |BHeap| and a proof that it is coherent with |shift|:
+\begin{code}
+^^^halve :  ({r : Nat} → BTree (suc r) → BTree r) →
+            {r : Nat} → BHeap r → BHeap r
+halve = Upgrade.u upg shift halve'
+
+^^^shift-halve-coherence :
+  (f : {r : Nat} → BTree (suc r) → BTree r)
+  {r : Nat} (b : Bin) (h : BHeap r) →
+  toBin h ≡ b → toBin (halve f h) ≡ shift b
+shift-halve-coherence = Upgrade.c upg shift halve'
+\end{code}
+
+In contrast, had we bypassed the upgrade mechanism and implemented mapping and halving directly,
+\begin{code}
+^^^mapBHeap :  ({r : Nat} → BTree (suc r) → BTree r) →
+               {r : Nat} → BHeap (suc r) → BHeap r
+mapBHeap f nil         = nil
+mapBHeap f (zero   h)  = zero       (mapBHeap f h)
+mapBHeap f (one t  h)  = one (f t)  (mapBHeap f h)
+
+^^^halve :  ({r : Nat} → BTree (suc r) → BTree r) →
+            {r : Nat} → BHeap r → BHeap r
+halve f nil         = nil
+halve f (zero   h)  = mapBHeap f h
+halve f (one t  h)  = mapBHeap f h
+\end{code}
+which take roughly the same amount of effort to implement as |mapBHeap'| and |halve'|, we would have needed to construct an extra proof for each of the two operations to establish coherence:
+\begin{code}
+^^^toBin-mapBHeap :  (f : {r : Nat} → BTree (suc r) → BTree r)
+                     {r : Nat} (h : BHeap (suc r)) →
+                     toBin (mapBHeap f h) ≡ toBin h
+toBin-mapBHeap f nil         = refl
+toBin-mapBHeap f (zero   h)  = cong zero  (toBin-mapBHeap f h)
+toBin-mapBHeap f (one t  h)  = cong one   (toBin-mapBHeap f h)
+
+^^^shift-halve-coherence :  (f : {r : Nat} → BTree (suc r) → BTree r)
+                            {r : Nat} (b : Bin) (h : BHeap r) →
+                            toBin h ≡ b → toBin (halve f h) ≡ shift b
+shift-halve-coherence f INF nil                nil         refl = refl
+shift-halve-coherence f INF (zero  (toBin h))  (zero   h)  refl = toBin-mapBHeap f h
+shift-halve-coherence f INF (one   (toBin h))  (one t  h)  refl = toBin-mapBHeap f h
+\end{code}
+These proofs are implicitly embedded into |mapBHeap'| and |halve'| by the extra indexing of |BHeap'|.
+Note that, in this partially externalist development, the structural invariants of binomial trees and binomial heaps are still maintained by internalist indexing of |BTree| and |BHeap|.
+There would have been even more externalist proof obligations had we used a more externalist representation, like |List (Σ Nat BTree)| for binomial heaps.
+%(With this representation, we would need to manage additional separate proofs saying that the binomial trees in such lists are of the right ranks.)
 
 \subsection{Leftist heaps}
 \label{sec:leftist-heaps}
@@ -1614,23 +1723,23 @@ Leftist heaps \omission\ are heap-ordered binary trees that satisfy the \key{lef
 From this passage we can immediately analyse the concept of leftist heaps into three: leftist heaps \,(i)~are binary trees that \,(ii)~are heap-ordered and \,(iii)~satisfy the leftist property.
 This suggests that there is a basic datatype of binary trees together with two ornamentations, one expressing heap ordering and the other the leftist property.
 The datatype of leftist heaps is then synthesised by composing the two ornamentations in parallel.
-All the datatypes involved in leftist heaps are shown in \autoref{fig:leftist-heap-datatypes} together with their ornamental relationships.
+All the datatypes involved in leftist heaps, including later variations, are shown in \autoref{fig:leftist-heap-datatypes}, together with their ornamental relationships.
 
 \subsubsection{Datatypes leading to leftist heaps}
 
 The basic datatype |Tree : Set| of ``skeletal'' binary trees, which consist of empty nodes and internal nodes not storing any elements, is defined by
 \begin{code}
 data ^^^TreeTag : Set where
-  `nil   : TreeTag
-  `node  : TreeTag
+  ^^^`nil   : TreeTag
+  ^^^`node  : TreeTag
 
 ^^^TreeD : Desc ⊤
 TreeD tt = σ TreeTag λ  case  `nil   mapsto  ṿ []
                         sep   `node  mapsto  ṿ (tt ∷ tt ∷ []) endcase
 
 indexfirst data ^^^Tree : Set where
-  Tree  offers  nil
-        or      node (t : Tree) (u : Tree)
+  Tree  offers  ^^^nil
+        or      ^^^node (t : Tree) (u : Tree)
 \end{code}
 \key{Leftist trees} --- skeletal binary trees satisfying the leftist property --- are then an ornamented version of |Tree|.
 The datatype |LTree : Nat → Set| of leftist trees is indexed with the rank of the root of the trees.
@@ -1642,8 +1751,8 @@ LTreeOD (ok zero     )   =  (∇'(`nil)) ṿ tt
 LTreeOD (ok (suc r)  )   =  (∇'(`node)) (Δ'(l ∶ Nat)) (Δ'(r≤l ∶ r ≤ l)) ṿ (ok l , ok r , tt)
 
 indexfirst data ^^^LTree : Nat → Set where
-  LTree zero     offers   nil
-  LTree (suc r)  offers   node {l : Nat} (r≤l : r ≤ l) (t : LTree l) (u : LTree r)
+  LTree zero     offers   ^^^nil
+  LTree (suc r)  offers   ^^^node {l : Nat} (r≤l : r ≤ l) (t : LTree l) (u : LTree r)
 \end{code}
 Independently, \key{heap-ordered trees} are also an ornamented version of |Tree|.
 The datatype |Heap : Val → Set| of heap-ordered trees can be regarded as a generalisation of ordered lists: in a heap-ordered tree, every path from the root to an empty node is an ordered list.
@@ -1654,8 +1763,8 @@ HeapOD (ok b) =
                 sep   `node  mapsto  (Δ'(x ∶ Val)) (Δ'(b≤x ∶ b ≤ x)) ṿ (ok x , ok x , tt) endcase
 
 indexfirst data ^^^Heap : Val → Set where
-  Heap b  offers  nil
-          or      node (x : Val) (b≤x : b ≤ x) (t : Heap x) (u : Heap x)
+  Heap b  offers  ^^^nil
+          or      ^^^node (x : Val) (b≤x : b ≤ x) (t : Heap x) (u : Heap x)
 \end{code}
 Composing the two ornaments in parallel gives us exactly the datatype of leftist heaps.
 \begin{code}
@@ -1663,16 +1772,16 @@ Composing the two ornaments in parallel gives us exactly the datatype of leftist
 LHeapOD = ⌈ HeapOD ⌉ ⊗ ⌈ LTreeOD ⌉
 
 indexfirst data ^^^LHeap : Val → Nat → Set where
-  LHeap b zero     offers  nil
-  LHeap b (suc r)  offers  node  (x : Val) (b≤x : b ≤ x)
-                                 {l : Nat} (r≤l : r ≤ l)
-                                 (t : LHeap x l) (u : LHeap x r)
+  LHeap b zero     offers  ^^^nil
+  LHeap b (suc r)  offers  ^^^node  (x : Val) (b≤x : b ≤ x)
+                                    {l : Nat} (r≤l : r ≤ l)
+                                    (t : LHeap x l) (u : LHeap x r)
 \end{code}
 
 \subsubsection{Operations on leftist heaps}
 
 The analysis of leftist heaps as the parallel composition of the two ornamentations allows us to talk about heap ordering and the leftist property independently.
-For example, a useful operation on heap-ordered trees is relaxing the lower bound.
+For example, a commonly used operation on heap-ordered trees is relaxing the lower bound.
 It can be regarded as an upgraded version of the identity function on |Tree|, since it leaves the tree structure intact, changing only the ordering information.
 With the help of the optimised predicate for |⌈ HeapOD ⌉|,
 \begin{code}
@@ -1680,9 +1789,9 @@ With the help of the optimised predicate for |⌈ HeapOD ⌉|,
 Heap' b t = OptP ⌈ HeapOD ⌉ (ok b) t
 
 indexfirst data Heap' : Val → Tree → Set where
-  Heap' b  nil         offers  nil
-  Heap' b  (node t u)  offers  node  (x : Val) (b≤x : b ≤ x)
-                                     (t' : Heap x t) (u' : Heap x u)
+  Heap' b  nil         offers  ^^^nil
+  Heap' b  (node t u)  offers  ^^^node  (x : Val) (b≤x : b ≤ x)
+                                        (t' : Heap x t) (u' : Heap x u)
 \end{code}
 we can give the type of bound-relaxing in predicate form, stating explicitly in the type that the underlying tree structure is unchanged:
 \begin{code}
@@ -1811,10 +1920,10 @@ WLTreeOD (ok (suc n)  )  =  (∇'(`node)) (Δ'(l ∶ Nat)) (Δ'(r ∶ Nat))
                               (Δ'(_ ∶ r ≤ l)) (Δ'(_ ∶ n ≡ l + r)) ṿ (ok l , ok r , tt)
 
 indexfirst data ^^^WLTree : Nat → Set where
-  WLTree zero     offers   nil
-  WLTree (suc n)  offers   node  {l : Nat} {r : Nat}
-                                 (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
-                                 (t : WLTree l) (u : WLTree r)
+  WLTree zero     offers   ^^^nil
+  WLTree (suc n)  offers   ^^^node  {l : Nat} {r : Nat}
+                                    (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
+                                    (t : WLTree l) (u : WLTree r)
 \end{code}
 which can be composed in parallel with the heap-ordering ornament |⌈ HeapOD ⌉| and gives us weight-biased leftist heaps.
 \begin{code}
@@ -1822,11 +1931,11 @@ which can be composed in parallel with the heap-ordering ornament |⌈ HeapOD �
 WLHeapD = ⌊ ⌈ HeapOD ⌉ ⊗ ⌈ WLTreeOD ⌉ ⌋
 
 indexfirst data ^^^WLHeap : Val → Nat → Set where
-  WLHeap b zero     offers  nil
-  WLHeap b (suc n)  offers  node  (x : Val) (b≤x : b ≤ x)
-                                  {l : Nat} {r : Nat}
-                                  (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
-                                  (t : WLHeap x l) (u : WLHeap x r)
+  WLHeap b zero     offers  ^^^nil
+  WLHeap b (suc n)  offers  ^^^node  (x : Val) (b≤x : b ≤ x)
+                                     {l : Nat} {r : Nat}
+                                     (r≤l : r ≤ l) (n≡l+r : n ≡ l + r)
+                                     (t : WLHeap x l) (u : WLHeap x r)
 \end{code}
 
 The weight-biased leftist property makes it possible to reimplement merging in a single, top-down pass rather than two passes:
@@ -1884,7 +1993,7 @@ We can then define binary coproduct of tagged descriptions --- which sums the co
 \end{code}
 where the coproduct type~|_+_| and the join operator~|_▿_| are defined as usual:
 \begin{code}
-data _+_ (A B : Set) : Set where
+data ^^^_+_ (A B : Set) : Set where
   ^^^inj₁  : A  → A + B
   ^^^inj₂  : B  → A + B
 
