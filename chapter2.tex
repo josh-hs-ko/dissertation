@@ -459,8 +459,8 @@ When a vector of type |Vec' A n| is demanded, we are ``free'' to choose between 
 Vec'' A zero     = ⊤
 Vec'' A (suc n)  = A × Vec'' A n
 \end{code}
-In general, however, inductive families are strictly more expressive than recursive families:
-with recursive families, the index in the type of a sub-object has to be structurally smaller, whereas inductive families do not have this restriction.
+Recursive families are not subject to the usual ``strict positivity'' condition imposed on inductive datatypes (see, e.g., \citet{Coquand-CiC}).
+With recursive families, however, the index in the type of a sub-object has to be structurally smaller, whereas inductive families do not have this restriction.
 An example is the |BHeap| datatype in \autoref{sec:binomial-heaps}.}
 
 \block{Remark}{detagging}{The transformation from bottom-up vectors to top-down vectors is exactly what \varcitet{Brady-inductive-families-indices}{'s \key{detagging} optimisation} does.
