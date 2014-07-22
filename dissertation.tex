@@ -1,12 +1,13 @@
-\documentclass[12pt,oneside]{book}
+\documentclass[12pt,twoside]{book}
+\raggedbottom
 
 \usepackage{ifthen}
 \newboolean{final}
-\setboolean{final}{false}
+\setboolean{final}{true}
 \newboolean{draft}
-\setboolean{draft}{true}
+\setboolean{draft}{false}
 
-\usepackage[a4paper]{geometry}
+\usepackage[a4paper,scale=.7,hcentering]{geometry}
 \setlength{\marginparwidth}{2.75cm}
 
 \usepackage{subfiles}
@@ -20,16 +21,25 @@
 \def\headercorrection{\fancyhfoffset[L]{8pt}\fancyhfoffset[R]{-8pt}}
 \def\subfileheadercorrection{\headercorrection}
 
-\usepackage[hidelinks,backref=page]{hyperref}
+\usepackage[bookmarksnumbered,hidelinks,hyperindex,backref=page]{hyperref}
+\hypersetup{%
+  pdftitle={Analysis and synthesis of inductive families},%
+  pdfauthor={Hsiang-Shang Ko},%
+  pdfsubject={DPhil dissertation},%
+  pdfkeywords={dependent types, inductive families, datatype ornamentation}}
+
+\usepackage{bookmark}
+
+\usepackage{makeidx}
+\makeindex
+\renewcommand{\indexname}{Index of global definitions}
+
+\usepackage[nottoc]{tocbibind}
+
 \renewcommand{\chapterautorefname}{Chapter}
 \renewcommand{\sectionautorefname}{Section}
 \renewcommand{\subsectionautorefname}{Section}
 \renewcommand{\figureautorefname}{Figure}
-
-\usepackage{bookmark}
-\usepackage{makeidx}
-\renewcommand{\indexname}{Index of global definitions}
-\makeindex
 
 \usepackage[square]{natbib}
 \newcommand{\varcitet}[2]{\citeauthor{#1}#2~\citeyearpar{#1}}
@@ -60,14 +70,11 @@
 \renewcommand{\tableofcontents}{%
     \hypertarget{tableofcontents}{}\bookmark[dest=tableofcontents]{Contents}%
     \chapter*{\contentsname\markboth{Contents}{Contents}}%
-    \thispagestyle{empty}%
     \@starttoc{toc}%
     }
 \makeatother
 \setlength{\headheight}{14.5pt}
 \renewcommand{\MakeUppercase}{\relax}
-
-\usepackage[nottoc]{tocbibind}
 
 \usepackage[labelfont=bf,labelsep=quad,font=small]{caption}
 \usepackage{rotating}
@@ -225,15 +232,20 @@
 
 \frontmatter
 
-\subfile{titlepage}
+\pagestyle{empty}
 
-\newgeometry{top=3.5cm}
+\subfile{titlepage}
+\cleardoublepage
+
+\newgeometry{scale=.7,top=3.5cm,hcentering}
 \subfile{abstract}
 \cleardoublepage
 \restoregeometry
 
-%\subfile{acknowledgements}
-%\cleardoublepage
+\pagestyle{fancy}
+
+\subfile{acknowledgements}
+\cleardoublepage
 
 \tableofcontents
 

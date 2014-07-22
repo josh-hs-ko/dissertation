@@ -90,11 +90,10 @@ The forgetful function is actually the core of a refinement, as justified by the
 canonRef {A} {B} f = record
   case  P  =  (lambda(a)) (Σ'(b ∶ B)) f b ≡ a
   sep   i  =  record
-                case  to    =  f ▵ (id ▵ ((lambda(b)) refl))
+                case  to    =  f ▵ (id ▵ ((lambda(b)) refl))  -- |(g ^^^▵ ^^^_▵_ ^^^_▵_ h) x = (g x , h x)|
                 sep   from  =  proj₁ ∘ proj₂
                 sep   proofs-of-laws endcase endcase  -- proofs of inverse properties omitted
 \end{code}
-(The |^^^_▵_|~operator is defined by |(g ▵ h) x = (g x , h x)|.)
 We call |(lambda(a)) (Σ'(b ∶ B)) f b ≡ a| the \key{canonical promotion predicate}, which says that, to promote |a : A| to type~|B|, we are required to supply a complete |b : B| and prove that its underlying value is~|a|.
 \item For any refinement |r : Refinement A B|, its forgetful function is definitionally that of |canonRef (Refinement.forget r)|, so from |forget-iso| we can prove that a promotion predicate is always pointwise isomorphic to the canonical promotion predicate:
 \begin{code}
@@ -263,7 +262,7 @@ r ⇀ s = record
   sep    C  =  (lambda(f f'))  (a : A) (a' : A') →
                                Refinement.forget r a' ≡ a → Upgrade.C s (f a) (f' a')
   sep    u  =  (lambda(f h)) Upgrade.u s _ ∘ uncurry h ∘ Iso.to (Refinement.i r)
-                 -- |^^^uncurry = (lambda(f)) λ case (x , y) mapsto f x y endcase|
+                 -- |^^^uncurry = λ case f (x , y) mapsto f x y endcase|
   sep    c  =  λ case f h INF _ a' refl mapsto  let  (a , p) = Iso.to (Refinement.i r) a'
                                                 in   Upgrade.c s (f a) (h a p) endcase endcase
 \end{code}
@@ -1838,7 +1837,7 @@ Thus we parametrise the upgraded operation |preorder| by an ornament:
 \begin{code}
 ^^^preorder :  {A I : Set} {D : Desc I} → Orn ! ⌊ ITreeOD A ⌋ D →
                {i : I} → μ D i → List A
-preorder {A} {I} {D} O = Upgrade.u upg preorder-IT (λ t p → tt)
+preorder {A} {I} {D} O = Upgrade.u upg preorder-IT ((lambda(t p)) tt)
   where  upg : Upgrade  (           ITree A  → List A)
                         ({i : I} →  μ D i    → List A)
          upg = ∀⁺[[ i ∶ I ]] RSem' O (ok i) ⇀ toUpgrade idRef
@@ -1848,7 +1847,7 @@ where |idRef| is the identity refinement:
 ^^^idRef : {A : Set} → Refinement A A
 idRef = record  case  P  = (lambda(_)) ⊤
                 sep   i  = record  case  to    = (lambda(a)) (a , tt)
-                                   sep   from  = λ { (a , tt) mapsto a }
+                                   sep   from  = λ case (a , tt) mapsto a endcase
                                    sep   proofs-of-laws endcase endcase
 \end{code}
 There is an ornament from |ITree| to |LHeap|, which can be written either directly or by \key{sequentially composing} the following ornament from |ITree| to |Heap| with the ornament |diffOrn-l ⌈ HeapOD ⌉ ⌈ LTreeOD ⌉| from |Heap| to |LHeap|:

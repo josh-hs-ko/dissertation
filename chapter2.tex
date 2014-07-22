@@ -485,8 +485,8 @@ and take its least fixed point.
 If we flip the order of the arguments of |VecF A|:
 \begin{code}
 ^^^VecF' A : Nat → (Nat → Set) → Set
-VecF' A zero     =  λ X → ⊤
-VecF' A (suc n)  =  λ X → A × X n
+VecF' A zero     =  (lambda(X)) ⊤
+VecF' A (suc n)  =  (lambda(X)) A × X n
 \end{code}
 we see that |VecF' A| consists of two different ``responses'' to the index request, each of type |(Nat → Set) → Set|.
 It suffices to construct for such responses a universe
@@ -521,7 +521,7 @@ where |_⇉_| is defined by
 _⇉_ {I} X Y = {i : I} → X i → Y i
 \end{code}
 
-\block{Remark}{presentation of universes and their decoding}{We always present universes (e.g., |RDesc|) along with their decoding (e.g., |⟦_⟧| for |RDesc|) to emphasise the meaning of the codes, even when the decoding is not logically tied to the codes (cf.~\varcitet{ML-TT84}{'s universe}, which is inductive-recursive~\citep{Dybjer-induction-recursion} and must present the universe and its decoding simultaneously).}
+\block{Remark}{presentation of universes and their decoding}{We always present universes (e.g., |RDesc|) along with their decoding (e.g., |⟦_⟧| for |RDesc|) to emphasise the meaning of the codes, even when the decoding is not logically tied to the codes (cf.~\varcitet{ML-TT84}{'s universe}, which is inductive-recursive~\citep{Dybjer-induction-recursion} and must be presented with its decoding simultaneously).}
 
 \block{Notation}{dependent pairs and \Agda\ records}{Cartesian product is a special case of \key{|Σ|-types}, also known as \key{dependent pairs}, which are defined in \Agda\ as a record:
 \begin{code}
@@ -686,7 +686,7 @@ where the algebra |length-alg| is defined by
 length-alg (`nil   ,          tt) = zero
 length-alg (`cons  , a , n ,  tt) = suc n
 \end{code}
-(The function |^^^const| is defined as |(lambda(x)) (lambda(y)) x|.)}
+(The function |^^^const| is defined as |(lambda(x y)) x|.)}
 
 It is helpful to form a two-dimensional image of our datatype manufacturing scheme:
 We manufacture a datatype by first defining a base functor, and then recursively duplicating the functorial structure by taking its least fixed point.
