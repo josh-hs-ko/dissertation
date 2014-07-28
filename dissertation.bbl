@@ -371,7 +371,7 @@
 \bibfnamefont{Hsiang-Shang} \bibnamefont{Ko} and \bibfnamefont{Jeremy}
   \bibnamefont{Gibbons} [2013{\natexlab{b}}].
 \newblock Relational algebraic ornaments.
-\newblock In \emph{Dependently Typed Programming}, DTP'13. ACM.
+\newblock In \emph{Dependently Typed Programming}, DTP'13, pages 37--48. ACM.
 \newblock \doi{10.1145/2502409.2502413}.
 
 \bibitem[{Leroy(2009)}]{Leroy-CompCert}
