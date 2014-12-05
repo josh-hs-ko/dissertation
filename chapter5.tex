@@ -173,7 +173,7 @@ plus = fun (λ case (x , y , tt) mapsto x + y endcase) : Ḟ D (const Nat) ↝ c
 \end{code}
 Then |plus| is monotonic on
 \begin{code}
-^^^leq = (lambda(x y)) y ≤ x : const Nat ↝ const Nat
+leq = (lambda(x y)) y ≤ x : const Nat ↝ const Nat
 \end{code}
 which maps a natural number~|x| to any natural number~|y| that is at most~|x|.
 Pointwise, the monotonicity statement expands to

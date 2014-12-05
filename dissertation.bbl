@@ -451,8 +451,9 @@
 \bibitem[{McBride(2014)}]{McBride-pivotal}
 \bibfnamefont{Conor} \bibnamefont{McBride} [2014].
 \newblock How to keep your neighbours in order.
-\newblock
-  \urlentry{https://personal.cis.strath.ac.uk/conor.mcbride/Pivotal.pdf}.
+\newblock In \emph{International Conference on Functional Programming},
+  ICFP'14, pages 297--309. ACM.
+\newblock \doi{10.1145/2628136.2628163}.
 
 \bibitem[{McBride and McKinna(2004)}]{McBride-view}
 \bibfnamefont{Conor} \bibnamefont{McBride} and \bibfnamefont{James}
