@@ -1,5 +1,5 @@
 LaTeX = pdflatex
-lhs2TeX = /Users/joshko/Library/Haskell/bin/lhs2TeX
+lhs2TeX = lhs2TeX
 
 all: dissertation
 
